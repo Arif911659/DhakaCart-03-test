@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  database:
+    image: postgres:15-alpine
+    container_name: dhakacart-db
+    environment:
+      POSTGRES_USER: dhakacart
+      POSTGRES_PASSWORD: dhakacart123
+      POSTGRES_DB: dhakacart_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dhakacart"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - dhakacart-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: dhakacart-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - dhakacart-network
+
+  # Backend API (Node.js/Express)
+  backend:
+    image: arifhossaincse22/dhakacart-backend:v1.0.0  # Docker Hub image
+    container_name: dhakacart-backend
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_USER: dhakacart
+      DB_PASSWORD: dhakacart123
+      DB_NAME: dhakacart_db
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    ports:
+      - "5000:5000"
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - dhakacart-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend (React) - Development server
+  frontend:
+    image: arifhossaincse22/dhakacart-frontend:v1.0.0  # Docker Hub image
+    container_name: dhakacart-frontend
+    ports:
+      - "3000:3000"  # Dev server on port 3000
+    depends_on:
+      - backend
+    networks:
+      - dhakacart-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  dhakacart-network:
+    driver: bridge
