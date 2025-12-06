@@ -119,4 +119,25 @@ Grafana তে লগইন করে:
 ![alt text](image.png)
 ![alt text](image-1.png)
 ---
+
+## 📜 ধাপ ৭: Logging চালু করা (Loki & Promtail)
+Monitoring (Metrics) এর পাশাপাশি Logs দেখার জন্য আমরা Loki এবং Promtail সেটআপ করবো।
+
+```bash
+kubectl apply -f k8s/monitoring/loki/configmap.yaml
+kubectl apply -f k8s/monitoring/loki/deployment.yaml
+kubectl apply -f k8s/monitoring/loki/service.yaml
+kubectl apply -f k8s/monitoring/promtail/rbac.yaml
+kubectl apply -f k8s/monitoring/promtail/configmap.yaml
+kubectl apply -f k8s/monitoring/promtail/daemonset.yaml
+```
+
+**Grafana তে Logs দেখা:**
+1. Grafana তে লগইন করুন।
+2. বাম পাশের মেনু থেকে **Explore** (Compass icon) এ ক্লিক করুন।
+3. উপরে বাম কোণের ড্রপডাউন থেকে **Loki** সিলেক্ট করুন।
+4. **Label filters** এ `namespace` = `dhakacart` সিলেক্ট করুন।
+5. উপরে ডান কোণে **Run query** বাটনে ক্লিক করুন। আপনি অ্যাপ্লিকেশনের সব লগ দেখতে পাবেন!
+
+---
 **Note:** কোথাও সমস্যা হলে আমাকে জানান। শুভ কামনা! 🚀

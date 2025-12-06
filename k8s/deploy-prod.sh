@@ -59,6 +59,33 @@ kubectl apply -f "$SCRIPT_DIR/services/"
 echo -e "${GREEN}✅ Deployments and Services applied.${NC}"
 echo ""
 
+# 4.5. Monitoring & Logging Stack
+echo -e "${YELLOW}📊 Applying Monitoring & Logging Stack...${NC}"
+# Namespace
+kubectl apply -f "$SCRIPT_DIR/monitoring/namespace.yaml"
+# Prometheus
+kubectl apply -f "$SCRIPT_DIR/monitoring/prometheus/rbac.yaml"
+kubectl apply -f "$SCRIPT_DIR/monitoring/prometheus/configmap.yaml"
+kubectl apply -f "$SCRIPT_DIR/monitoring/prometheus/deployment.yaml"
+kubectl apply -f "$SCRIPT_DIR/monitoring/prometheus/service.yaml"
+# Node Exporter
+kubectl apply -f "$SCRIPT_DIR/monitoring/node-exporter/daemonset.yaml"
+# Grafana
+kubectl apply -f "$SCRIPT_DIR/monitoring/grafana/datasource-config.yaml"
+kubectl apply -f "$SCRIPT_DIR/monitoring/grafana/deployment.yaml"
+kubectl apply -f "$SCRIPT_DIR/monitoring/grafana/service.yaml"
+# Loki
+kubectl apply -f "$SCRIPT_DIR/monitoring/loki/configmap.yaml"
+kubectl apply -f "$SCRIPT_DIR/monitoring/loki/deployment.yaml"
+kubectl apply -f "$SCRIPT_DIR/monitoring/loki/service.yaml"
+# Promtail
+kubectl apply -f "$SCRIPT_DIR/monitoring/promtail/rbac.yaml"
+kubectl apply -f "$SCRIPT_DIR/monitoring/promtail/configmap.yaml"
+kubectl apply -f "$SCRIPT_DIR/monitoring/promtail/daemonset.yaml"
+
+echo -e "${GREEN}✅ Monitoring & Logging stack applied.${NC}"
+echo ""
+
 # 5. Ingress
 echo -e "${YELLOW}🌐 Applying Ingress...${NC}"
 if [ -f "$SCRIPT_DIR/ingress/ingress-alb.yaml" ]; then
@@ -70,11 +97,30 @@ else
 fi
 echo ""
 
-# 6. Database Check
+# 6. Database Check & Seeding
 echo -e "${YELLOW}💾 Checking Database Status...${NC}"
-# We can't easily check row count here without knowing pod name, but we can remind the user.
-echo -e "${YELLOW}⚠️  REMINDER: If this is a fresh install, don't forget to seed the database!${NC}"
-echo "Run: kubectl exec -i -n dhakacart deployment/dhakacart-db -- psql -U dhakacart -d dhakacart_db < database/init.sql"
+
+# Function to check database
+check_and_seed_db() {
+    echo "Waiting for database pod to be ready..."
+    kubectl wait --for=condition=ready pod -l app=dhakacart-db -n dhakacart --timeout=120s
+    
+    # Get Pod Name
+    DB_POD=$(kubectl get pod -l app=dhakacart-db -n dhakacart -o jsonpath="{.items[0].metadata.name}")
+    
+    # Check if products table exists and has data
+    ROW_COUNT=$(kubectl exec -i -n dhakacart "$DB_POD" -- psql -U dhakacart -d dhakacart_db -t -c "SELECT count(*) FROM information_schema.tables WHERE table_name = 'products';" 2>/dev/null || echo "0")
+    
+    if [ "$(echo "$ROW_COUNT" | tr -d '[:space:]')" = "1" ]; then
+         echo -e "${GREEN}✅ Database already initialized (products table found). Skipping seed.${NC}"
+    else
+         echo -e "${YELLOW}⚡ Database empty. Seeding data...${NC}"
+         kubectl exec -i -n dhakacart "$DB_POD" -- psql -U dhakacart -d dhakacart_db < "$SCRIPT_DIR/../database/init.sql"
+         echo -e "${GREEN}✅ Database seeded successfully!${NC}"
+    fi
+}
+# Run check in background or foreground? Foreground is safer for first deploy.
+check_and_seed_db
 echo ""
 
 # 7. Restart for Consistency
