@@ -29,7 +29,7 @@ resource "aws_lb_target_group" "backend" {
     unhealthy_threshold = 2
     timeout             = 5
     interval            = 30
-    path                = "/api/health"  # Backend health endpoint
+    path                = "/health"  # Backend health endpoint (ALB checks target directly)
     port                = "30081"
     protocol            = "HTTP"
     matcher             = "200-399"

@@ -53,7 +53,7 @@ redisClient.on('error', (err) => console.log('Redis Client Error', err));
 redisClient.connect();
 
 // Health Check with DB and Redis
-app.get('/health', async (req, res) => {
+const healthCheckHandler = async (req, res) => {
   const status = {
     status: 'OK',
     timestamp: new Date(),
@@ -83,7 +83,11 @@ app.get('/health', async (req, res) => {
 
   const httpStatus = status.status === 'OK' ? 200 : 503;
   res.status(httpStatus).json(status);
-});
+};
+
+// Health check endpoints (both for direct access and ALB routing)
+app.get('/health', healthCheckHandler);
+app.get('/api/health', healthCheckHandler);
 
 // Joi schema for order validation
 const orderSchema = Joi.object({

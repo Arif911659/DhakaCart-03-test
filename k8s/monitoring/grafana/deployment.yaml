@@ -24,9 +24,9 @@ spec:
             - name: GF_SECURITY_ADMIN_PASSWORD
               value: "dhakacart123"
             - name: GF_SERVER_ROOT_URL
-              value: "http://dhakacart-k8s-alb-98601629.ap-southeast-1.elb.amazonaws.com/grafana/"
+              value: "http://UPDATE_WITH_ALB_DNS/grafana/"
             - name: GF_SERVER_SERVE_FROM_SUB_PATH
-              value: "false"
+              value: "true"
           volumeMounts:
             - name: grafana-datasources
               mountPath: /etc/grafana/provisioning/datasources
