@@ -16,8 +16,8 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 # Configuration
-BASTION_IP="18.143.117.139"
-MASTER1_IP="10.0.10.87"
+BASTION_IP="54.169.237.62"
+MASTER1_IP="10.0.10.128"
 SSH_KEY_PATH="terraform/simple-k8s/dhakacart-k8s-key.pem"
 REMOTE_USER="ubuntu"
 
@@ -33,7 +33,7 @@ echo -e "${GREEN}✅ Copied to Bastion${NC}"
 
 # Copy from Bastion to Master-1
 echo -e "${YELLOW}Copying to Master-1...${NC}"
-ssh -i "$SSH_KEY_PATH" "$REMOTE_USER@$BASTION_IP" "scp -r -i ~/.ssh/dhakacart-k8s-key.pem /tmp/k8s $REMOTE_USER@$MASTER1_IP:~/k8s" > /dev/null 2>&1
+ssh -i "$SSH_KEY_PATH" "$REMOTE_USER@$BASTION_IP" "scp -r -i ~/.ssh/dhakacart-k8s-key.pem /tmp/k8s $REMOTE_USER@$MASTER1_IP:~/" > /dev/null 2>&1
 echo -e "${GREEN}✅ Copied to Master-1${NC}"
 
 # Cleanup

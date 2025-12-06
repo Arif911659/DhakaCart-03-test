@@ -76,16 +76,39 @@ We have automated the entire deployment process.
 
 ## 📊 Phase 4: Monitoring & Logging
 
-Once Phase 3 is done, Monitoring is live!
+Once Phase 3 is completed, the entire observability stack (Metrics + Logs) is running. Here is how to use it.
 
-### Access Links
-*   **Grafana:** `http://<ALB-DNS-NAME>/grafana/`
-    *   *User:* `admin` | *Pass:* `dhakacart123`
-*   **Prometheus:** `http://<ALB-DNS-NAME>/prometheus/`
+### 1. Verification
+Check if all pods are running in the monitoring namespace:
+```bash
+kubectl get pods -n monitoring
+```
+*Expected: Prometheus, Grafana, Loki, Promtail (DaemonSet), and Node-Exporter should be `Running`.*
 
-### Features
-*   **Dashboards:** Import ID `315` for K8s stats.
-*   **Logs:** Use Grafana Explore > Loki > Select Label `namespace=dhakacart`.
+### 2. Accessing Grafana
+Grafana is exposed via the public Application Load Balancer (ALB).
+*   **URL:** `http://<ALB-DNS-NAME>/grafana/`
+    *   *(Replace `<ALB-DNS-NAME>` with your actual AWS Load Balancer DNS, e.g., `dhakacart-k8s-alb-....elb.amazonaws.com`)*
+*   **Username:** `admin`
+*   **Password:** `dhakacart123`
+
+### 3. Setting up Dashboards (Visualizing Metrics)
+1.  Log in to Grafana.
+2.  Go to **Dashboards** (Menu) > **New** > **Import**.
+3.  Enter Dashboard ID `315` (Kubernetes Cluster Monitoring) and click **Load**.
+4.  Select `Prometheus` as the Data Source.
+5.  Click **Import**.
+    *   *Now you can see CPU/Memory usage of all your pods!*
+
+### 4. Viewing Logs (Loki & Promtail)
+To see logs without SSH-ing into servers:
+1.  In Grafana, go to **Explore** (Compass icon on the left).
+2.  Select **Loki** from the datasource dropdown (top-left).
+3.  Under **Label filters**:
+    *   Select Label: `namespace`
+    *   Select Value: `dhakacart`
+4.  Click **Run query** (Top right).
+    *   *You will see real-time logs from your Backend, Frontend, and Database!*
 
 ---
 

@@ -41,15 +41,10 @@ echo -e "${GREEN}✅ Base ConfigMaps applied.${NC}"
 echo ""
 
 # 3. Update ConfigMap with ALB DNS
-echo -e "${YELLOW}🔄 Updating ConfigMap with ALB DNS...${NC}"
-if [ -f "$SCRIPT_DIR/update-configmap-with-alb-dns.sh" ]; then
-    chmod +x "$SCRIPT_DIR/update-configmap-with-alb-dns.sh"
-    # We run this in a subshell or just execute it. It internally calls kubectl apply.
-    "$SCRIPT_DIR/update-configmap-with-alb-dns.sh"
-else
-    echo -e "${RED}⚠️  Warning: update-configmap-with-alb-dns.sh not found! Skipping auto-update.${NC}"
-    echo "Make sure REACT_APP_API_URL is set correctly in configmaps/app-config.yaml"
-fi
+# 3. Update ConfigMap with ALB DNS
+# This step is skipped on remote because Terraform is not available.
+# Ensure you ran ./update-configmap-with-alb-dns.sh LOCALLY before syncing.
+echo -e "${GREEN}✅ Assuming app-config.yaml was updated locally before sync.${NC}"
 echo ""
 
 # 4. Deployments and Services
@@ -96,6 +91,8 @@ else
     kubectl apply -f "$SCRIPT_DIR/ingress/"
 fi
 echo ""
+
+
 
 # 6. Database Check & Seeding
 echo -e "${YELLOW}💾 Checking Database Status...${NC}"
