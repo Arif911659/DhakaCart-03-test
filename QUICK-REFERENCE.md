@@ -71,8 +71,11 @@ cd scripts/k8s-deployment
 
 ```bash
 # Setup Grafana ALB
-cd scripts
+cd scripts/monitoring
 ./setup-grafana-alb.sh
+
+# Deploy alerting
+./deploy-alerting-stack.sh
 
 # Check Prometheus
 ./check-prometheus-metrics.sh
@@ -82,6 +85,21 @@ cd scripts
 
 # Restart Promtail (if logs not showing)
 kubectl rollout restart daemonset/promtail -n monitoring
+```
+
+### Security
+
+```bash
+# Apply security hardening
+cd scripts/security
+./apply-security-hardening.sh
+
+# Run vulnerability scan
+cd ../../security/scanning
+./trivy-scan.sh
+
+# Check network policies
+kubectl get networkpolicies -n dhakacart
 ```
 
 ---
@@ -103,15 +121,19 @@ scripts/
 ├── load-infrastructure-config.sh    # Load IPs from Terraform
 ├── post-terraform-setup.sh          # Post-terraform automation
 │
+├── security/                        # Security hardening
+│   └── apply-security-hardening.sh  # Network policies + scans
+│
+├── monitoring/                      # Monitoring & Alerting
+│   ├── deploy-alerting-stack.sh     # Deploy Prometheus alerts
+│   ├── setup-grafana-alb.sh         # Setup Grafana ALB
+│   ├── check-prometheus-metrics.sh  # Check Prometheus
+│   └── fix-grafana-config.sh        # Fix Grafana
+│
 ├── k8s-deployment/                  # Kubernetes deployment
 │   ├── update-and-deploy.sh         # Deploy/update application
 │   ├── copy-k8s-to-master1.sh       # Copy manifests
 │   └── sync-k8s-to-master1.sh       # Sync manifests
-│
-├── monitoring/                      # Monitoring scripts
-│   ├── setup-grafana-alb.sh         # Setup Grafana ALB
-│   ├── check-prometheus-metrics.sh  # Check Prometheus
-│   └── fix-grafana-config.sh        # Fix Grafana
 │
 ├── database/                        # Database scripts
 │   ├── seed-database.sh             # Seed database

@@ -40,13 +40,35 @@ export AWS_DEFAULT_REGION="ap-southeast-1"
 
 ```
 DhakaCart-03-test/
-├── terraform/simple-k8s/     # Terraform configuration
-├── scripts/                   # Automation scripts
-├── k8s/                       # Kubernetes manifests
-├── frontend/                  # Frontend application
-├── backend/                   # Backend application
-└── docs/                      # Documentation
+├── terraform/simple-k8s/        # Infrastructure as Code
+├── scripts/                      # Automation scripts
+│   ├── security/                 # Security hardening
+│   ├── monitoring/               # Monitoring & Alerting
+│   ├── k8s-deployment/          # K8s deployment automation
+│   ├── database/                 # Database utilities
+│   └── hostname/                 # Hostname management
+├── k8s/                          # Kubernetes manifests
+│   ├── deployments/              # Application deployments
+│   ├── services/                 # Kubernetes services
+│   ├── configmaps/              # Configuration maps
+│   ├── secrets/                  # Secrets management
+│   ├── ingress/                  # Ingress configurations
+│   ├── volumes/                  # Persistent volumes
+│   ├── monitoring/              # Monitoring stack
+│   └── security/                 # Network policies
+├── frontend/                     # React frontend application
+├── backend/                      # Node.js backend API
+├── database/                     # Database initialization
+├── security/                     # Security tools & policies
+│   ├── scanning/                 # Vulnerability scanning
+│   ├── network-policies/        # K8s network policies
+│   └── ssl/                      # SSL/TLS automation
+├── testing/                      # Load tests & benchmarks
+│   ├── load-tests/              # K6 load testing
+│   └── performance/             # Performance benchmarks
+└── docs/                         # Documentation
 ```
+
 
 ---
 
