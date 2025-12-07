@@ -77,6 +77,11 @@ kubectl apply -f "$SCRIPT_DIR/monitoring/loki/service.yaml"
 kubectl apply -f "$SCRIPT_DIR/monitoring/promtail/rbac.yaml"
 kubectl apply -f "$SCRIPT_DIR/monitoring/promtail/configmap.yaml"
 kubectl apply -f "$SCRIPT_DIR/monitoring/promtail/daemonset.yaml"
+# Alertmanager
+kubectl apply -f "$SCRIPT_DIR/monitoring/prometheus/alert-rules.yaml"
+kubectl apply -f "$SCRIPT_DIR/monitoring/alertmanager/configmap.yaml"
+kubectl apply -f "$SCRIPT_DIR/monitoring/alertmanager/deployment.yaml"
+kubectl apply -f "$SCRIPT_DIR/monitoring/alertmanager/service.yaml"
 
 echo -e "${GREEN}✅ Monitoring & Logging stack applied.${NC}"
 echo ""

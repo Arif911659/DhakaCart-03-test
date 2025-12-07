@@ -10,7 +10,8 @@ Complete step-by-step guide for deploying DhakaCart e-commerce application on AW
 - [Phase 3: Kubernetes Cluster Setup](#phase-3-kubernetes-cluster-setup)
 - [Phase 4: Application Deployment](#phase-4-application-deployment)
 - [Phase 5: Monitoring Setup](#phase-5-monitoring-setup)
-- [Phase 6: Verification](#phase-6-verification)
+- [Phase 6: Security Hardening](#phase-6-security-hardening)
+- [Phase 7: Verification](#phase-7-verification)
 - [Troubleshooting](#troubleshooting)
 
 ---
@@ -279,7 +280,142 @@ kubectl get pods -n monitoring
 
 ---
 
-## Phase 6: Verification
+## Phase 6: Security Hardening
+
+### Step 6.1: Apply Network Policies
+
+Network policies implement zero-trust networking - pods can only communicate with explicitly allowed services.
+
+```bash
+# SSH to Master-1
+cd ~/k8s
+
+# Create security directory
+mkdir -p security/network-policies
+```
+
+**On your local machine**, copy network policies to k8s folder:
+
+```bash
+cd /home/arif/DhakaCart-03-test
+
+# Copy policies
+cp -r security/network-policies k8s/security/
+
+# Sync to Master-1
+./scripts/k8s-deployment/sync-k8s-to-master1.sh
+```
+
+**Back on Master-1**, apply the policies:
+
+```bash
+cd ~/k8s/security/network-policies
+
+# Apply all network policies
+kubectl apply -f frontend-policy.yaml
+kubectl apply -f backend-policy.yaml  
+kubectl apply -f database-policy.yaml
+
+# Verify policies are applied
+kubectl get networkpolicies -n dhakacart
+```
+
+**Expected output**:
+```
+NAME                        POD-SELECTOR              AGE
+dhakacart-frontend-policy   app=dhakacart-frontend    10s
+dhakacart-backend-policy    app=dhakacart-backend     10s
+dhakacart-database-policy   app=dhakacart-db          10s
+```
+
+### Step 6.2: Container Vulnerability Scanning
+
+**On your local machine**, scan Docker images for security vulnerabilities:
+
+```bash
+cd /home/arif/DhakaCart-03-test/security/scanning
+
+# Install Trivy (if not installed)
+curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+
+# Run security scan
+./trivy-scan.sh
+```
+
+**Expected output**:
+```
+========================================
+   DhakaCart Security Scan (Trivy)
+========================================
+Scanning: arifhossaincse22/dhakacart-backend:latest
+  CRITICAL: 0
+  HIGH: 2
+  MEDIUM: 5
+
+Reports saved to: /tmp/trivy-reports-TIMESTAMP/
+```
+
+**View detailed reports**:
+```bash
+cat /tmp/trivy-reports-*/SUMMARY.txt
+```
+
+### Step 6.3: Dependency Security Audit
+
+Check npm packages for vulnerabilities:
+
+```bash
+cd /home/arif/DhakaCart-03-test/security/scanning
+
+# Check dependencies
+./dependency-check.sh
+```
+
+**Fix vulnerabilities** (if found):
+```bash
+# Backend
+cd ../../backend
+npm audit fix
+
+# Frontend  
+cd ../frontend
+npm audit fix
+
+# Rebuild and push images
+docker build -t arifhossaincse22/dhakacart-backend:latest ./backend
+docker push arifhossaincse22/dhakacart-backend:latest
+```
+
+### Step 6.4: Verify Network Isolation
+
+Test that network policies are working correctly:
+
+**Frontend can reach Backend** (should work):
+```bash
+# On Master-1
+kubectl exec -it -n dhakacart deployment/dhakacart-frontend -- curl -s http://dhakacart-backend-service:5000/health
+```
+
+**Expected**: `{"status":"ok"}` or similar success response
+
+**Database CANNOT reach Internet** (should timeout):
+```bash
+kubectl exec -it -n dhakacart deployment/dhakacart-db -- curl -m 5 https://google.com
+```
+
+**Expected**: Timeout after ~5 seconds (this proves isolation is working)
+
+### Step 6.5: Security Checklist
+
+- [ ] **Network Policies Applied**: 3 policies active in dhakacart namespace
+- [ ] **Container Scan Clean**: No CRITICAL vulnerabilities in images
+- [ ] **Dependencies Audited**: npm audit shows 0 high/critical issues  
+- [ ] **Network Isolation Verified**: Database cannot reach external internet
+- [ ] **Secrets Management**: No hardcoded passwords in code
+
+---
+
+## Phase 7: Verification
 
 ### Checklist
 
