@@ -17,8 +17,8 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration (from aws_instances_output.txt)
-BASTION_IP="54.169.237.62"
-MASTER1_IP="10.0.10.128"
+BASTION_IP="54.251.183.40"
+MASTER1_IP="10.0.10.82"
 SSH_KEY_PATH="/home/arif/DhakaCart-03-test/terraform/simple-k8s/dhakacart-k8s-key.pem"
 K8S_FOLDER="/home/arif/DhakaCart-03-test/k8s"
 REMOTE_USER="ubuntu"

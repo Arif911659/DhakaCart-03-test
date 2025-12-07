@@ -1,0 +1,296 @@
+# DhakaCart Quick Reference
+
+One-page cheat sheet for common operations and commands.
+
+## 🚀 Quick Start (After Terraform Apply)
+
+```bash
+cd /home/arif/DhakaCart-03-test/scripts
+./post-terraform-setup.sh
+```
+
+---
+
+## 📋 Common Commands
+
+### Infrastructure
+
+```bash
+# Get Bastion IP
+cd terraform/simple-k8s
+terraform output bastion_public_ip
+
+# Get ALB DNS
+terraform output load_balancer_dns
+
+# SSH to Bastion
+ssh -i dhakacart-k8s-key.pem ubuntu@<BASTION_IP>
+
+# SSH to Master-1 (from Bastion)
+ssh -i ~/.ssh/dhakacart-k8s-key.pem ubuntu@<MASTER1_IP>
+```
+
+### Kubernetes
+
+```bash
+# Get all nodes
+kubectl get nodes
+
+# Get all pods
+kubectl get pods --all-namespaces
+
+# Get application pods
+kubectl get pods -n dhakacart
+
+# Get monitoring pods
+kubectl get pods -n monitoring
+
+# Check pod logs
+kubectl logs <POD_NAME> -n dhakacart
+
+# Restart deployment
+kubectl rollout restart deployment/<DEPLOYMENT_NAME> -n dhakacart
+```
+
+### Application
+
+```bash
+# Seed database
+cd scripts
+./seed-database.sh
+
+# Update application
+cd scripts/k8s-deployment
+./update-and-deploy.sh
+
+# Check database
+./diagnose-db-products-issue.sh
+```
+
+### Monitoring
+
+```bash
+# Setup Grafana ALB
+cd scripts
+./setup-grafana-alb.sh
+
+# Check Prometheus
+./check-prometheus-metrics.sh
+
+# Fix Grafana
+./fix-grafana-config.sh
+
+# Restart Promtail (if logs not showing)
+kubectl rollout restart daemonset/promtail -n monitoring
+```
+
+---
+
+## 🔗 Important URLs
+
+| Service | URL | Credentials |
+|---------|-----|-------------|
+| **Frontend** | http://\<ALB_DNS\> | - |
+| **Backend API** | http://\<ALB_DNS\>/api | - |
+| **Grafana** | http://\<ALB_DNS\>/grafana/ | admin / dhakacart123 |
+
+---
+
+## 📁 Script Organization
+
+```
+scripts/
+├── load-infrastructure-config.sh    # Load IPs from Terraform
+├── post-terraform-setup.sh          # Post-terraform automation
+│
+├── k8s-deployment/                  # Kubernetes deployment
+│   ├── update-and-deploy.sh         # Deploy/update application
+│   ├── copy-k8s-to-master1.sh       # Copy manifests
+│   └── sync-k8s-to-master1.sh       # Sync manifests
+│
+├── monitoring/                      # Monitoring scripts
+│   ├── setup-grafana-alb.sh         # Setup Grafana ALB
+│   ├── check-prometheus-metrics.sh  # Check Prometheus
+│   └── fix-grafana-config.sh        # Fix Grafana
+│
+├── database/                        # Database scripts
+│   ├── seed-database.sh             # Seed database
+│   └── diagnose-db-issues.sh        # Diagnose DB issues
+│
+└── hostname/                        # Hostname management
+    ├── change-hostname.sh           # Local hostname change
+    └── change-hostname-via-bastion.sh  # Remote via Bastion
+```
+
+---
+
+## 🔧 Troubleshooting Quick Fixes
+
+### Pods Not Starting
+
+```bash
+kubectl describe pod <POD_NAME> -n dhakacart
+kubectl logs <POD_NAME> -n dhakacart
+```
+
+### ALB Health Checks Failing
+
+```bash
+# Check target health
+aws elbv2 describe-target-health --target-group-arn <TG_ARN>
+
+# Re-register workers
+cd terraform/simple-k8s
+./register-workers-to-alb.sh
+```
+
+### Grafana Not Accessible
+
+```bash
+cd scripts
+./setup-grafana-alb.sh
+```
+
+### No Logs in Loki
+
+```bash
+# Check Promtail
+kubectl logs -n monitoring daemonset/promtail
+
+# Restart Promtail
+kubectl rollout restart daemonset/promtail -n monitoring
+
+# Check positions file
+kubectl exec -n monitoring daemonset/promtail -- cat /run/promtail/positions.yaml
+```
+
+### Database Connection Issues
+
+```bash
+# Check database pod
+kubectl get pods -n dhakacart | grep db
+
+# Check database logs
+kubectl logs -n dhakacart <DB_POD_NAME>
+
+# Restart database
+kubectl rollout restart deployment/dhakacart-db -n dhakacart
+```
+
+---
+
+## 📊 Verification Checklist
+
+### After Terraform Apply
+
+- [ ] Bastion accessible: `ssh -i dhakacart-k8s-key.pem ubuntu@<BASTION_IP>`
+- [ ] SSH key copied to Bastion
+- [ ] All nodes in `kubectl get nodes`
+
+### After Application Deployment
+
+- [ ] All pods running: `kubectl get pods -n dhakacart`
+- [ ] Frontend accessible: `curl -I http://<ALB_DNS>`
+- [ ] Backend API responding: `curl http://<ALB_DNS>/api/health`
+
+### After Monitoring Setup
+
+- [ ] Grafana accessible: http://\<ALB_DNS\>/grafana/
+- [ ] Prometheus showing metrics
+- [ ] Loki showing logs: `{job="kubernetes-pods"}`
+
+---
+
+## 🆘 Emergency Commands
+
+### Restart Everything
+
+```bash
+# Restart all application pods
+kubectl rollout restart deployment -n dhakacart
+
+# Restart monitoring stack
+kubectl rollout restart deployment -n monitoring
+kubectl rollout restart daemonset -n monitoring
+```
+
+### Check Cluster Health
+
+```bash
+# Node status
+kubectl get nodes
+
+# Component status
+kubectl get componentstatuses
+
+# All pods status
+kubectl get pods --all-namespaces | grep -v Running
+```
+
+### Destroy and Rebuild
+
+```bash
+# Destroy infrastructure
+cd terraform/simple-k8s
+terraform destroy
+
+# Rebuild
+terraform apply
+cd ../../scripts
+./post-terraform-setup.sh
+```
+
+---
+
+## 📚 Documentation Links
+
+- **Full Deployment Guide**: [DEPLOYMENT-GUIDE.md](DEPLOYMENT-GUIDE.md)
+- **Troubleshooting**: [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
+- **Loki Troubleshooting**: [docs/LOKI-TROUBLESHOOTING.md](docs/LOKI-TROUBLESHOOTING.md)
+- **Hostname Change**: [scripts/README-hostname-change.md](scripts/README-hostname-change.md)
+
+---
+
+## 💡 Pro Tips
+
+1. **Always source config before running scripts**:
+   ```bash
+   source scripts/load-infrastructure-config.sh
+   ```
+
+2. **Use dry-run for testing**:
+   ```bash
+   ./change-hostname-via-bastion.sh --dry-run
+   ```
+
+3. **Check logs first when debugging**:
+   ```bash
+   kubectl logs <POD_NAME> -n <NAMESPACE> --tail=50
+   ```
+
+4. **Keep backups of working configurations**:
+   ```bash
+   kubectl get all -n dhakacart -o yaml > backup.yaml
+   ```
+
+5. **Monitor resource usage**:
+   ```bash
+   kubectl top nodes
+   kubectl top pods -n dhakacart
+   ```
+
+---
+
+## 🔑 Key Files
+
+| File | Purpose |
+|------|---------|
+| `terraform/simple-k8s/dhakacart-k8s-key.pem` | SSH private key |
+| `terraform/simple-k8s/terraform.tfstate` | Terraform state |
+| `scripts/load-infrastructure-config.sh` | Config loader |
+| `k8s/` | Kubernetes manifests |
+
+---
+
+**Last Updated**: 2025-12-07  
+**Version**: 1.0

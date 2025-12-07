@@ -15,8 +15,8 @@ NC='\033[0m'
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-BASTION_IP="54.169.237.62"
-MASTER1_IP="10.0.10.128"
+BASTION_IP="54.251.183.40"
+MASTER1_IP="10.0.10.82"
 SSH_KEY_PATH="$PROJECT_ROOT/terraform/simple-k8s/dhakacart-k8s-key.pem"
 REMOTE_USER="ubuntu"
 NAMESPACE="dhakacart"

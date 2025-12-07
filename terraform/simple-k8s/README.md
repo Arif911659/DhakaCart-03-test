@@ -1,138 +1,322 @@
-# Simple Kubernetes Infrastructure
+# Terraform Infrastructure - DhakaCart K8s
 
-এটা একটা simple Kubernetes cluster infrastructure তৈরি করে AWS তে।
+Terraform configuration for DhakaCart Kubernetes cluster on AWS.
 
-## 🏗️ Architecture
+## Directory Structure
 
 ```
-Internet
-    │
-    ├─────► Bastion (Public IP) ──┐
-    │                              │
-    └─────► NAT Gateway            │
-                │                  │ SSH
-                │                  │
-    ┌───────────▼──────────────────▼───────┐
-    │        Private Subnet                │
-    │  ┌──────────┐      ┌──────────┐     │
-    │  │ Master-1 │      │ Worker-1 │     │
-    │  │ Master-2 │      │ Worker-2 │     │
-    │  └──────────┘      │ Worker-3 │     │
-    │                    └──────────┘     │
-    │  (No Public IP, Internet via NAT)  │
-    └────────────────────────────────────┘
+terraform/simple-k8s/
+├── main.tf                      # Main infrastructure configuration
+├── variables.tf                 # Input variables
+├── outputs.tf                   # Output values
+├── alb-backend-config.tf        # ALB backend configuration
+├── terraform.tfstate            # Terraform state (DO NOT EDIT)
+├── .terraform.lock.hcl          # Dependency lock file
+├── dhakacart-k8s-key.pem        # SSH private key (KEEP SECURE)
+│
+├── scripts/                     # Automation scripts
+│   ├── post-apply.sh            # Post-terraform apply automation
+│   ├── register-workers-to-alb.sh  # Register workers to ALB
+│   └── update-configmap-auto.sh    # Update ConfigMap with ALB DNS
+│
+├── docs/                        # Documentation
+│   ├── README.md                # This file
+│   ├── DEPLOYMENT_SUCCESS.md    # Deployment success guide
+│   └── README_AUTOMATION_2025-12-01.md  # Automation documentation
+│
+├── outputs/                     # Output files
+│   └── aws_instances_output.txt # EC2 instances information
+│
+├── backups/                     # Backup directory
+│   └── (terraform state backups)
+│
+└── nodes-config-steps/          # Node configuration steps
+    └── (various configuration files)
 ```
 
-## 📦 যা তৈরি হবে:
+## Quick Start
 
-- **1 Bastion Server** (Public subnet, SSH access)
-- **2 Master Nodes** (Private subnet, no public IP)
-- **3 Worker Nodes** (Private subnet, no public IP)
-- **1 NAT Gateway** (Private subnet internet access)
-- VPC, Subnets, Security Groups
-- SSH Key Pair
-
-## 🚀 Deploy করার নিয়ম:
-
-### 1. AWS Credentials Configure করুন:
+### 1. Initialize Terraform
 
 ```bash
-aws configure
-# অথবা
-export AWS_ACCESS_KEY_ID="your-key"
-export AWS_SECRET_ACCESS_KEY="your-secret"
-```
-
-### 2. Terraform Initialize করুন:
-
-```bash
-cd /home/arif/DhakaCart-03/terraform/simple-k8s
+cd /home/arif/DhakaCart-03-test/terraform/simple-k8s
 terraform init
 ```
 
-### 3. Plan দেখুন:
+### 2. Plan Infrastructure
 
 ```bash
 terraform plan
 ```
 
-### 4. Deploy করুন:
+Review the plan to ensure it matches your expectations.
+
+### 3. Apply Configuration
 
 ```bash
 terraform apply
 ```
 
-## 📝 Access করার নিয়ম:
+Type `yes` when prompted.
 
-### Step 1: Bastion এ SSH করুন
+**Duration**: ~5-10 minutes
 
-```bash
-# Output থেকে পাবেন
-ssh -i dhakacart-k8s-key.pem ubuntu@<BASTION_PUBLIC_IP>
-```
-
-### Step 2: SSH Key Bastion এ Copy করুন
+### 4. Run Post-Apply Automation
 
 ```bash
-scp -i dhakacart-k8s-key.pem dhakacart-k8s-key.pem ubuntu@<BASTION_PUBLIC_IP>:~/.ssh/
+cd ../../scripts
+./post-terraform-setup.sh
 ```
 
-### Step 3: Bastion থেকে Master/Worker এ SSH করুন
+This will:
+- Load infrastructure configuration
+- Update all scripts with IPs
+- Optionally change hostnames
+- Setup Grafana ALB routing
+
+## Important Files
+
+### Configuration Files
+
+| File | Purpose |
+|------|---------|
+| `main.tf` | Main infrastructure definition |
+| `variables.tf` | Input variables (region, instance types, etc.) |
+| `outputs.tf` | Output values (IPs, DNS, etc.) |
+| `alb-backend-config.tf` | ALB backend target groups |
+
+### State Files
+
+| File | Purpose | Notes |
+|------|---------|-------|
+| `terraform.tfstate` | Current infrastructure state | **DO NOT EDIT MANUALLY** |
+| `.terraform.lock.hcl` | Dependency versions | Commit to version control |
+
+### Credentials
+
+| File | Purpose | Security |
+|------|---------|----------|
+| `dhakacart-k8s-key.pem` | SSH private key | **KEEP SECURE** - chmod 600 |
+
+## Common Commands
+
+### View Outputs
 
 ```bash
-# Bastion shell থেকে
-ssh -i ~/.ssh/dhakacart-k8s-key.pem ubuntu@<MASTER_PRIVATE_IP>
+# All outputs
+terraform output
+
+# Specific output
+terraform output bastion_public_ip
+terraform output load_balancer_dns
+
+# JSON format
+terraform output -json
 ```
 
-## 🔧 Configuration
+### Refresh State
 
-`variables.tf` file edit করে customize করুন:
-
-```hcl
-master_count = 2           # Master nodes সংখ্যা
-worker_count = 3           # Worker nodes সংখ্যা
-master_instance_type = "t2.medium"
-worker_instance_type = "t2.medium"
+```bash
+terraform refresh
 ```
 
-## 💰 Cost Estimate
+### Destroy Infrastructure
 
-- **Bastion:** t2.micro = $0.0116/hour
-- **Masters (2x):** t2.medium = $0.0464/hour each
-- **Workers (3x):** t2.medium = $0.0464/hour each
-- **NAT Gateway:** $0.045/hour + data transfer
-
-**Total:** ~$0.30/hour = ~$7.20/day
-
-## 🧹 Cleanup
+⚠️ **Warning**: This will delete all resources!
 
 ```bash
 terraform destroy
 ```
 
-## 📋 Outputs
+Type `yes` to confirm.
 
-Deploy করার পর এগুলো পাবেন:
+## Scripts
 
-- `bastion_public_ip` - Bastion এর public IP
-- `bastion_ssh_command` - SSH command
-- `master_private_ips` - Master nodes IPs
-- `worker_private_ips` - Worker nodes IPs
-- `next_steps` - পরবর্তী কাজ
+### post-apply.sh
 
-## ✅ Features
+Runs automatically after `terraform apply` (if configured) or manually:
 
-- ✅ Bastion publicly accessible
-- ✅ Masters/Workers in private subnet (no public IP)
-- ✅ Internet access via NAT Gateway
-- ✅ SSH from bastion to all nodes
-- ✅ Security groups configured
-- ✅ Ready for Kubernetes installation
+```bash
+./scripts/post-apply.sh
+```
 
-## 🔐 Security
+**Actions**:
+- Displays infrastructure details
+- Saves outputs to file
+- Provides next steps
 
-- Masters/Workers শুধু bastion থেকে SSH access
-- No public IP on masters/workers
-- Security groups properly configured
-- SSH key automatically generated
+### register-workers-to-alb.sh
 
+Registers worker nodes to ALB target groups:
+
+```bash
+./scripts/register-workers-to-alb.sh
+```
+
+**Required**: After Kubernetes cluster is deployed
+
+### update-configmap-auto.sh
+
+Updates Kubernetes ConfigMap with ALB DNS:
+
+```bash
+./scripts/update-configmap-auto.sh
+```
+
+**Required**: After application deployment
+
+## Outputs
+
+After `terraform apply`, you'll get:
+
+```
+bastion_public_ip = "54.251.183.40"
+master_private_ips = [
+  "10.0.10.82",
+  "10.0.10.83"
+]
+worker_private_ips = [
+  "10.0.20.84",
+  "10.0.20.85",
+  "10.0.20.86"
+]
+load_balancer_dns = "dhakacart-k8s-alb-xxxxx.ap-southeast-1.elb.amazonaws.com"
+vpc_id = "vpc-xxxxx"
+```
+
+## Infrastructure Components
+
+### Network
+
+- **VPC**: 10.0.0.0/16
+- **Public Subnets**: 10.0.1.0/24, 10.0.2.0/24
+- **Private Subnets**: 10.0.10.0/24, 10.0.20.0/24
+
+### Compute
+
+- **Bastion**: 1x t3.small (public subnet)
+- **Masters**: 2x t3.medium (private subnet)
+- **Workers**: 3x t3.medium (private subnet)
+
+### Load Balancer
+
+- **ALB**: Application Load Balancer
+- **Target Groups**:
+  - Frontend (port 30080)
+  - Backend (port 30081)
+  - Grafana (port 30091)
+
+## Troubleshooting
+
+### Issue: Terraform State Lock
+
+```bash
+# Force unlock (use with caution)
+terraform force-unlock <LOCK_ID>
+```
+
+### Issue: SSH Key Permissions
+
+```bash
+chmod 600 dhakacart-k8s-key.pem
+```
+
+### Issue: AWS Credentials
+
+```bash
+# Verify credentials
+aws sts get-caller-identity
+
+# Configure if needed
+aws configure
+```
+
+### Issue: Resource Already Exists
+
+```bash
+# Import existing resource
+terraform import <RESOURCE_TYPE>.<NAME> <RESOURCE_ID>
+```
+
+## Best Practices
+
+1. **Always run `terraform plan` before `apply`**
+2. **Keep terraform.tfstate secure** - contains sensitive data
+3. **Use version control** - commit .tf files, not .tfstate
+4. **Backup state regularly** - to backups/ directory
+5. **Use workspaces** for multiple environments (optional)
+
+## State Management
+
+### Backup State
+
+```bash
+cp terraform.tfstate backups/terraform.tfstate.$(date +%Y%m%d_%H%M%S)
+```
+
+### Restore State
+
+```bash
+cp backups/terraform.tfstate.YYYYMMDD_HHMMSS terraform.tfstate
+```
+
+## Variables
+
+Edit `variables.tf` to customize:
+
+```hcl
+variable "aws_region" {
+  default = "ap-southeast-1"
+}
+
+variable "cluster_name" {
+  default = "dhakacart-k8s"
+}
+
+variable "master_count" {
+  default = 2
+}
+
+variable "worker_count" {
+  default = 3
+}
+```
+
+## Next Steps
+
+After successful `terraform apply`:
+
+1. **Run post-terraform setup**:
+   ```bash
+   cd ../../scripts
+   ./post-terraform-setup.sh
+   ```
+
+2. **Deploy Kubernetes cluster**:
+   ```bash
+   cd scripts/k8s-deployment
+   ./update-and-deploy.sh
+   ```
+
+3. **Access application**:
+   - Frontend: http://\<ALB_DNS\>
+   - Grafana: http://\<ALB_DNS\>/grafana/
+
+## Documentation
+
+- **Main Deployment Guide**: [../../DEPLOYMENT-GUIDE.md](../../DEPLOYMENT-GUIDE.md)
+- **Quick Reference**: [../../QUICK-REFERENCE.md](../../QUICK-REFERENCE.md)
+- **Troubleshooting**: [../../docs/TROUBLESHOOTING.md](../../docs/TROUBLESHOOTING.md)
+
+## Support
+
+For issues or questions:
+1. Check [TROUBLESHOOTING.md](../../docs/TROUBLESHOOTING.md)
+2. Review Terraform logs
+3. Check AWS console for resource status
+
+---
+
+**Last Updated**: 2025-12-07  
+**Terraform Version**: 1.0+  
+**AWS Provider Version**: ~> 5.0

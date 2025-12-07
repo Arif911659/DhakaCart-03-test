@@ -20,8 +20,8 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-BASTION_IP="54.169.237.62"
-MASTER1_IP="10.0.10.128"
+BASTION_IP="54.251.183.40"
+MASTER1_IP="10.0.10.82"
 SSH_KEY_PATH="terraform/simple-k8s/dhakacart-k8s-key.pem"
 REMOTE_USER="ubuntu"
 
