@@ -60,7 +60,11 @@ scripts/
 │   ├── sync-k8s-to-master1.sh
 │   └── update-configmap-with-lb.sh
 │
-├── monitoring/                   # Monitoring scripts
+├── security/                     # Security hardening
+│   └── apply-security-hardening.sh
+│
+├── monitoring/                   # Monitoring & Alerting
+│   ├── deploy-alerting-stack.sh
 │   ├── setup-grafana-alb.sh
 │   ├── apply-prometheus-fix.sh
 │   ├── check-prometheus-metrics.sh
@@ -115,10 +119,17 @@ docs/
 | `docs/LOKI-TROUBLESHOOTING.md` | Loki log collection issues |
 | `QUICK-REFERENCE.md` | Quick fixes reference |
 
-### Monitoring
+### Security
 
 | File | Purpose |
 |------|---------|
+| `scripts/security/apply-security-hardening.sh` | Automated security hardening |
+
+### Monitoring & Alerting
+
+| File | Purpose |
+|------|---------|
+| `scripts/monitoring/deploy-alerting-stack.sh` | Deploy alerting stack |
 | `scripts/monitoring/setup-grafana-alb.sh` | Setup Grafana ALB routing |
 | `scripts/monitoring/fix-promtail-logs.sh` | Fix Promtail log collection |
 | `scripts/monitoring/check-prometheus-metrics.sh` | Verify Prometheus |
@@ -212,6 +223,12 @@ cd scripts && ./post-terraform-setup.sh
 
 # Deploy application
 cd scripts/k8s-deployment && ./update-and-deploy.sh
+
+# Security hardening
+cd scripts/security && ./apply-security-hardening.sh
+
+# Deploy alerting
+cd scripts/monitoring && ./deploy-alerting-stack.sh
 
 # Seed database
 cd scripts/database && ./seed-database.sh

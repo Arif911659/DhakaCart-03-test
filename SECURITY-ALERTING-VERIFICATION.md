@@ -207,10 +207,10 @@ git push origin test/security-scan
 
 ```bash
 # 1. Verify all security features
-./scripts/apply-security-hardening.sh
+./scripts/security/apply-security-hardening.sh
 
 # 2. Deploy alerting
-./scripts/deploy-alerting-stack.sh
+./scripts/monitoring/deploy-alerting-stack.sh
 
 # 3. Trigger test alert
 kubectl scale deployment/dhakacart-backend --replicas=0 -n dhakacart
