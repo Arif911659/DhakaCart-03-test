@@ -80,22 +80,39 @@ echo -e "${GREEN}✅ Master-1 configured${NC}"
 
 # Get join tokens
 echo "  Extracting join tokens..."
-JOIN_COMMAND=$(ssh -i ../dhakacart-k8s-key.pem ubuntu@${BASTION_IP} \
+
+# Join command for control plane (Master-2)
+CP_JOIN_COMMAND=$(ssh -i ../dhakacart-k8s-key.pem ubuntu@${BASTION_IP} \
+  "ssh -i ~/.ssh/dhakacart-k8s-key.pem ubuntu@${MASTER_IPS[0]} \
+   'kubeadm token create --print-join-command --certificate-key \$(kubeadm init phase upload-certs --upload-certs 2>/dev/null | tail -1)'")
+
+# Join command for workers
+WORKER_JOIN_COMMAND=$(ssh -i ../dhakacart-k8s-key.pem ubuntu@${BASTION_IP} \
   "ssh -i ~/.ssh/dhakacart-k8s-key.pem ubuntu@${MASTER_IPS[0]} \
    'kubeadm token create --print-join-command'")
 
-echo "  Join command: $JOIN_COMMAND"
+# Join Master-2 to control plane
+if [ ${#MASTER_IPS[@]} -gt 1 ]; then
+    echo "  Joining Master-2 to control plane..."
+    ssh -i ../dhakacart-k8s-key.pem ubuntu@${BASTION_IP} \
+      "ssh -i ~/.ssh/dhakacart-k8s-key.pem ubuntu@${MASTER_IPS[1]} \
+       'bash ~/nodes-config/master-2-prereq.sh && sudo $CP_JOIN_COMMAND --control-plane'" &
+    MASTER2_PID=$!
+    wait $MASTER2_PID
+    echo -e "${GREEN}✅ Master-2 joined${NC}"
+fi
 
 # Join Workers in parallel
-echo "  Joining Worker nodes..."
+echo "  Joining ${#WORKER_IPS[@]} Worker nodes..."
 for worker_ip in "${WORKER_IPS[@]}"; do
+    echo "    Joining worker: $worker_ip"
     ssh -i ../dhakacart-k8s-key.pem ubuntu@${BASTION_IP} \
       "ssh -i ~/.ssh/dhakacart-k8s-key.pem ubuntu@$worker_ip \
-       'bash ~/nodes-config/workers-prereq.sh && sudo $JOIN_COMMAND'" &
+       'bash ~/nodes-config/workers-prereq.sh && sudo $WORKER_JOIN_COMMAND'" &
 done
 
 wait
-echo -e "${GREEN}✅ All nodes joined${NC}"
+echo -e "${GREEN}✅ All ${#WORKER_IPS[@]} workers joined${NC}"
 echo ""
 
 # Step 5: Deploy Application
