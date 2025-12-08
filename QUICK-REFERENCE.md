@@ -102,6 +102,29 @@ cd ../../security/scanning
 kubectl get networkpolicies -n dhakacart
 ```
 
+### Manual Release (Makefile)
+
+```bash
+# Build, Push, and Deploy
+make release
+
+# Just Build
+make build
+
+# Just Push
+make push
+
+# Just Deploy
+make deploy
+```
+
+### CI/CD Setup
+
+```bash
+# Fetch Kubeconfig for GitHub Secrets
+./scripts/fetch-kubeconfig.sh
+```
+
 ---
 
 ## 🔗 Important URLs
@@ -120,6 +143,7 @@ kubectl get networkpolicies -n dhakacart
 scripts/
 ├── load-infrastructure-config.sh    # Load IPs from Terraform
 ├── post-terraform-setup.sh          # Post-terraform automation
+├── fetch-kubeconfig.sh              # Fetch Kubeconfig for CI/CD
 │
 ├── security/                        # Security hardening
 │   └── apply-security-hardening.sh  # Network policies + scans

@@ -6,12 +6,25 @@ Complete organized structure of the DhakaCart project.
 
 ```
 DhakaCart-03-test/
-├── DEPLOYMENT-GUIDE.md          # Master deployment guide
+├── 4-HOUR-DEPLOYMENT.md          # Automated deployment guide
+├── DEPLOYMENT-GUIDE.md           # Master deployment guide
+├── MANUAL_RELEASE_GUIDE.md       # Guide for Makefile workflow
 ├── QUICK-REFERENCE.md            # One-page cheat sheet
+├── SECURITY-AND-TESTING-GUIDE.md # Security & Testing guide
+├── SECURITY-ALERTING-VERIFICATION.md # Security verification guide
+├── Makefile                      # Manual release automation
+├── .github/                      # CI/CD Workflows
+│   └── workflows/
+│       ├── ci.yml
+│       ├── cd.yml
+│       ├── security-scan.yml
+│       └── README.md
 ├── terraform/                    # Infrastructure as Code
 ├── scripts/                      # Automation scripts
 ├── k8s/                          # Kubernetes manifests
 ├── docs/                         # Documentation
+├── security/                     # Security tools & policies
+├── database/                     # Database init scripts
 ├── frontend/                     # Frontend application
 ├── backend/                      # Backend application
 └── testing/                      # Load tests
@@ -51,6 +64,7 @@ terraform/simple-k8s/
 scripts/
 ├── load-infrastructure-config.sh # Config loader
 ├── post-terraform-setup.sh       # Post-terraform automation
+├── fetch-kubeconfig.sh           # Fetch Kubeconfig for CI/CD
 │
 ├── k8s-deployment/               # K8s deployment
 │   ├── update-and-deploy.sh
@@ -79,6 +93,18 @@ scripts/
     ├── change-hostname.sh
     ├── change-hostname-via-bastion.sh
     └── README-hostname-change.md
+```
+
+## Security Directory
+
+```
+security/
+├── network-policies/             # Kubernetes Network Policies
+├── scanning/                     # Vulnerability scanning tools
+│   ├── trivy-scan.sh
+│   └── dependency-check.sh
+├── ssl/                          # SSL Certificate automation
+└── README.md                     # Security documentation
 ```
 
 ## Documentation Directory

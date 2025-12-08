@@ -1,292 +1,149 @@
-# 🚀 4-Hour Deployment Guide
+# 🚀 4-Hour Deployment Guide: Error-Free Workflow
 
-Complete deployment automation for AWS 4-hour access windows.
+This guide details the exact structure, files, and steps to follow for a flawless deployment within your 4-hour AWS access window.
 
 ---
 
-## Quick Start (One Command)
+## 📂 Key Files & Directories Structure
 
+| Phase | Directory / File | Purpose |
+|-------|------------------|---------|
+| **1. Infra** | `terraform/simple-k8s/` | Infrastructure Code (VPC, EC2, ALB) |
+| **2. Auto** | `scripts/deploy-4-hour-window.sh` | **MASTER SCRIPT** - Runs everything |
+| **3. Config** | `scripts/load-infrastructure-config.sh` | Loads IPs from Terraform to scripts |
+| **4. K8s** | `scripts/k8s-deployment/` | K8s manifest syncing & deploying |
+| **5. Verify** | `scripts/monitoring/` | Check Grafana/Prometheus health |
+| **6. CI/CD** | `Makefile` & `.github/` | Future updates & manual releases |
+
+---
+
+## ✅ Phase 1: Pre-Deployment Check (First 5 Mins)
+
+Before running any script, ensure your environment is clean and ready.
+
+1.  **Check AWS Credentials**:
+    ```bash
+    aws sts get-caller-identity
+    ```
+    *If this fails, run `aws configure`.*
+
+2.  **Clean Previous State** (If restarting):
+    ```bash
+    cd ~/DhakaCart-03-test/terraform/simple-k8s
+    rm -rf .terraform/providers  # Optional, usually just 'terraform init' is enough
+    ```
+
+3.  **Verify Project Root**:
+    You must always start from the root:
+    ```bash
+    cd ~/DhakaCart-03-test
+    ```
+
+---
+
+## 🚀 Phase 2: Automated Deployment (The "One-Click" Step)
+
+We use a single master script to handle 90% of the work. This avoids manual errors.
+
+**Command:**
 ```bash
-cd ~/DhakaCart-03-test
 ./scripts/deploy-4-hour-window.sh
 ```
 
-**This single script will:**
-1. ✅ Deploy infrastructure (Terraform)
-2. ✅ Configure Kubernetes cluster
-3. ✅ Deploy application
-4. ✅ Setup monitoring
-5. ✅ Register ALB targets
-6. ✅ Verify everything
+**What this script does (and which files it touches):**
 
-**Estimated Time:** ~25-35 minutes
+1.  **Infrastructure (`terraform/simple-k8s/main.tf`)**:
+    -   Creates VPC, Bastion, Masters, Workers.
+    -   Outputs IPs to `terraform/simple-k8s/terraform.tfstate`.
 
----
+2.  **Configuration (`scripts/load-infrastructure-config.sh`)**:
+    -   Reads the `.tfstate`.
+    -   Updates `scripts/k8s-deployment/` scripts with new IPs.
 
-## What Happens Step-by-Step
+3.  **Cluster Init (`scripts/nodes-config-steps/`)**:
+    -   SSH into Master-1.
+    -   Runs `kubeadm init`.
+    -   SSH into Workers and joins them.
 
-### [1/7] Infrastructure (5-8 mins)
-- Terraform creates VPC, EC2 instances, ALB
-- Generates SSH keys
-- Outputs configuration
-
-### [2/7] Configuration (1 min)
-- Loads IPs from Terraform
-- Updates all scripts with dynamic values
-
-### [3/7] Node Scripts (1 min)
-- Generates node configuration scripts
-- Updates with current IPs
-
-### [4/7] Cluster Setup (10-15 mins)
-- Uploads scripts to Bastion
-- Configures Master-1 (kubeadm init)
-- Joins Worker nodes in parallel
-
-### [5/7] Application (5-7 mins)
-- Updates ConfigMap with ALB DNS
-- Syncs manifests to Master-1
-- Runs deploy-prod.sh
-- Seeds database
-
-### [6/7] ALB Registration (2 mins)
-- Registers workers to target groups
-- Waits for health checks
-
-### [7/7] Verification (1 min)
-- Checks nodes status
-- Verifies pods running
-- Displays access URLs
+4.  **App Deploy (`scripts/k8s-deployment/update-and-deploy.sh`)**:
+    -   Copies `k8s/` folder to Master.
+    -   Applies `kubectl apply -f k8s/`.
 
 ---
 
-## Prerequisites
+## 🔍 Phase 3: Verification (Critical Step)
 
-Before running, ensure:
+Once the script finishes (~25 mins), **DO NOT ASSUME SUCCESS**. Verify manually.
 
-1. **AWS Credentials** configured:
-   ```bash
-   aws configure
-   ```
-
-2. **Terraform** installed:
-   ```bash
-   terraform --version
-   ```
-
-3. **In project root**:
-   ```bash
-   cd ~/DhakaCart-03-test
-   ```
-
----
-
-## Manual Step-by-Step (If Needed)
-
-If automation fails, run manually:
-
-### Step 1: Infrastructure
+### 1. Check Infrastructure
 ```bash
 cd terraform/simple-k8s
-terraform init
-terraform apply
+terraform output
 ```
+*   Copy `bastion_public_ip` and `load_balancer_dns`.
 
-### Step 2: Configure Nodes
+### 2. Check Kubernetes Nodes
+Login to Master-1 (via Bastion) and run:
 ```bash
-cd nodes-config-steps
-./automate-node-config.sh
-```
-
-### Step 3: SSH to Bastion
-```bash
-ssh -i ../dhakacart-k8s-key.pem ubuntu@<BASTION_IP>
-```
-
-### Step 4: Configure Master-1
-```bash
-ssh -i ~/.ssh/dhakacart-k8s-key.pem ubuntu@<MASTER1_IP>
-cd ~/nodes-config
-bash master-1.sh
-```
-
-### Step 5: Get Join Command
-```bash
-kubeadm token create --print-join-command
-```
-
-### Step 6: Join Workers
-```bash
-# On each worker
-ssh -i ~/.ssh/dhakacart-k8s-key.pem ubuntu@<WORKER_IP>
-cd ~/nodes-config
-bash workers-prereq.sh
-sudo <JOIN_COMMAND_FROM_STEP_5>
-```
-
-### Step 7: Deploy Application
-```bash
-# On local machine
-cd ~/DhakaCart-03-test
-./scripts/k8s-deployment/sync-k8s-to-master1.sh
-
-# On Master-1
-cd ~/k8s
-./deploy-prod.sh
-```
-
-### Step 8: Register ALB
-```bash
-# On local machine
-cd terraform/simple-k8s
-./register-workers-to-alb.sh
-```
-
-### Step 9: Fix Prometheus Config (If needed)
-If you see "CrashLoopBackOff" for Prometheus, it's likely a volume mount issue.
-```bash
-# On Master-1
-kubectl rollout restart deployment/prometheus-deployment -n monitoring
-```
-
----
-
-## After Deployment
-
-### Access Application
-```bash
-# Get ALB DNS
-cd terraform/simple-k8s
-terraform output load_balancer_dns
-
-# Open in browser
-http://<ALB_DNS>
-http://<ALB_DNS>/grafana/
-```
-
-### Verify Everything
-```bash
-# SSH to Master-1
 kubectl get nodes
+```
+*   **Success**: 2 Masters, 3 Workers, all `Ready`.
+
+### 3. Check Pods
+```bash
 kubectl get pods -n dhakacart
-kubectl get pods -n monitoring
-
-# Test frontend
-curl -I http://<ALB_DNS>
-
-# Test backend
-curl http://<ALB_DNS>/api/health
 ```
+*   **Success**: `frontend`, `backend`, `db`, `redis` all `Running`.
 
-### Run Security Hardening (Optional)
-```bash
-cd ~/DhakaCart-03-test
-./scripts/security/apply-security-hardening.sh
-```
-
-### Deploy Alerting (Optional)
-```bash
-./scripts/monitoring/deploy-alerting-stack.sh
-```
+### 4. Check Access
+Open `http://<ALB_DNS>` in your browser.
+*   **Success**: You see the DhakaCart Storefront.
 
 ---
 
-## Troubleshooting
+## 🛠 Phase 4: CI/CD Setup (For Future Updates)
 
-### Script Fails at Infrastructure Step
-**Error:** Terraform apply fails
+If the deployment is successful, set up GitHub Actions so you can push updates later without re-doing Phase 2.
 
-**Solution:**
-```bash
-cd terraform/simple-k8s
-terraform destroy
-terraform apply
-```
+1.  **Fetch Config**:
+    ```bash
+    ./scripts/fetch-kubeconfig.sh
+    ```
+2.  **Add Secret**:
+    -   Go to GitHub Repo -> Settings -> Secrets.
+    -   Add `KUBECONFIG`.
 
-### Script Fails at Node Configuration
-**Error:** Cannot SSH to Bastion
-
-**Solution:**
-```bash
-# Check security group allows your IP
-aws ec2 describe-security-groups
-
-# Try manual SSH
-ssh -i terraform/simple-k8s/dhakacart-k8s-key.pem ubuntu@<BASTION_IP>
-```
-
-### Nodes Not Joining
-**Error:** Workers fail to join cluster
-
-**Solution:**
-```bash
-# On Master-1, generate new token
-kubeadm token create --print-join-command
-
-# On worker, run manually
-sudo <NEW_JOIN_COMMAND>
-```
-
-### Application Not Accessible
-**Error:** ALB shows 503
-
-**Solution:**
-```bash
-# Re-register targets
-cd terraform/simple-k8s
-./register-workers-to-alb.sh
-
-# Wait 2-3 minutes for health checks
-```
+3.  **Verify**:
+    -   Make a small change.
+    -   Run `git push`.
+    -   Watch the `CD` workflow on GitHub.
 
 ---
 
-## Time Optimization Tips
+## 🆘 Emergency Manual Fallbacks (When Automation Fails)
 
-**To complete in <30 minutes:**
+If a specific step fails, go to the corresponding directory and fix it manually.
 
-1. **Run during off-peak hours** - Better AWS performance
-2. **Use larger instance types** - Faster node initialization
-3. **Skip optional steps** initially:
-   - Security hardening (add later)
-   - Alerting setup (add later)
-4. **Run verification in parallel** - Check pods while ALB registers
+| Error Location | Directory to Fix | Command to Try |
+|----------------|------------------|----------------|
+| **Terraform Error** | `terraform/simple-k8s/` | `terraform apply` (Run again) |
+| **SSH Error** | `terraform/simple-k8s/` | Check `dhakacart-k8s-key.pem` permissions (600) |
+| **Nodes Not Ready** | `scripts/nodes-config-steps/` | Log in to worker, run `kubeadm join` manually |
+| **App Not Loading** | `k8s/deployments/` | Check `kubectl logs deployment/dhakacart-backend -n dhakacart` |
+| **ALB 503 Error** | `terraform/simple-k8s/` | `./register-workers-to-alb.sh` (Re-run registration) |
 
 ---
 
-## Cleanup (End of Session)
+## 🧹 Cleanup (End of 4-Hour Window)
+
+**CRITICAL**: Destroy resources to avoid extra bills.
 
 ```bash
 cd ~/DhakaCart-03-test/terraform/simple-k8s
 terraform destroy -auto-approve
 ```
 
-**Estimated Time:** ~5 minutes
-
 ---
 
-## Quick Commands Reference
-
-```bash
-# Full deployment
-./scripts/deploy-4-hour-window.sh
-
-# Just infrastructure
-cd terraform/simple-k8s && terraform apply
-
-# Just application
-./scripts/k8s-deployment/sync-k8s-to-master1.sh
-# Then on Master-1: cd ~/k8s && ./deploy-prod.sh
-
-# Just ALB registration
-cd terraform/simple-k8s && ./register-workers-to-alb.sh
-
-# Full cleanup
-cd terraform/simple-k8s && terraform destroy
-```
-
----
-
-**Last Updated:** 07 December 2025  
-**Target:** <30 minutes full deployment  
-**Success Rate:** Optimized for AWS 4-hour windows
+**Last Updated**: 08 December 2025
+**Guide Version**: 2.0 (Error-Free Structure)

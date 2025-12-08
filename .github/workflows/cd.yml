@@ -91,7 +91,7 @@ jobs:
     name: Deploy to Kubernetes
     runs-on: ubuntu-latest
     needs: build-and-push
-    if: ${{ secrets.KUBECONFIG != '' }}  # Only run if KUBECONFIG is set
+    # Removed job-level 'if' because accessing secrets here can cause errors
     
     steps:
       # Step 1: Get the code
@@ -106,13 +106,26 @@ jobs:
       
       # Step 3: Configure kubectl with KUBECONFIG
       - name: Configure kubectl
+        id: login
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBECONFIG }}
         run: |
+          if [ -z "$KUBE_CONFIG_DATA" ]; then
+            echo "⚠️ KUBECONFIG secret is empty or not set."
+            echo "Skipping Kubernetes deployment steps."
+            echo "skipped=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          echo "✅ KUBECONFIG found, configuring kubectl..."
           mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+          echo "$KUBE_CONFIG_DATA" > $HOME/.kube/config
           chmod 600 $HOME/.kube/config
+          echo "skipped=false" >> $GITHUB_OUTPUT
       
-      # Step 4: Update Kubernetes deployments with new image versions
+      # Step 4: Update Kubernetes deployments (Only if not skipped)
       - name: Update Kubernetes deployments
+        if: steps.login.outputs.skipped != 'true'
         run: |
           # Update backend deployment
           kubectl set image deployment/dhakacart-backend \
@@ -126,12 +139,14 @@ jobs:
       
       # Step 5: Wait for rollout to complete
       - name: Wait for rollout
+        if: steps.login.outputs.skipped != 'true'
         run: |
           kubectl rollout status deployment/dhakacart-backend -n dhakacart --timeout=5m
           kubectl rollout status deployment/dhakacart-frontend -n dhakacart --timeout=5m
       
       # Step 6: Verify deployment
       - name: Verify deployment
+        if: steps.login.outputs.skipped != 'true'
         run: |
           echo "Backend pods:"
           kubectl get pods -n dhakacart -l app=dhakacart-backend

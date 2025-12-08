@@ -599,6 +599,34 @@ kubectl rollout restart daemonset/promtail -n monitoring
 
 ---
 
+## Phase 8: CI/CD & Maintenance
+
+### Step 8.1: Setup GitHub Actions (Auto Deployment)
+
+To enable automatic deployment when you push code:
+
+1. **Fetch Kubeconfig**:
+   ```bash
+   ./scripts/fetch-kubeconfig.sh
+   ```
+2. **Add to GitHub**:
+   - Copy the output.
+   - Go to GitHub Repo Settings > Secrets > Actions.
+   - Add new secret named `KUBECONFIG` with the copied content.
+
+### Step 8.2: Manual Release (Optional)
+
+If you prefer manual control or need an emergency fix, use the `Makefile`:
+
+```bash
+# Build, Push, and Deploy a new version
+make release
+```
+
+To change the version, edit the `VERSION` variable in the `Makefile` first.
+
+---
+
 ## Cleanup (Destroy Infrastructure)
 
 ⚠️ **Warning**: This will delete all resources!
