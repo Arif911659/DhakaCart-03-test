@@ -83,11 +83,29 @@ jobs:
           platforms: linux/amd64
       
       # Step 7: Output image versions for next job
+      # Step 7: Output image versions for next job
       - name: Output image versions
         id: images
+        env:
+          BACKEND_REF: ${{ env.BACKEND_IMAGE }}
+          FRONTEND_REF: ${{ env.FRONTEND_IMAGE }}
+          VERSION_REF: ${{ steps.version.outputs.VERSION }}
         run: |
-          echo "backend_image=${{ env.BACKEND_IMAGE }}:${{ steps.version.outputs.VERSION }}" >> $GITHUB_OUTPUT
-          echo "frontend_image=${{ env.FRONTEND_IMAGE }}:${{ steps.version.outputs.VERSION }}" >> $GITHUB_OUTPUT
+          echo "Debug: VERSION_REF is '$VERSION_REF'"
+          
+          if [ -z "$VERSION_REF" ]; then
+             echo "⚠️ Version is empty! Using 'latest'"
+             VERSION_REF="latest"
+          fi
+          
+          BACKEND_TAG="$BACKEND_REF:$VERSION_REF"
+          FRONTEND_TAG="$FRONTEND_REF:$VERSION_REF"
+          
+          echo "Debug: Setting backend_image=$BACKEND_TAG"
+          echo "backend_image=$BACKEND_TAG" >> $GITHUB_OUTPUT
+          
+          echo "Debug: Setting frontend_image=$FRONTEND_TAG"
+          echo "frontend_image=$FRONTEND_TAG" >> $GITHUB_OUTPUT
 
   # Job 2: Deploy to Kubernetes (Optional - requires KUBECONFIG secret)
   deploy-kubernetes:
