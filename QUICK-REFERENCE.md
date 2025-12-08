@@ -118,6 +118,16 @@ make push
 make deploy
 ```
 
+### Ansible Automation
+
+```bash
+# Check connection to all servers
+cd ansible && ansible all -m ping
+
+# Check disk space on all nodes
+ansible all -m command -a "df -h"
+```
+
 ### CI/CD Setup
 
 ```bash

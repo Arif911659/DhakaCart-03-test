@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: arifhossaincse22/dhakacart-frontend:v1.0.4
+        image: arifhossaincse22/dhakacart-frontend:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80

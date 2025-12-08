@@ -101,22 +101,20 @@ Open `http://<ALB_DNS>` in your browser.
 
 ---
 
-## 🛠 Phase 4: CI/CD Setup (For Future Updates)
+## 🛠 Phase 4: CI/CD & Management
 
-If the deployment is successful, set up GitHub Actions so you can push updates later without re-doing Phase 2.
+### 1. Setup GitHub Actions
+```bash
+./scripts/fetch-kubeconfig.sh
+# Add output to GitHub Secrets as KUBECONFIG
+```
 
-1.  **Fetch Config**:
-    ```bash
-    ./scripts/fetch-kubeconfig.sh
-    ```
-2.  **Add Secret**:
-    -   Go to GitHub Repo -> Settings -> Secrets.
-    -   Add `KUBECONFIG`.
-
-3.  **Verify**:
-    -   Make a small change.
-    -   Run `git push`.
-    -   Watch the `CD` workflow on GitHub.
+### 2. Manage Servers via Ansible (Optional)
+Use Ansible to run commands on all nodes (Master/Workers) at once.
+See `ansible/README.md` for setup.
+```bash
+cd ansible && ansible all -m ping
+```
 
 ---
 

@@ -18,8 +18,8 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 # Configuration
-BASTION_IP="54.255.226.22"
-MASTER1_IP="10.0.10.18"
+BASTION_IP="54.255.165.250"
+MASTER1_IP="10.0.10.102"
 SSH_KEY_PATH="/home/arif/DhakaCart-03-test/terraform/simple-k8s/dhakacart-k8s-key.pem"
 REMOTE_USER="ubuntu"
 

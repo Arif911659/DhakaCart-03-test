@@ -107,6 +107,16 @@ security/
 └── README.md                     # Security documentation
 ```
 
+## Ansible Directory (Automation)
+
+```
+ansible/
+├── ansible.cfg               # Configuration
+├── inventory/
+│   └── hosts.ini            # Server List (IPs go here)
+└── playbooks/               # Automation tasks
+```
+
 ## Documentation Directory
 
 ```

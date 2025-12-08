@@ -1,0 +1,89 @@
+=============================================
+AWS Instances Output Information
+Generated: 2025-12-08T17:09:58Z
+=============================================
+
+BASTION HOST
+=============================================
+Public IP: 54.255.165.250
+SSH Command: ssh -i dhakacart-k8s-key.pem ubuntu@54.255.165.250
+Instance ID: i-0ba567248cac106a2
+Instance Type: t3.medium
+
+MASTER NODES
+=============================================
+Master-1:
+  Private IP: 10.0.10.102
+  Instance ID: i-0101576ab4123dc97
+  Instance Type: t3.medium
+  SSH Command: ssh -i ~/.ssh/dhakacart-k8s-key.pem ubuntu@10.0.10.102
+Master-2:
+  Private IP: 10.0.10.49
+  Instance ID: i-02b17fdca8e6a2a86
+  Instance Type: t3.medium
+  SSH Command: ssh -i ~/.ssh/dhakacart-k8s-key.pem ubuntu@10.0.10.49
+
+Master Private IPs: 10.0.10.102, 10.0.10.49
+
+WORKER NODES
+=============================================
+Worker-1:
+  Private IP: 10.0.10.84
+  Instance ID: i-0c9419f94560f0062
+  Instance Type: t3.medium
+  SSH Command: ssh -i ~/.ssh/dhakacart-k8s-key.pem ubuntu@10.0.10.84
+Worker-2:
+  Private IP: 10.0.10.247
+  Instance ID: i-0bb80708a42eb3aca
+  Instance Type: t3.medium
+  SSH Command: ssh -i ~/.ssh/dhakacart-k8s-key.pem ubuntu@10.0.10.247
+Worker-3:
+  Private IP: 10.0.10.172
+  Instance ID: i-0cc541d685387d422
+  Instance Type: t3.medium
+  SSH Command: ssh -i ~/.ssh/dhakacart-k8s-key.pem ubuntu@10.0.10.172
+
+Worker Private IPs: 10.0.10.84, 10.0.10.247, 10.0.10.172
+
+LOAD BALANCER
+=============================================
+DNS Name: dhakacart-k8s-alb-1951134596.ap-southeast-1.elb.amazonaws.com
+Public URL: http://dhakacart-k8s-alb-1951134596.ap-southeast-1.elb.amazonaws.com
+Load Balancer ARN: arn:aws:elasticloadbalancing:ap-southeast-1:495599770374:loadbalancer/app/dhakacart-k8s-alb/62f7dfd8a031272d
+
+NETWORKING
+=============================================
+VPC ID: vpc-01f6c3b0a9b0f35b2
+VPC CIDR: 10.0.0.0/16
+
+SSH KEY
+=============================================
+Private Key Path: ./dhakacart-k8s-key.pem
+Key Name: dhakacart-k8s-key
+
+CLUSTER INFORMATION
+=============================================
+Cluster Name: dhakacart-k8s
+AWS Region: ap-southeast-1
+Master Count: 2
+Worker Count: 3
+
+NEXT STEPS
+=============================================
+1. SSH to Bastion:
+   ssh -i dhakacart-k8s-key.pem ubuntu@54.255.165.250
+
+2. Copy SSH key to bastion:
+   scp -i dhakacart-k8s-key.pem dhakacart-k8s-key.pem ubuntu@54.255.165.250:~/.ssh/
+
+3. From bastion, SSH to nodes:
+   Master-1: ssh -i ~/.ssh/dhakacart-k8s-key.pem ubuntu@10.0.10.102
+   Master-2: ssh -i ~/.ssh/dhakacart-k8s-key.pem ubuntu@10.0.10.49
+   Worker-1: ssh -i ~/.ssh/dhakacart-k8s-key.pem ubuntu@10.0.10.84
+   Worker-2: ssh -i ~/.ssh/dhakacart-k8s-key.pem ubuntu@10.0.10.247
+   Worker-3: ssh -i ~/.ssh/dhakacart-k8s-key.pem ubuntu@10.0.10.172
+
+4. Access Application (after K8s setup):
+   http://dhakacart-k8s-alb-1951134596.ap-southeast-1.elb.amazonaws.com
+
+=============================================

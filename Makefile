@@ -4,7 +4,7 @@
 DOCKER_USERNAME ?= arifhossaincse22
 APP_NAME := dhakacart
 # Version to build and push. CHANGE THIS for new releases.
-VERSION := v1.0.4
+VERSION := latest
 
 BACKEND_IMAGE := $(DOCKER_USERNAME)/$(APP_NAME)-backend
 FRONTEND_IMAGE := $(DOCKER_USERNAME)/$(APP_NAME)-frontend
