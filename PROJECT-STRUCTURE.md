@@ -8,7 +8,6 @@ Complete organized structure of the DhakaCart project.
 DhakaCart-03-test/
 ├── DEPLOYMENT-GUIDE.md          # Master deployment guide
 ├── QUICK-REFERENCE.md            # One-page cheat sheet
-│
 ├── terraform/                    # Infrastructure as Code
 ├── scripts/                      # Automation scripts
 ├── k8s/                          # Kubernetes manifests
