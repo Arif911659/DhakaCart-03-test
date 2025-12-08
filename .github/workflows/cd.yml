@@ -179,9 +179,16 @@ jobs:
           
           echo "skipped=false" >> $GITHUB_OUTPUT
 
-      # Step 4: Update Kubernetes deployments (Only if not skipped)
-      - name: Update Kubernetes deployments
+      # Step 4: Debug Outputs
+      - name: Debug Outputs
         if: steps.login.outputs.skipped != 'true'
+        run: |
+          echo "Received Backend Image: '${{ needs.build-and-push.outputs.backend_image }}'"
+          echo "Received Frontend Image: '${{ needs.build-and-push.outputs.frontend_image }}'"
+
+      # Step 5: Update Kubernetes deployments (Only if not skipped)
+      - name: Update Kubernetes deployments
+        if: steps.login.outputs.skipped != 'true' && needs.build-and-push.outputs.backend_image != ''
         run: |
           # Update backend deployment
           kubectl set image deployment/dhakacart-backend \
