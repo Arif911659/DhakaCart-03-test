@@ -73,13 +73,15 @@ if [ -z "$BASTION_IP" ]; then
 fi
 
 # Export Master IPs
+# Export Master IPs
 MASTER_IPS_JSON=$(get_terraform_output "master_private_ips")
 if [ -n "$MASTER_IPS_JSON" ]; then
-    export MASTER1_IP=$(echo "$MASTER_IPS_JSON" | jq -r '.[0] // empty')
-    export MASTER2_IP=$(echo "$MASTER_IPS_JSON" | jq -r '.[1] // empty')
+    # Convert JSON array to space-separated string for bash array
+    MASTER_IPS_STRING=$(echo "$MASTER_IPS_JSON" | jq -r '.[]')
+    export MASTER_IPS=($MASTER_IPS_STRING)
     
-    # Export as array for scripts that need all masters
-    export MASTER_IPS=($MASTER_IPS_JSON)
+    export MASTER1_IP=${MASTER_IPS[0]}
+    export MASTER2_IP=${MASTER_IPS[1]}
 else
     print_config_message "$RED" "Failed to get Master IPs from Terraform outputs"
     exit 1
@@ -88,8 +90,9 @@ fi
 # Export Worker IPs
 WORKER_IPS_JSON=$(get_terraform_output "worker_private_ips")
 if [ -n "$WORKER_IPS_JSON" ]; then
-    # Export as array
-    export WORKER_IPS=($(echo "$WORKER_IPS_JSON" | jq -r '.[]'))
+    # Convert JSON array to space-separated string for bash array
+    WORKER_IPS_STRING=$(echo "$WORKER_IPS_JSON" | jq -r '.[]')
+    export WORKER_IPS=($WORKER_IPS_STRING)
 else
     print_config_message "$YELLOW" "No Worker IPs found in Terraform outputs"
 fi

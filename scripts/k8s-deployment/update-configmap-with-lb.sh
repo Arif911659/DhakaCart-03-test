@@ -18,9 +18,9 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 # Configuration
-BASTION_IP="54.251.183.40"
-MASTER1_IP="10.0.10.82"
-SSH_KEY_PATH="terraform/simple-k8s/dhakacart-k8s-key.pem"
+BASTION_IP="54.255.226.22"
+MASTER1_IP="10.0.10.18"
+SSH_KEY_PATH="/home/arif/DhakaCart-03-test/terraform/simple-k8s/dhakacart-k8s-key.pem"
 REMOTE_USER="ubuntu"
 
 echo -e "${BLUE}===========================================${NC}"

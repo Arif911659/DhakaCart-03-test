@@ -27,7 +27,7 @@ echo ""
 
 # Step 1: Infrastructure (Terraform)
 echo -e "${YELLOW}[1/7] 🏗️  Deploying Infrastructure with Terraform...${NC}"
-cd "$PROJECT_ROOT/terraform/simple-k8s"
+cd "$PROJECT_ROOT/DhakaCart-03-test/terraform/simple-k8s"
 
 if [ ! -f "dhakacart-k8s-key.pem" ]; then
     echo -e "${RED}❌ SSH key not found!${NC}"
@@ -42,7 +42,7 @@ echo ""
 
 # Step 2: Extract configuration
 echo -e "${YELLOW}[2/7] 📋 Extracting configuration...${NC}"
-source "$PROJECT_ROOT/scripts/load-infrastructure-config.sh"
+source "$PROJECT_ROOT/DhakaCart-03-test/scripts/load-infrastructure-config.sh"
 
 echo "  Bastion IP: $BASTION_IP"
 echo "  Master-1 IP: ${MASTER_IPS[0]}"

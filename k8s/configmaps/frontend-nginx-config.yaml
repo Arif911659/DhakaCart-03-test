@@ -68,9 +68,13 @@ data:
             proxy_set_header X-Forwarded-Proto $scheme;
         }
 
-        # Grafana Proxy
+        # Grafana Proxy (Redirect /grafana to /grafana/)
+        location = /grafana {
+            return 301 /grafana/;
+        }
+
         location ^~ /grafana/ {
-            proxy_pass http://grafana-service.monitoring.svc.cluster.local:3000/;
+            proxy_pass http://grafana-service.monitoring.svc.cluster.local:3000;
             proxy_http_version 1.1;
             proxy_set_header Upgrade $http_upgrade;
             proxy_set_header Connection "upgrade";

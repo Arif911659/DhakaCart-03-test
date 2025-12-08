@@ -142,6 +142,13 @@ cd terraform/simple-k8s
 ./register-workers-to-alb.sh
 ```
 
+### Step 9: Fix Prometheus Config (If needed)
+If you see "CrashLoopBackOff" for Prometheus, it's likely a volume mount issue.
+```bash
+# On Master-1
+kubectl rollout restart deployment/prometheus-deployment -n monitoring
+```
+
 ---
 
 ## After Deployment

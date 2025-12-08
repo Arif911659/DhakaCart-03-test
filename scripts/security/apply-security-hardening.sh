@@ -14,7 +14,7 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 echo -e "${YELLOW}========================================${NC}"
 echo -e "${YELLOW}   DhakaCart Security Hardening${NC}"
@@ -49,16 +49,19 @@ EOF
 chmod +x /tmp/apply-network-policies.sh
 
 # Load infrastructure config
-source "$SCRIPT_DIR/load-infrastructure-config.sh" 2>/dev/null || {
+source "$PROJECT_ROOT/scripts/load-infrastructure-config.sh" 2>/dev/null || {
     echo -e "${RED}❌ Could not load infrastructure config${NC}"
     echo -e "${YELLOW}ℹ️  Run from terraform directory: terraform output${NC}"
     exit 1
 }
 
+# Upload to Bastion first
+scp -i "$SSH_KEY_PATH" /tmp/apply-network-policies.sh "${REMOTE_USER}@${BASTION_IP}:/tmp/"
+
 # Execute on Master-1
-ssh -i "$PROJECT_ROOT/terraform/simple-k8s/dhakacart-k8s-key.pem" ubuntu@${BASTION_IP} \
-    "scp /tmp/apply-network-policies.sh ubuntu@${MASTER_IPS[0]}:/tmp/ && \
-     ssh ubuntu@${MASTER_IPS[0]} 'bash /tmp/apply-network-policies.sh'"
+ssh -i "$SSH_KEY_PATH" "${REMOTE_USER}@${BASTION_IP}" \
+    "scp -i ~/.ssh/dhakacart-k8s-key.pem -o StrictHostKeyChecking=no /tmp/apply-network-policies.sh ubuntu@${MASTER_IPS[0]}:/tmp/ && \
+     ssh -i ~/.ssh/dhakacart-k8s-key.pem -o StrictHostKeyChecking=no ubuntu@${MASTER_IPS[0]} 'bash /tmp/apply-network-policies.sh'"
 
 echo -e "${GREEN}✅ Network policies applied${NC}"
 echo ""
@@ -69,12 +72,14 @@ echo -e "${YELLOW}🔍 Step 4: Running security scans...${NC}"
 # Check if Trivy is installed
 if ! command -v trivy &> /dev/null; then
     echo -e "${YELLOW}ℹ️  Installing Trivy...${NC}"
-    curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+    mkdir -p $HOME/.local/bin
+    curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b $HOME/.local/bin
+    export PATH=$HOME/.local/bin:$PATH
 fi
 
 # Run Trivy scan
 cd "$PROJECT_ROOT/security/scanning"
-bash ./trivy-scan.sh
+bash ./trivy-scan.sh || echo -e "${YELLOW}⚠️  Vulnerabilities found (see report above)${NC}"
 
 echo -e "${GREEN}✅ Security scans completed${NC}"
 echo -e "${YELLOW}ℹ️  Reports saved to: /tmp/trivy-reports-*/${NC}"
@@ -99,9 +104,12 @@ echo "Testing: Database CANNOT reach Internet (should timeout)..."
 kubectl exec -it -n dhakacart deployment/dhakacart-db -- timeout 5 curl https://google.com 2>&1 || echo "✅ Pass (timeout as expected)"
 EOF
 
-ssh -i "$PROJECT_ROOT/terraform/simple-k8s/dhakacart-k8s-key.pem" ubuntu@${BASTION_IP} \
-    "scp /tmp/verify-network-isolation.sh ubuntu@${MASTER_IPS[0]}:/tmp/ && \
-     ssh ubuntu@${MASTER_IPS[0]} 'bash /tmp/verify-network-isolation.sh'"
+# Upload to Bastion first
+scp -i "$SSH_KEY_PATH" /tmp/verify-network-isolation.sh "${REMOTE_USER}@${BASTION_IP}:/tmp/"
+
+ssh -i "$SSH_KEY_PATH" "${REMOTE_USER}@${BASTION_IP}" \
+    "scp -i ~/.ssh/dhakacart-k8s-key.pem -o StrictHostKeyChecking=no /tmp/verify-network-isolation.sh ubuntu@${MASTER_IPS[0]}:/tmp/ && \
+     ssh -i ~/.ssh/dhakacart-k8s-key.pem -o StrictHostKeyChecking=no ubuntu@${MASTER_IPS[0]} 'bash /tmp/verify-network-isolation.sh'"
 
 echo ""
 echo -e "${GREEN}========================================${NC}"

@@ -17,7 +17,8 @@ echo -e "${BLUE}========================================${NC}"
 echo "Started at: $(date)"
 echo ""
 
-PROJECT_ROOT="/home/arif/DhakaCart-03"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 REPORT_DIR="/tmp/dependency-audit-$(date +%Y%m%d_%H%M%S)"
 mkdir -p "$REPORT_DIR"
 
@@ -37,7 +38,9 @@ audit_npm() {
     cd "$dir"
     
     # Run npm audit
-    npm audit --json > "$REPORT_DIR/${name}-audit.json" 2>&1 || true
+    # Capture JSON output only to json file, stderr to /dev/null
+    npm audit --json > "$REPORT_DIR/${name}-audit.json" || true
+    # Capture human readable output
     npm audit > "$REPORT_DIR/${name}-audit.txt" 2>&1 || true
     
     # Parse results

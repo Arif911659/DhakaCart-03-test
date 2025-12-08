@@ -14,31 +14,31 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-TERRAFORM_DIR="$PROJECT_ROOT/terraform/simple-k8s"
-BASTION_IP="54.251.183.40"
-MASTER1_IP="10.0.10.82"
-SSH_KEY_PATH="$TERRAFORM_DIR/dhakacart-k8s-key.pem"
-REMOTE_USER="ubuntu"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+
+# Source infrastructure variables
+if [ -f "$PROJECT_ROOT/scripts/load-infrastructure-config.sh" ]; then
+    source "$PROJECT_ROOT/scripts/load-infrastructure-config.sh"
+else
+    echo -e "${RED}❌ Infrastructure config loader not found at $PROJECT_ROOT/scripts/load-infrastructure-config.sh${NC}"
+    exit 1
+fi
 
 echo -e "${BLUE}===========================================${NC}"
 echo -e "${BLUE}Update Grafana ALB DNS${NC}"
 echo -e "${BLUE}===========================================${NC}"
 echo ""
 
-# Get ALB DNS from Terraform
-echo -e "${YELLOW}📊 Getting ALB DNS from Terraform...${NC}"
-cd "$TERRAFORM_DIR"
-
-LB_DNS=$(terraform output -raw load_balancer_dns 2>/dev/null || echo "")
-LB_DNS=$(echo "$LB_DNS" | sed 's|http://||' | sed 's|https://||')
-
-if [ -z "$LB_DNS" ]; then
-    echo -e "${RED}❌ Error: Could not get ALB DNS${NC}"
+# Using ALB DNS from loaded config
+if [ -z "$ALB_DNS" ]; then
+    echo -e "${RED}❌ Error: ALB DNS not found in loaded configuration${NC}"
     exit 1
 fi
 
+LB_DNS=$(echo "$ALB_DNS" | sed 's|http://||' | sed 's|https://||') # Clean just in case
 echo -e "${GREEN}✅ ALB DNS: $LB_DNS${NC}"
+echo -e "${GREEN}✅ Master-1 IP: $MASTER1_IP${NC}"
+echo -e "${GREEN}✅ Bastion IP: $BASTION_IP${NC}"
 echo ""
 
 # Update Grafana deployment on Master-1

@@ -15,12 +15,12 @@ NC='\033[0m'
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-BASTION_IP="54.255.226.22"
-MASTER1_IP="10.0.10.18"
-SSH_KEY_PATH="/home/arif/DhakaCart-03-test/terraform/simple-k8s/dhakacart-k8s-key.pem"
+BASTION_IP="54.251.183.40"
+MASTER1_IP="10.0.10.82"
+SSH_KEY_PATH="$PROJECT_ROOT/terraform/simple-k8s/dhakacart-k8s-key.pem"
 REMOTE_USER="ubuntu"
 NAMESPACE="dhakacart"
-INIT_SQL="/home/arif/DhakaCart-03-test/database/init.sql"
+INIT_SQL="$PROJECT_ROOT/database/init.sql"
 
 echo -e "${BLUE}===========================================${NC}"
 echo -e "${BLUE}Seed Database with Products${NC}"
