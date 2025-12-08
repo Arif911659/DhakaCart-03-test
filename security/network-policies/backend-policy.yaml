@@ -51,25 +51,25 @@ spec:
     - to:
         - namespaceSelector:
             matchLabels:
-              name: kube-system
+              kubernetes.io/metadata.name: kube-system
       ports:
         - protocol: UDP
           port: 53
     
     # Allow connection to PostgreSQL
     - to:
-        - podSelector:
+        - namespaceSelector:
             matchLabels:
-              app: dhakacart-db
+              name: dhakacart
       ports:
         - protocol: TCP
           port: 5432
     
     # Allow connection to Redis
     - to:
-        - podSelector:
+        - namespaceSelector:
             matchLabels:
-              app: dhakacart-redis
+              name: dhakacart
       ports:
         - protocol: TCP
           port: 6379

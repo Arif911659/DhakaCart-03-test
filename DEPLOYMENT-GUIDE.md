@@ -334,9 +334,10 @@ cp -r security/network-policies k8s/security/
 cd ~/k8s/security/network-policies
 
 # Apply all network policies
+# Apply all network policies (Frontend & Database only)
 kubectl apply -f frontend-policy.yaml
-kubectl apply -f backend-policy.yaml  
 kubectl apply -f database-policy.yaml
+# kubectl apply -f backend-policy.yaml (Disabled for stability)
 
 # Verify policies are applied
 kubectl get networkpolicies -n dhakacart
@@ -346,7 +347,6 @@ kubectl get networkpolicies -n dhakacart
 ```
 NAME                        POD-SELECTOR              AGE
 dhakacart-frontend-policy   app=dhakacart-frontend    10s
-dhakacart-backend-policy    app=dhakacart-backend     10s
 dhakacart-database-policy   app=dhakacart-db          10s
 ```
 

@@ -99,12 +99,24 @@ scripts/
 
 ```
 security/
-├── network-policies/             # Kubernetes Network Policies
+├── network-policies/             # Kubernetes Network Policies (Zero-Trust)
+│   ├── frontend-policy.yaml
+│   ├── database-policy.yaml
+│   └── (backend/redis policies removed for stability)
 ├── scanning/                     # Vulnerability scanning tools
 │   ├── trivy-scan.sh
 │   └── dependency-check.sh
 ├── ssl/                          # SSL Certificate automation
 └── README.md                     # Security documentation
+```
+
+## Testing Directory
+
+```
+testing/
+└── load-tests/                   # K6 Load Testing
+    ├── k6-load-test.js           # Smoke/Load/Stress test script
+    └── run-load-test.sh          # Execution wrapper
 ```
 
 ## Ansible Directory (Automation)

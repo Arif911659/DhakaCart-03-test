@@ -20,9 +20,9 @@ spec:
   ingress:
     # ONLY allow from backend
     - from:
-        - podSelector:
+        - namespaceSelector:
             matchLabels:
-              app: dhakacart-backend
+              name: dhakacart
       ports:
         - protocol: TCP
           port: 5432
@@ -42,7 +42,7 @@ spec:
     - to:
         - namespaceSelector:
             matchLabels:
-              name: kube-system
+              kubernetes.io/metadata.name: kube-system
       ports:
         - protocol: UDP
           port: 53
@@ -70,9 +70,9 @@ spec:
   ingress:
     # ONLY allow from backend
     - from:
-        - podSelector:
+        - namespaceSelector:
             matchLabels:
-              app: dhakacart-backend
+              name: dhakacart
       ports:
         - protocol: TCP
           port: 6379
@@ -92,7 +92,7 @@ spec:
     - to:
         - namespaceSelector:
             matchLabels:
-              name: kube-system
+              kubernetes.io/metadata.name: kube-system
       ports:
         - protocol: UDP
           port: 53

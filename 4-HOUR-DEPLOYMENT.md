@@ -101,6 +101,30 @@ Open `http://<ALB_DNS>` in your browser.
 
 ---
 
+
+---
+
+## 🔒 Phase 3.5: Security Hardening & Testing (Manual Steps)
+
+After verifying the app is running, secure it and test performance.
+
+### 1. Apply Security Policies
+```bash
+cd scripts/security
+./apply-security-hardening.sh
+```
+*Note: This applies Network Policies (Front/DB) and runs Trivy scans.*
+
+### 2. Run Load Test (Smoke Test)
+```bash
+cd ../../testing/load-tests
+BASE_URL=http://<ALB_DNS> ./run-load-test.sh
+```
+*   **Select Option 1** (Smoke Test).
+*   **Success**: Products load, 0% Error Rate (or <1%), Response time <200ms.
+
+---
+
 ## 🛠 Phase 4: CI/CD & Management
 
 ### 1. Setup GitHub Actions

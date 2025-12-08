@@ -17,8 +17,9 @@ kubectl get networkpolicies -n dhakacart
 ```
 NAME                        POD-SELECTOR              AGE
 dhakacart-frontend-policy   app=dhakacart-frontend    5m
-dhakacart-backend-policy    app=dhakacart-backend     5m
 dhakacart-database-policy   app=dhakacart-db          5m
+```
+*(Note: Backend policy intentionally omitted for stability)*
 ```
 
 ### 2. Test Network Isolation
