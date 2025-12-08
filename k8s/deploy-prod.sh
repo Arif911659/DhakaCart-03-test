@@ -97,6 +97,16 @@ else
 fi
 echo ""
 
+# 5.5. Security Policies
+echo -e "${YELLOW}🔒 Applying Security Policies...${NC}"
+if [ -d "$SCRIPT_DIR/security/network-policies" ]; then
+    kubectl apply -f "$SCRIPT_DIR/security/network-policies/"
+    echo -e "${GREEN}✅ Security Policies applied.${NC}"
+else
+    echo -e "${YELLOW}ℹ️  Security policies not found at $SCRIPT_DIR/security/network-policies${NC}"
+fi
+echo ""
+
 
 
 # 6. Database Check & Seeding
@@ -111,13 +121,13 @@ check_and_seed_db() {
     DB_POD=$(kubectl get pod -l app=dhakacart-db -n dhakacart -o jsonpath="{.items[0].metadata.name}")
     
     # Check if products table exists and has data
-    ROW_COUNT=$(kubectl exec -i -n dhakacart "$DB_POD" -- psql -U dhakacart -d dhakacart_db -t -c "SELECT count(*) FROM information_schema.tables WHERE table_name = 'products';" 2>/dev/null || echo "0")
+    ROW_COUNT=$(kubectl exec -i -n dhakacart "$DB_POD" -- psql -U dhakacart -d dhakacart -t -c "SELECT count(*) FROM information_schema.tables WHERE table_name = 'products';" 2>/dev/null || echo "0")
     
     if [ "$(echo "$ROW_COUNT" | tr -d '[:space:]')" = "1" ]; then
          echo -e "${GREEN}✅ Database already initialized (products table found). Skipping seed.${NC}"
     else
          echo -e "${YELLOW}⚡ Database empty. Seeding data...${NC}"
-         kubectl exec -i -n dhakacart "$DB_POD" -- psql -U dhakacart -d dhakacart_db < "$SCRIPT_DIR/../database/init.sql"
+         kubectl exec -i -n dhakacart "$DB_POD" -- psql -U dhakacart -d dhakacart < "$SCRIPT_DIR/../database/init.sql"
          echo -e "${GREEN}✅ Database seeded successfully!${NC}"
     fi
 }

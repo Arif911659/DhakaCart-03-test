@@ -88,12 +88,13 @@ This script handles everything: namespaces, secrets, configmaps, deployments, se
 # 1. Make the script executable
 chmod +x k8s/deploy-prod.sh
 
-# 2. Run the deployment script
+# 2. Run the deployment script (Run this from Master Node Project Root)
+# This includes App, DB, Monitoring, and Security Policies!
 ./k8s/deploy-prod.sh
 
-# 3. (First Time Only) Seed the Database
-# Only run this if the database is empty!
-kubectl exec -i -n dhakacart deployment/dhakacart-db -- psql -U dhakacart -d dhakacart_db < database/init.sql
+# 3. (Optional) Database Seeding
+# The script usually handles this, but if you need to run it manually:
+kubectl exec -i -n dhakacart deployment/dhakacart-db -- psql -U dhakacart -d dhakacart < database/init.sql
 ```
 
 
@@ -129,6 +130,16 @@ kubectl apply -f k8s/configmaps/postgres-init.yaml
 # Verify ConfigMaps
 kubectl get configmaps -n dhakacart
 kubectl describe configmap dhakacart-config -n dhakacart
+``` 
+
+#### **Step 3.5: Apply Security Policies** (Recommended)
+```bash
+if [ -d "k8s/security/network-policies" ]; then
+    kubectl apply -f k8s/security/network-policies/
+    echo "Security policies applied."
+fi
+# Verify
+kubectl get networkpolicies -n dhakacart
 ```
 
 #### **Step 4: Create Persistent Volume Claims**
@@ -348,7 +359,7 @@ http http://localhost:5000/health
 kubectl port-forward -n dhakacart svc/dhakacart-db-service 5432:5432
 
 # Connect with psql
-psql -h localhost -p 5432 -U dhakacart -d dhakacart_db
+psql -h localhost -p 5432 -U dhakacart -d dhakacart
 # Password: dhakacart123
 ```
 
@@ -542,7 +553,7 @@ kubectl get pods -n dhakacart -l app=dhakacart-db
 kubectl logs -n dhakacart -l app=dhakacart-db
 
 # Connect to database
-kubectl exec -it -n dhakacart $(kubectl get pod -n dhakacart -l app=dhakacart-db -o jsonpath='{.items[0].metadata.name}') -- psql -U dhakacart -d dhakacart_db
+kubectl exec -it -n dhakacart $(kubectl get pod -n dhakacart -l app=dhakacart-db -o jsonpath='{.items[0].metadata.name}') -- psql -U dhakacart -d dhakacart
 
 # Run query
 \dt
@@ -631,7 +642,7 @@ kubectl exec -it -n dhakacart <backend-pod-name> -- sh
 kubectl exec -n dhakacart <pod-name> -- ls -la
 
 # Connect to PostgreSQL database
-kubectl exec -it -n dhakacart $(kubectl get pod -n dhakacart -l app=dhakacart-db -o jsonpath='{.items[0].metadata.name}') -- psql -U dhakacart -d dhakacart_db
+kubectl exec -it -n dhakacart $(kubectl get pod -n dhakacart -l app=dhakacart-db -o jsonpath='{.items[0].metadata.name}') -- psql -U dhakacart -d dhakacart
 
 # Inside PostgreSQL
 \dt                              # List tables
@@ -900,7 +911,7 @@ kubectl get secret dhakacart-secrets -n dhakacart -o jsonpath='{.data.DB_USER}' 
 kubectl get secret dhakacart-secrets -n dhakacart -o jsonpath='{.data.DB_PASSWORD}' | base64 -d
 
 # Connect directly to database
-kubectl exec -it -n dhakacart $(kubectl get pod -n dhakacart -l app=dhakacart-db -o jsonpath='{.items[0].metadata.name}') -- psql -U dhakacart -d dhakacart_db -c "SELECT version();"
+kubectl exec -it -n dhakacart $(kubectl get pod -n dhakacart -l app=dhakacart-db -o jsonpath='{.items[0].metadata.name}') -- psql -U dhakacart -d dhakacart -c "SELECT version();"
 ```
 
 #### **4. Redis Connection Issues**
@@ -1192,10 +1203,10 @@ kubectl delete clusterissuer letsencrypt-staging
 
 ```bash
 # Backup PostgreSQL database
-kubectl exec -n dhakacart $(kubectl get pod -n dhakacart -l app=dhakacart-db -o jsonpath='{.items[0].metadata.name}') -- pg_dump -U dhakacart dhakacart_db > dhakacart_backup_$(date +%Y%m%d).sql
+kubectl exec -n dhakacart $(kubectl get pod -n dhakacart -l app=dhakacart-db -o jsonpath='{.items[0].metadata.name}') -- pg_dump -U dhakacart dhakacart > dhakacart_backup_$(date +%Y%m%d).sql
 
 # Backup with custom format (compressed)
-kubectl exec -n dhakacart $(kubectl get pod -n dhakacart -l app=dhakacart-db -o jsonpath='{.items[0].metadata.name}') -- pg_dump -U dhakacart -Fc dhakacart_db > dhakacart_backup_$(date +%Y%m%d).dump
+kubectl exec -n dhakacart $(kubectl get pod -n dhakacart -l app=dhakacart-db -o jsonpath='{.items[0].metadata.name}') -- pg_dump -U dhakacart -Fc dhakacart > dhakacart_backup_$(date +%Y%m%d).dump
 
 # Copy backup from pod to local
 kubectl cp dhakacart/<db-pod-name>:/backup/dhakacart.sql ./dhakacart_backup.sql
@@ -1205,10 +1216,10 @@ kubectl cp dhakacart/<db-pod-name>:/backup/dhakacart.sql ./dhakacart_backup.sql
 
 ```bash
 # Restore from SQL file
-cat dhakacart_backup.sql | kubectl exec -i -n dhakacart $(kubectl get pod -n dhakacart -l app=dhakacart-db -o jsonpath='{.items[0].metadata.name}') -- psql -U dhakacart dhakacart_db
+cat dhakacart_backup.sql | kubectl exec -i -n dhakacart $(kubectl get pod -n dhakacart -l app=dhakacart-db -o jsonpath='{.items[0].metadata.name}') -- psql -U dhakacart dhakacart
 
 # Restore from dump file
-kubectl exec -i -n dhakacart $(kubectl get pod -n dhakacart -l app=dhakacart-db -o jsonpath='{.items[0].metadata.name}') -- pg_restore -U dhakacart -d dhakacart_db < dhakacart_backup.dump
+kubectl exec -i -n dhakacart $(kubectl get pod -n dhakacart -l app=dhakacart-db -o jsonpath='{.items[0].metadata.name}') -- pg_restore -U dhakacart -d dhakacart < dhakacart_backup.dump
 ```
 
 ### **Export All Kubernetes Configurations**
