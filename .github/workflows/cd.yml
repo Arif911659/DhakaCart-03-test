@@ -104,25 +104,46 @@ jobs:
         with:
           version: 'latest'
       
-      # Step 3: Configure kubectl with KUBECONFIG
-      - name: Configure kubectl
+      # Step 3: Configure SSH Tunnel and Kubectl
+      - name: Configure SSH and Kubectl
         id: login
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBECONFIG }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          BASTION_IP: ${{ vars.BASTION_IP }}
+          MASTER_PRIVATE_IP: ${{ vars.MASTER_PRIVATE_IP }}
         run: |
-          if [ -z "$KUBE_CONFIG_DATA" ]; then
-            echo "⚠️ KUBECONFIG secret is empty or not set."
+          if [ -z "$KUBE_CONFIG_DATA" ] || [ -z "$SSH_PRIVATE_KEY" ]; then
+            echo "⚠️ Secrets missing (KUBECONFIG or SSH_PRIVATE_KEY)."
             echo "Skipping Kubernetes deployment steps."
             echo "skipped=true" >> $GITHUB_OUTPUT
             exit 0
           fi
           
-          echo "✅ KUBECONFIG found, configuring kubectl..."
-          mkdir -p $HOME/.kube
-          echo "$KUBE_CONFIG_DATA" > $HOME/.kube/config
-          chmod 600 $HOME/.kube/config
+          echo "✅ Secrets found. Setting up SSH Tunnel..."
+          
+          # 1. Setup SSH Key
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          
+          # 2. Start SSH Tunnel (Local 6443 -> Bastion -> Master:6443)
+          # We bind to 127.0.0.1:6443 locally
+          ssh -o StrictHostKeyChecking=no -f -N -L 6443:${{ vars.MASTER_PRIVATE_IP }}:6443 ubuntu@${{ vars.BASTION_IP }} -i ~/.ssh/id_rsa
+          
+          # 3. Configure Kubectl
+          mkdir -p ~/.kube
+          echo "$KUBE_CONFIG_DATA" > ~/.kube/config
+          chmod 600 ~/.kube/config
+          
+          # 4. Update Kubeconfig to use localhost (Tunnel)
+          # Replace the private IP with localhost in the config
+          sed -i 's/server: https.*:6443/server: https:\/\/127.0.0.1:6443/g' ~/.kube/config
+          # Disable certificate check for localhost connection (since cert is for 10.x.x.x)
+          sed -i 's/certificate-authority-data:.*/insecure-skip-tls-verify: true/g' ~/.kube/config
+          
           echo "skipped=false" >> $GITHUB_OUTPUT
-      
+
       # Step 4: Update Kubernetes deployments (Only if not skipped)
       - name: Update Kubernetes deployments
         if: steps.login.outputs.skipped != 'true'
