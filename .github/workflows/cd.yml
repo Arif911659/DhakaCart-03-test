@@ -22,10 +22,6 @@ jobs:
   build-and-push:
     name: Build and Push Docker Images
     runs-on: ubuntu-latest
-    outputs:
-      backend_image: ${{ steps.images.outputs.backend_image }}
-      frontend_image: ${{ steps.images.outputs.frontend_image }}
-    
     steps:
       # Step 1: Get the code
       - name: Checkout code
@@ -82,30 +78,19 @@ jobs:
           cache-to: type=inline
           platforms: linux/amd64
       
-      # Step 7: Output image versions for next job
-      # Step 7: Output image versions for next job
-      - name: Output image versions
-        id: images
-        env:
-          BACKEND_REF: ${{ env.BACKEND_IMAGE }}
-          FRONTEND_REF: ${{ env.FRONTEND_IMAGE }}
-          VERSION_REF: ${{ steps.version.outputs.VERSION }}
+      # Step 7: Upload version artifact (Robust alternative to job outputs)
+      - name: Create and upload version artifact
         run: |
-          echo "Debug: VERSION_REF is '$VERSION_REF'"
-          
-          if [ -z "$VERSION_REF" ]; then
-             echo "⚠️ Version is empty! Using 'latest'"
-             VERSION_REF="latest"
-          fi
-          
-          BACKEND_TAG="$BACKEND_REF:$VERSION_REF"
-          FRONTEND_TAG="$FRONTEND_REF:$VERSION_REF"
-          
-          echo "Debug: Setting backend_image=$BACKEND_TAG"
-          echo "backend_image=$BACKEND_TAG" >> $GITHUB_OUTPUT
-          
-          echo "Debug: Setting frontend_image=$FRONTEND_TAG"
-          echo "frontend_image=$FRONTEND_TAG" >> $GITHUB_OUTPUT
+          echo "${{ steps.version.outputs.VERSION }}" > version.txt
+          echo "Saved version to file:"
+          cat version.txt
+        
+      - name: Upload version artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-version
+          path: version.txt
+          retention-days: 1
 
   # Job 2: Deploy to Kubernetes (Optional - requires KUBECONFIG secret)
   deploy-kubernetes:
@@ -197,25 +182,46 @@ jobs:
           
           echo "skipped=false" >> $GITHUB_OUTPUT
 
-      # Step 4: Debug Outputs
-      - name: Debug Outputs
+      # Step 4: Download version artifact
+      - name: Download version artifact
+        if: steps.login.outputs.skipped != 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: deployment-version
+      
+      # Step 5: Read Version and Deploy
+      - name: Read Version and Deploy
         if: steps.login.outputs.skipped != 'true'
         run: |
-          echo "Received Backend Image: '${{ needs.build-and-push.outputs.backend_image }}'"
-          echo "Received Frontend Image: '${{ needs.build-and-push.outputs.frontend_image }}'"
-
-      # Step 5: Update Kubernetes deployments (Only if not skipped)
-      - name: Update Kubernetes deployments
-        if: steps.login.outputs.skipped != 'true' && needs.build-and-push.outputs.backend_image != ''
-        run: |
+          # Read version from file (handle potential whitespace)
+          if [ -f "version.txt" ]; then
+            VERSION=$(cat version.txt | tr -d '[:space:]')
+          else
+            echo "⚠️ version.txt not found! Defaulting to 'latest'"
+            VERSION="latest"
+          fi
+          
+          # Fallback if empty
+          if [ -z "$VERSION" ]; then
+            VERSION="latest"
+          fi
+          
+          echo "🚀 Deploying Version: '$VERSION'"
+          
+          BACKEND_IMAGE="${{ env.BACKEND_IMAGE }}:$VERSION"
+          FRONTEND_IMAGE="${{ env.FRONTEND_IMAGE }}:$VERSION"
+          
+          echo "Backend Image: $BACKEND_IMAGE"
+          echo "Frontend Image: $FRONTEND_IMAGE"
+          
           # Update backend deployment
           kubectl set image deployment/dhakacart-backend \
-            backend=${{ needs.build-and-push.outputs.backend_image }} \
+            backend=$BACKEND_IMAGE \
             -n dhakacart
           
           # Update frontend deployment
           kubectl set image deployment/dhakacart-frontend \
-            frontend=${{ needs.build-and-push.outputs.frontend_image }} \
+            frontend=$FRONTEND_IMAGE \
             -n dhakacart
       
       # Step 5: Wait for rollout to complete
