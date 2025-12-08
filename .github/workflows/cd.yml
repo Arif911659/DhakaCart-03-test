@@ -4,9 +4,10 @@ name: Continuous Deployment (CD)
 # It builds Docker images, pushes to Docker Hub, and deploys to Kubernetes
 
 on:
-  # Only run on main branch (production)
+  # Only run on main branch (production) or version tags
   push:
     branches: [ main ]
+    tags: [ 'v*' ]
   # Allow manual trigger
   workflow_dispatch:
 

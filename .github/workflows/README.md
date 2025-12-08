@@ -1,113 +1,59 @@
-# GitHub Actions Workflows
+# GitHub Workflows (সহজ ভাষায়)
 
-This directory contains CI/CD workflows for DhakaCart.
+এই ফোল্ডারে আপনার প্রজেক্টের **অটোমেটিক রোবটগুলো (Automation)** আছে।
 
-## 📁 Files
+## 📁 ফাইলগুলো কী করে?
 
-### 1. `ci.yml` - Continuous Integration
-**When it runs:** On every push and pull request  
-**What it does:**
-- Runs tests (backend and frontend)
-- Builds Docker images (test build)
-- Scans for security vulnerabilities
-- Checks code quality
-
-**Status:** ✅ Ready to use
+### ১. `cd.yml` (Main Delivery Man)
+*   **কাজ:** নতুন ভার্সন রিলিজ দেওয়া।
+*   **কখন চলে:**
+    1. যখন `main` ব্রাঞ্চে পুশ করেন।
+    2. **নতুন!** যখন আপনি `git tag` (যেমন v1.0.5) পুশ করেন।
 
 ---
 
-### 2. `cd.yml` - Continuous Deployment
-**When it runs:** On push to `main` branch  
-**What it does:**
-- Builds Docker images
-- Pushes images to Docker Hub
-- Deploys to Kubernetes (if configured)
-- Performs health checks
+## 🚀 নতুন ভার্সন রিলিজ কিভাবে দেবেন? (Auto Way)
 
-**Status:** ✅ Ready to use (requires GitHub secrets)
+ধরুন আপনি ফাইলে কিছু চেঞ্জ করেছেন এবং এখন সেটা `v1.0.5` নামে রিলিজ দিতে চান। আপনাকে ফাইলের ভেতরে গিয়ে ভার্সন নম্বর পাল্টাতে হবে না। শুধু নিচের কমান্ডগুলো দিন:
 
----
-
-### 3. `docker-build.yml` - Docker Image Builder
-**When it runs:** 
-- Manually (workflow_dispatch)
-- Daily at 2 AM UTC (scheduled)
-
-**What it does:**
-- Builds Docker images
-- Optionally pushes to Docker Hub
-- Useful for manual builds
-
-**Status:** ✅ Ready to use
-
----
-
-## 🔧 Setup Instructions
-
-### Step 1: Add GitHub Secrets
-
-Go to your repository → Settings → Secrets and variables → Actions
-
-Add these secrets:
-
-1. **DOCKER_USERNAME**
-   - Value: `arifhossaincse22` (or your Docker Hub username)
-
-2. **DOCKER_PASSWORD**
-   - Value: Your Docker Hub password or access token
-
-3. **KUBECONFIG** (Optional - only if deploying to Kubernetes)
-   - Value: Your Kubernetes configuration file content
-
-### Step 2: Test the Workflows
-
-1. Make a small change to your code
-2. Commit and push:
+1. **কোড সেভ করে গিটহাবে পাঠান:**
    ```bash
    git add .
-   git commit -m "Test CI/CD pipeline"
+   git commit -m "Update new features"
    git push origin main
    ```
-3. Go to GitHub → Actions tab
-4. Watch the workflows run!
+
+2. **নতুন ভার্সন (Tag) লাগান:**
+   ```bash
+   git tag v1.0.5
+   ```
+
+3. **ম্যাজিক শুরু করুন:**
+   ```bash
+   git push origin v1.0.5
+   ```
+
+**কি ঘটবে?**
+*   গিটহাব দেখবে আপনি `v1.0.5` ট্যাগ পাঠিয়েছেন।
+*   সে অটোমেটিক একটা Docker Image বানাবে যার নাম হবে: `dhakacart-backend:v1.0.5`
+*   সেটা Docker Hub-এ আপলোড করে দেবে।
+*   আপনার কিচ্ছু করা লাগবে না, শুধু কফি খান! ☕
 
 ---
 
-## 📊 Workflow Status
+## 🤔 Makefile বনাম GitHub Workflows
 
-You can check workflow status:
-- In GitHub: Go to **Actions** tab
-- Via API: Use GitHub API
-- Via CLI: `gh workflow list`
-
----
-
-## 🐛 Troubleshooting
-
-### Workflow fails with "Docker login failed"
-- Check that `DOCKER_USERNAME` and `DOCKER_PASSWORD` secrets are set correctly
-- Make sure your Docker Hub password is correct
-
-### Workflow fails with "kubectl not found"
-- This is normal if you haven't set up Kubernetes yet
-- The workflow will skip Kubernetes deployment if `KUBECONFIG` secret is not set
-
-### Tests fail
-- Make sure your test scripts work locally first
-- The workflows use `continue-on-error: true` for tests, so they won't block deployment
+| বিষয় | GitHub Workflows (Auto) | Makefile (Manual) |
+| :--- | :--- | :--- |
+| **কী এটি?** | অটোপাইলট বিমান | ম্যানুয়াল গাড়ির গিয়ার |
+| **কমান্ড** | `git push origin v1.0.5` | `make release` |
+| **কোথায় চলে?** | গিটহাবের সার্ভারে (ইন্টারনেট লাগে) | আপনার নিজের পিসিতে |
+| **কখন ভালো?** | প্রতিদিনের স্বাভাবিক কাজের জন্য। | ইমার্জেন্সি ফিক্স বা গিটহাব ডাউন থাকলে। |
 
 ---
 
-## 🎯 Next Steps
+## 🔧 সেটাপ (একবারই করতে হবে)
 
-1. ✅ Add GitHub secrets
-2. ✅ Push a test commit
-3. ✅ Watch workflows run
-4. ✅ Verify Docker Hub images are updated
-5. ✅ (Optional) Set up Kubernetes deployment
-
----
-
-**Created:** 2025-01-27  
-**Status:** Ready for use
-
+গিটহাবের **Settings** > **Secrets**-এ গিয়ে এই চাবিগুলো দিয়ে রাখুন:
+*   `DOCKER_USERNAME`: `arifhossaincse22`
+*   `DOCKER_PASSWORD`: আপনার ডকার পাসওয়ার্ড

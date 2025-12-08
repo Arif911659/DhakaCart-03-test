@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: arifhossaincse22/dhakacart-backend:v1.0.3
+        image: arifhossaincse22/dhakacart-backend:v1.0.4
         imagePullPolicy: Always
         ports:
         - containerPort: 5000

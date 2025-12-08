@@ -41,7 +41,7 @@ services:
 
   # Backend API (Node.js/Express)
   backend:
-    image: arifhossaincse22/dhakacart-backend:latest # Docker Hub image
+    image: arifhossaincse22/dhakacart-backend:v1.0.4 # Docker Hub image
     container_name: dhakacart-backend
     environment:
       NODE_ENV: production
@@ -71,7 +71,7 @@ services:
 
   # Frontend (React) - Development server
   frontend:
-    image: arifhossaincse22/dhakacart-frontend:latest # Docker Hub image
+    image: arifhossaincse22/dhakacart-frontend:v1.0.4 # Docker Hub image
     container_name: dhakacart-frontend
     ports:
       - "3000:3000" # Dev server on port 3000
