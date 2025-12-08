@@ -127,19 +127,51 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           
-          # 2. Start SSH Tunnel (Local 6443 -> Bastion -> Master:6443)
-          # We bind to 127.0.0.1:6443 locally
-          ssh -o StrictHostKeyChecking=no -f -N -L 6443:${{ vars.MASTER_PRIVATE_IP }}:6443 ubuntu@${{ vars.BASTION_IP }} -i ~/.ssh/id_rsa
+          # 2. Configure SSH Config for Jump Host (Bastion -> Master)
+          # This allows us to tunnel through port 22 (SSH) which is allowed by Security Groups,
+          # avoiding the blocked port 6443 issue between Bastion and Master.
+          cat > ~/.ssh/config <<EOF
+          Host bastion
+            HostName ${{ vars.BASTION_IP }}
+            User ubuntu
+            IdentityFile ~/.ssh/id_rsa
+            StrictHostKeyChecking no
           
-          # 3. Configure Kubectl
+          Host master-tunnel
+            HostName ${{ vars.MASTER_PRIVATE_IP }}
+            User ubuntu
+            IdentityFile ~/.ssh/id_rsa
+            ProxyJump bastion
+            StrictHostKeyChecking no
+            LocalForward 6443 localhost:6443
+            ServerAliveInterval 60
+          EOF
+          
+          # 3. Start SSH Tunnel in background
+          echo "Starting SSH tunnel..."
+          ssh -f -N master-tunnel
+          
+          # 4. Wait for Tunnel and Verify
+          echo "Waiting for tunnel to be established..."
+          sleep 5
+          if ! curl -k -m 5 https://127.0.0.1:6443/version; then
+             echo "❌ Failed to connect to Kubernetes API via Tunnel!"
+             echo "Debug Info:"
+             ps aux | grep ssh
+             cat ~/.ssh/config
+             exit 1
+          fi
+          echo "✅ Tunnel verified!"
+          
+          # 5. Configure Kubectl
           mkdir -p ~/.kube
           echo "$KUBE_CONFIG_DATA" > ~/.kube/config
           chmod 600 ~/.kube/config
           
-          # 4. Update Kubeconfig to use localhost (Tunnel)
+          # 6. Update Kubeconfig to use localhost (Tunnel)
           # Replace the private IP with localhost in the config
           sed -i 's/server: https.*:6443/server: https:\/\/127.0.0.1:6443/g' ~/.kube/config
-          # Disable certificate check for localhost connection (since cert is for 10.x.x.x)
+          # Disable certificate check for localhost connection
           sed -i 's/certificate-authority-data:.*/insecure-skip-tls-verify: true/g' ~/.kube/config
           
           echo "skipped=false" >> $GITHUB_OUTPUT
