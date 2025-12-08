@@ -2,7 +2,7 @@
 # Multi-stage build for optimization
 
 # Stage 1: Base
-FROM node:18-alpine AS base
+FROM node:20-alpine AS base
 WORKDIR /app
 
 # Install dependencies only when needed
@@ -10,7 +10,7 @@ COPY package*.json ./
 RUN npm install --only=production && npm cache clean --force
 
 # Stage 2: Development
-FROM node:18-alpine AS development
+FROM node:20-alpine AS development
 WORKDIR /app
 
 # Copy package files
@@ -29,7 +29,7 @@ EXPOSE 5000
 CMD ["npm", "run", "dev"]
 
 # Stage 3: Production build
-FROM node:18-alpine AS production
+FROM node:20-alpine AS production
 WORKDIR /app
 
 # Copy production dependencies from base

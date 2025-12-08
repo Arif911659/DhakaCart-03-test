@@ -2,7 +2,7 @@
 # Multi-stage build for optimization
 
 # Stage 1: Dependencies
-FROM node:18-alpine AS dependencies
+FROM node:20-alpine AS dependencies
 WORKDIR /app
 
 COPY package*.json ./
@@ -10,7 +10,7 @@ RUN npm install --only=production && \
     npm cache clean --force
 
 # Stage 2: Development
-FROM node:18-alpine AS development
+FROM node:20-alpine AS development
 WORKDIR /app
 
 # Copy package files
@@ -29,7 +29,7 @@ EXPOSE 3000
 CMD ["npm", "start"]
 
 # Stage 3: Builder (for production)
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Copy dependencies
@@ -43,7 +43,7 @@ COPY . .
 RUN npm run build
 
 # Stage 4: Production with Nginx
-FROM nginx:1.25-alpine AS production
+FROM nginx:1.26-alpine AS production
 
 # Copy custom nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
