@@ -169,13 +169,13 @@ After `terraform apply`, you'll get:
 ```
 bastion_public_ip = "54.251.183.40"
 master_private_ips = [
-  "10.0.10.82",
-  "10.0.10.83"
+  "10.0.10.10",
+  "10.0.10.11"
 ]
 worker_private_ips = [
-  "10.0.20.84",
-  "10.0.20.85",
-  "10.0.20.86"
+  "10.0.10.20",
+  "10.0.10.21",
+  "10.0.10.22"
 ]
 load_balancer_dns = "dhakacart-k8s-alb-xxxxx.ap-southeast-1.elb.amazonaws.com"
 vpc_id = "vpc-xxxxx"
@@ -186,14 +186,18 @@ vpc_id = "vpc-xxxxx"
 ### Network
 
 - **VPC**: 10.0.0.0/16
-- **Public Subnets**: 10.0.1.0/24, 10.0.2.0/24
-- **Private Subnets**: 10.0.10.0/24, 10.0.20.0/24
+- **Public Subnets**: 10.0.1.0/24 (Bastion, NAT), 10.0.2.0/24 (ALB)
+- **Private Subnets**: 10.0.10.0/24 (Masters, Workers)
 
-### Compute
+### Compute (Static IPs)
 
-- **Bastion**: 1x t3.small (public subnet)
-- **Masters**: 2x t3.medium (private subnet)
-- **Workers**: 3x t3.medium (private subnet)
+- **Bastion**: 1x t3.small
+  - Public IP: Dynamic
+  - Private IP: `10.0.1.10`
+- **Masters**: 2x t3.medium
+  - Private IPs: `10.0.10.10`, `10.0.10.11`
+- **Workers**: 3x t3.medium
+  - Private IPs: `10.0.10.20`, `10.0.10.21`, `10.0.10.22`
 
 ### Load Balancer
 
@@ -314,6 +318,6 @@ For issues or questions:
 
 ---
 
-**Last Updated**: 2025-12-07  
+**Last Updated**: 2025-12-09  
 **Terraform Version**: 1.0+  
 **AWS Provider Version**: ~> 5.0

@@ -78,10 +78,23 @@ Status: [DONE] - Implemented Static IPs in terraform/simple-k8s/main.tf.
 
 
 
+[x] 8 - আমার Examiner /home/arif/DhakaCart-03-test/archive-2025-dec-cleanup/1. Final Exam_ DevOpsBatch2.pdf এটা দিয়ে আমাকে প্রজেক্ট complete করে জমা দিতে হবে যা আমার complete করা শেষ 
+- সেই সাথে , Project full explanation video তৈরী করতে হবে এবং একটা project Presentations ready 
+করতে হবে মুলত এটা দেখেই আমি Project  explanation video বানাবো , 
+এখন আমি চাচ্ছি DevOpsBatch2.pdf এখানে যে সমস্যার কথা বলা হয়েছে তার সাথে আমার প্রজেক্টের মিল কোথায় ?,
+ কোন সমস্যার কারনে আমি কি কি এবং কেন সমাধান করার try করেছি এই সকল কিছুর Details steps থাকতে হবে 
+ যাতে আমি ভিডিওতে এমনভাবে বোঝাতে পারি যেন  Examiner  impress হয়ে যায়। একটা ফাইল Create করো যেখানে আমি সব কিছুর Details steps by steps থাকবে।
+ কোনকিছু যেন missing না হয় প্রয়োজনে project টা Analysis করতে পারো।  
+Status: [DONE] - Created `PROJECT_DEFENSE.md` with:
+- Detailed Problem vs Solution Matrix (mapped to Exam).
+- Step-by-Step Video Script (including Hybrid CI/CD demo).
+- Phase 2 Roadmap for Backups/HTTPS.
 
-
-
-
-
+[ ] 9 - **Phase 2 Implementation (Tomorrow's Plan)**:
+`PROJECT_DEFENSE.md` এ আমরা যে "Enterprise Plan" কমিট করেছি, সেটা বাস্তবে ইমপ্লিমেন্ট করা।
+- **Backups**: Install Velero + S3 (MinIO for local) to automate DB backups.
+- **HTTPS**: Configure Cert-Manager + Let's Encrypt (Self-Signed for internal) for ALB Ingress.
+- **Secrets**: Research HashiCorp Vault integration (or document why AWS Secrets Manager is preferred for Cloud).
+Target: Make the "Roadmap" items into "Implemented" items to get full marks.
 
 See CHANGELOG.md for details.

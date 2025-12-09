@@ -54,6 +54,16 @@ kubectl apply -f "$SCRIPT_DIR/services/"
 echo -e "${GREEN}✅ Deployments and Services applied.${NC}"
 echo ""
 
+# 4.1. Horizontal Pod Autoscaler (HPA)
+echo -e "${YELLOW}📈 Applying HPA...${NC}"
+if [ -f "$SCRIPT_DIR/hpa.yaml" ]; then
+    kubectl apply -f "$SCRIPT_DIR/hpa.yaml"
+    echo -e "${GREEN}✅ HPA applied.${NC}"
+else
+    echo -e "${YELLOW}ℹ️  hpa.yaml not found, skipping...${NC}"
+fi
+echo ""
+
 # 4.5. Monitoring & Logging Stack
 echo -e "${YELLOW}📊 Applying Monitoring & Logging Stack...${NC}"
 # Namespace

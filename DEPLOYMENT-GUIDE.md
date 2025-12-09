@@ -436,6 +436,33 @@ curl http://<ALB_DNS>/api/health
 
 ---
 
+
+---
+
+## Phase 7.5: Enterprise Features (Post-Deployment)
+
+Enhance the cluster with Backup, HTTPS, and Secrets Management.
+
+### Step 7.5.1: Install Velero (Backup)
+```bash
+./scripts/enterprise-features/install-velero.sh
+```
+*   **Verifying**: `velero backup get` should show a scheduled backup.
+
+### Step 7.5.2: Install Cert-Manager (HTTPS)
+```bash
+./scripts/enterprise-features/install-cert-manager.sh
+```
+*   **Verifying**: Visit `https://<ALB_DNS>` after updating Ingress annotations.
+
+### Step 7.5.3: Install Vault (Secrets)
+```bash
+./scripts/enterprise-features/install-vault.sh
+```
+*   **Verifying**: `kubectl get pods -n vault` should be running.
+
+---
+
 ## Troubleshooting
 
 ### Common Issues
@@ -533,23 +560,15 @@ kubectl rollout restart daemonset/promtail -n monitoring
 
 ## Next Steps After Deployment
 
+
 1. **Configure DNS** (Optional):
    - Point your domain to ALB DNS
    - Update Grafana root URL
 
-2. **Enable HTTPS** (Optional):
-   - Request SSL certificate in ACM
-   - Add HTTPS listener to ALB
+2. **Run Enterprise Scripts**:
+   - As detailed in Phase 7.5, run the scripts in `scripts/enterprise-features/`.
 
-3. **Setup Backups**:
-   - Configure database backups
-   - Setup EBS snapshots
-
-4. **Monitoring Alerts**:
-   - Configure Grafana alerts
-   - Setup notification channels
-
-5. **CI/CD Pipeline**:
+3. **CI/CD Pipeline**:
    - Setup GitHub Actions
    - Automate deployments
 

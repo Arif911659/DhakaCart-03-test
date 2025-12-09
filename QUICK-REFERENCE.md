@@ -137,11 +137,25 @@ cd ansible && ansible all -m ping
 ansible all -m command -a "df -h"
 ```
 
+
 ### CI/CD Setup
 
 ```bash
 # Fetch Kubeconfig for GitHub Secrets
 ./scripts/fetch-kubeconfig.sh
+```
+
+### Phase 2 (Enterprise)
+
+```bash
+# Enable Backup (Velero)
+./scripts/enterprise-features/install-velero.sh
+
+# Enable HTTPS (Cert-Manager)
+./scripts/enterprise-features/install-cert-manager.sh
+
+# Enable Secrets (Vault)
+./scripts/enterprise-features/install-vault.sh
 ```
 
 ---
@@ -185,6 +199,11 @@ scripts/
 ├── internal/hostname/           # Hostname management
 │   ├── change-hostname.sh           # Local hostname change
 │   └── change-hostname-via-bastion.sh  # Remote via Bastion
+│
+├── enterprise-features/         # [Phase 2]
+│   ├── install-velero.sh
+│   ├── install-cert-manager.sh
+│   └── install-vault.sh
 ```
 
 ---

@@ -1,301 +1,122 @@
-# Project Structure - DhakaCart Kubernetes Deployment
+# 🏗️ Project Structure & Architecture
+> **DhakaCart E-Commerce Infrastructure**
 
-Complete organized structure of the DhakaCart project.
+This document provides a comprehensive overview of the file structure, describing the purpose of every major component.
 
-## Root Directory
+## 📂 Directory Tree
 
 ```
 DhakaCart-03-test/
-├── 4-HOUR-DEPLOYMENT.md          # Automated deployment guide
-├── DEPLOYMENT-GUIDE.md           # Master deployment guide
-├── MANUAL_RELEASE_GUIDE.md       # Guide for Makefile workflow
-├── QUICK-REFERENCE.md            # One-page cheat sheet
-├── SECURITY-AND-TESTING-GUIDE.md # Security & Testing guide
-├── SECURITY-ALERTING-VERIFICATION.md # Security verification guide
-├── Makefile                      # Manual release automation
-├── .github/                      # CI/CD Workflows
-│   └── workflows/
-│       ├── ci.yml
-│       ├── cd.yml
-│       ├── security-scan.yml
-│       └── README.md
-├── terraform/                    # Infrastructure as Code
-├── scripts/                      # Automation scripts
-├── k8s/                          # Kubernetes manifests
-├── docs/                         # Documentation
-├── security/                     # Security tools & policies
-├── database/                     # Database init scripts
-├── frontend/                     # Frontend application
-├── backend/                      # Backend application
-└── testing/                      # Load tests
-```
-
-## Terraform Directory
-
-```
-terraform/simple-k8s/
-├── main.tf                       # Main infrastructure
-├── variables.tf                  # Input variables
-├── outputs.tf                    # Output values
-├── alb-backend-config.tf         # ALB configuration
-├── terraform.tfstate             # State file
-├── dhakacart-k8s-key.pem         # SSH key
+├── 📂 .github/                         # CI/CD & GitHub Configuration
+│   └── 📂 workflows/
+│       ├── cd.yml                      # Continuous Deployment (Tunneling)
+│       ├── ci.yml                      # Continuous Integration (Tests)
+│       ├── docker-build.yml            # Docker Image Build
+│       └── security-scan.yml           # Trivy Vulnerability Scanner
 │
-├── scripts/                      # Terraform scripts
-│   ├── post-apply.sh
-│   ├── register-workers-to-alb.sh
-│   └── update-configmap-auto.sh
+├── 📂 k8s/                             # Kubernetes Manifests (The "State")
+│   ├── 📂 configmaps/                  # Configuration Injection
+│   │   └── app-config.yaml             # Environment Variables (DB Host, API URL)
+│   ├── 📂 deployments/                 # Application Workloads
+│   │   ├── backend.yaml                # NodeJS Backend
+│   │   ├── frontend.yaml               # React Frontend
+│   │   ├── postgres.yaml               # Database
+│   │   └── redis.yaml                  # Caching
+│   ├── 📂 enterprise-features/         # [Phase 2] Enterprise Capabilities
+│   │   ├── 📂 cert-manager/            # HTTPS/SSL
+│   │   ├── 📂 vault/                   # Secrets Management
+│   │   └── 📂 velero/                  # Backup Schedules
+│   ├── 📂 ingress/                     # Traffic Routing
+│   │   └── ingress.yaml                # ALB Ingress Rules
+│   ├── 📂 monitoring/                  # Observability Stack
+│   │   ├── 📂 alertmanager/            # Alert Routing
+│   │   ├── 📂 grafana/                 # Dashboards
+│   │   ├── 📂 loki/                    # Log Aggregation
+│   │   ├── 📂 prometheus/              # Metrics Collection
+│   │   ├── 📂 promtail/                # Log Shipping Agent
+│   │   ├── 📂 node-exporter/           # Node Metrics
+│   │   └── namespace.yaml              # Monitoring Namespace
+│   ├── 📂 network-policies/            # Zero-Trust Security
+│   │   ├── backend-policy.yaml
+│   │   ├── db-policy.yaml
+│   │   └── frontend-policy.yaml
+│   ├── 📂 secrets/                     # Sensitive Data (Git-Encrypted/Base64)
+│   │   └── db-secrets.yaml
+│   ├── 📂 services/                    # Internal Networking
+│   │   ├── backend-service.yaml
+│   │   ├── db-service.yaml
+│   │   ├── frontend-service.yaml
+│   │   └── redis-service.yaml
+│   ├── deploy-prod.sh                  # 🚀 Operations: Apply all manifests
+│   └── hpa.yaml                        # Horizontal Pod Autoscaling
 │
-├── docs/                         # Terraform docs
-│   ├── README.md
-│   ├── DEPLOYMENT_SUCCESS.md
-│   └── README_AUTOMATION_2025-12-01.md
+├── 📂 scripts/                         # Automation & Operations (The "Logic")
+│   ├── 📂 database/                    # DB Maintenance
+│   │   ├── diagnose-db-products-issue.sh
+│   │   └── seed-database.sh
+│   ├── 📂 enterprise-features/         # [Phase 2] Installers
+│   │   ├── install-cert-manager.sh
+│   │   ├── install-vault.sh
+│   │   └── install-velero.sh
+│   ├── 📂 internal/                    # Internal Helpers
+│   │   └── 📂 hostname/                # Node Naming
+│   ├── 📂 k8s-deployment/              # Deployment Helpers
+│   │   ├── copy-k8s-to-master1.sh
+│   │   ├── sync-k8s-to-master1.sh
+│   │   └── update-and-deploy.sh
+│   ├── 📂 monitoring/                  # Monitoring Helpers
+│   │   ├── check-prometheus-metrics.sh
+│   │   ├── deploy-alerting-stack.sh
+│   │   ├── fix-grafana-config.sh
+│   │   └── setup-grafana-alb.sh
+│   ├── 📂 nodes-config/                # Cluster Bootstrapping
+│   │   ├── extract-terraform-outputs.sh
+│   │   ├── generate-scripts.sh         # Generates Kubeadm commands
+│   │   └── upload-to-bastion.sh
+│   ├── 📂 security/                    # Security Automation
+│   │   └── apply-security-hardening.sh
+│   ├── deploy-4-hour-window.sh         # 🚀 MASTER SCRIPT: 0 to Production
+│   ├── fetch-kubeconfig.sh             # CI/CD Helper
+│   └── load-infrastructure-config.sh   # State Loader
 │
-├── outputs/                      # Output files
-│   └── aws_instances_output.txt
+├── 📂 terraform/                       # Infrastructure as Code (AWS)
+│   └── 📂 simple-k8s/
+│       ├── main.tf                     # Core Infrastructure
+│       ├── outputs.tf                  # IP/DNS Exports
+│       ├── variables.tf                # Region/Instance Config
+│       └── register-workers-to-alb.sh  # ALB Target Registration
 │
-└── backups/                      # State backups
-```
-
-## Scripts Directory
-
-```
-scripts/
-├── load-infrastructure-config.sh # Config loader
-├── post-terraform-setup.sh       # Post-terraform automation
-├── fetch-kubeconfig.sh           # Fetch Kubeconfig for CI/CD
+├── 📂 testing/                         # QA & Verification
+│   └── 📂 load-tests/
+│       ├── k6-script.js                # Load Test Scenario
+│       └── run-load-test.sh            # Load Test Runner
 │
-├── nodes-config/                 # Node configuration scripts
-│   ├── extract-terraform-outputs.sh
-│   ├── generate-scripts.sh
-│   └── upload-to-bastion.sh
+├── 📂 backend/                         # Application Source (Node.js)
+├── 📂 frontend/                        # Application Source (React)
 │
-├── k8s-deployment/               # K8s deployment
-│   ├── update-and-deploy.sh
-│   ├── copy-k8s-to-master1.sh
-│   ├── sync-k8s-to-master1.sh
-│   └── update-configmap-with-lb.sh
-│
-├── security/                     # Security hardening
-│   └── apply-security-hardening.sh
-│
-├── monitoring/                   # Monitoring & Alerting
-│   ├── deploy-alerting-stack.sh
-│   ├── setup-grafana-alb.sh
-│   ├── apply-prometheus-fix.sh
-│   ├── check-prometheus-metrics.sh
-│   ├── fix-grafana-config.sh
-│   ├── diagnose-grafana-issues.sh
-│   ├── fix-promtail-logs.sh
-│   └── update-grafana-alb-dns.sh
-│
-├── database/                     # Database scripts
-│   ├── seed-database.sh
-│   └── diagnose-db-products-issue.sh
-│
-└── internal/                     # Internal utility scripts
-    └── hostname/                 # Hostname management
-        ├── change-hostname.sh
-        ├── change-hostname-via-bastion.sh
-        └── README-hostname-change.md
+├── 📄 4-HOUR-DEPLOYMENT.md             # ⏱️ Quick Deployment Runbook
+├── 📄 DEPLOYMENT-GUIDE.md              # 📚 Full Detailed Guide
+├── 📄 PROJECT_DEFENSE.md               # 🛡️ Defense Strategy & Script
+├── 📄 PHASE-2-TECH-SPEC.md             # � Enterprise Features Guide
+├── 📄 PROJECT-STRUCTURE.md             # 🗺️ This File
+├── 📄 QUICK-REFERENCE.md               # ⚡ Cheat Sheet
+└── 📄 README.md                        # 🏠 Project Homepage
 ```
 
-## Security Directory
+## 🧩 Component Descriptions
 
-```
-security/
-├── network-policies/             # Kubernetes Network Policies (Zero-Trust)
-│   ├── frontend-policy.yaml
-│   ├── database-policy.yaml
-│   └── (backend/redis policies removed for stability)
-├── scanning/                     # Vulnerability scanning tools
-│   ├── trivy-scan.sh
-│   └── dependency-check.sh
-├── ssl/                          # SSL Certificate automation
-└── README.md                     # Security documentation
-```
+### 1. Automation Core (`scripts/`)
+*   **`deploy-4-hour-window.sh`**: The orchestrator. It calls Terraform, configures nodes, and deploys K8s. This is your "One-Click" solution.
+*   **`enterprise-features/`**: Scripts to install Phase 2 tools (Backup, Security) *after* the main deployment.
+*   **`nodes-config/`**: Handles the complex logic of `kubeadm init` and `kubeadm join` ensuring nodes connect correctly.
 
-## Testing Directory
+### 2. Infrastructure (`terraform/`)
+*   **`simple-k8s/`**: A simplified, flat Terraform structure designed for speed and reliability in the exam.
+*   **Static IPs**: Hardcoded in `main.tf` to ensure predictable internal networking (a key "Lean" feature).
 
-```
-testing/
-└── load-tests/                   # K6 Load Testing
-    ├── k6-load-test.js           # Smoke/Load/Stress test script
-    └── run-load-test.sh          # Execution wrapper
-```
+### 3. Orchestration (`k8s/`)
+*   **`deploy-prod.sh`**: Located inside `k8s/`, this script applies the YAML files in the correct order (ConfigMaps -> Secrets -> Services -> Deployments).
+*   **`monitoring/`**: A complete observability stack (Prometheus, Grafana, Loki) defined as code.
 
-## Ansible Directory (Automation)
-
-```
-ansible/
-├── ansible.cfg               # Configuration
-├── inventory/
-│   └── hosts.ini            # Server List (IPs go here)
-└── playbooks/               # Automation tasks
-```
-
-## Documentation Directory
-
-```
-docs/
-├── TROUBLESHOOTING.md            # Comprehensive troubleshooting
-├── LOKI-TROUBLESHOOTING.md       # Loki-specific issues
-└── LOCAL_K8S_SETUP.md            # Local K8s setup
-```
-
-## Key Files by Purpose
-
-### Deployment
-
-| File | Purpose |
-|------|---------|
-| `DEPLOYMENT-GUIDE.md` | Complete 6-phase deployment guide |
-| `QUICK-REFERENCE.md` | One-page command reference |
-| `scripts/post-terraform-setup.sh` | Interactive post-terraform automation |
-| `terraform/simple-k8s/main.tf` | Infrastructure definition |
-
-### Configuration
-
-| File | Purpose |
-|------|---------|
-| `scripts/load-infrastructure-config.sh` | Auto-load IPs from Terraform |
-| `terraform/simple-k8s/variables.tf` | Terraform variables |
-| `terraform/simple-k8s/outputs.tf` | Terraform outputs |
-
-### Troubleshooting
-
-| File | Purpose |
-|------|---------|
-| `docs/TROUBLESHOOTING.md` | General troubleshooting |
-| `docs/LOKI-TROUBLESHOOTING.md` | Loki log collection issues |
-| `QUICK-REFERENCE.md` | Quick fixes reference |
-
-### Security
-
-| File | Purpose |
-|------|---------|
-| `scripts/security/apply-security-hardening.sh` | Automated security hardening |
-
-### Monitoring & Alerting
-
-| File | Purpose |
-|------|---------|
-| `scripts/monitoring/deploy-alerting-stack.sh` | Deploy alerting stack |
-| `scripts/monitoring/setup-grafana-alb.sh` | Setup Grafana ALB routing |
-| `scripts/monitoring/fix-promtail-logs.sh` | Fix Promtail log collection |
-| `scripts/monitoring/check-prometheus-metrics.sh` | Verify Prometheus |
-
-### Database
-
-| File | Purpose |
-|------|---------|
-| `scripts/database/seed-database.sh` | Populate database with sample data |
-| `scripts/database/diagnose-db-products-issue.sh` | Debug database issues |
-
-## Workflow
-
-### 1. Infrastructure Setup
-
-```
-terraform/simple-k8s/
-  └── terraform apply
-      └── Creates: VPC, EC2, ALB, etc.
-```
-
-### 2. Post-Terraform Configuration
-
-```
-scripts/
-  └── post-terraform-setup.sh
-      ├── Loads config from Terraform
-      ├── Updates all scripts with IPs
-      ├── Changes hostnames (optional)
-      └── Setups Grafana ALB (optional)
-```
-
-### 3. Application Deployment
-
-```
-scripts/k8s-deployment/
-  └── update-and-deploy.sh
-      ├── Copies K8s manifests to Master-1
-      ├── Applies all configurations
-      └── Deploys application pods
-```
-
-### 4. Monitoring Setup
-
-```
-scripts/monitoring/
-  └── setup-grafana-alb.sh
-      ├── Creates Grafana target group
-      ├── Registers workers
-      └── Adds ALB listener rule
-```
-
-### 5. Database Seeding
-
-```
-scripts/database/
-  └── seed-database.sh
-      └── Populates database with products
-```
-
-## Important Notes
-
-### Security
-
-- **SSH Key**: `terraform/simple-k8s/dhakacart-k8s-key.pem` (chmod 600)
-- **Terraform State**: Contains sensitive data, keep secure
-- **Grafana Password**: `dhakacart123` (change in production)
-
-### State Management
-
-- **Terraform State**: `terraform/simple-k8s/terraform.tfstate`
-- **Backups**: `terraform/simple-k8s/backups/`
-- **Never edit state manually**
-
-### Configuration
-
-- **Auto-resolved IPs**: Use `load-infrastructure-config.sh`
-- **Manual updates**: Run `post-terraform-setup.sh`
-- **All scripts updated automatically**
-
-## Quick Access
-
-### Most Used Commands
-
-```bash
-# Deploy infrastructure
-cd terraform/simple-k8s && terraform apply
-
-# Post-terraform setup
-cd scripts && ./post-terraform-setup.sh
-
-# Deploy application
-cd scripts/k8s-deployment && ./update-and-deploy.sh
-
-# Security hardening
-cd scripts/security && ./apply-security-hardening.sh
-
-# Deploy alerting
-cd scripts/monitoring && ./deploy-alerting-stack.sh
-
-# Seed database
-cd scripts/database && ./seed-database.sh
-
-# Setup Grafana
-cd scripts/monitoring && ./setup-grafana-alb.sh
-```
-
-### Most Used Documentation
-
-- Deployment: `DEPLOYMENT-GUIDE.md`
-- Quick commands: `QUICK-REFERENCE.md`
-- Troubleshooting: `docs/TROUBLESHOOTING.md`
-- Terraform: `terraform/simple-k8s/README.md`
-
----
-
-**Last Updated**: 2025-12-07  
-**Version**: 1.0
+### 4. CI/CD (`.github/`)
+*   **`cd.yml`**: Defines the production pipeline. It builds Docker images and uses an SSH Tunnel to deploy to the private K8s cluster via the Bastion host.

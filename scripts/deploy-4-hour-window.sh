@@ -175,7 +175,10 @@ echo "  2. Access Grafana: http://${ALB_DNS}/grafana/ (User: admin / Pass: dhaka
 echo "  3. Import Grafana Dashboard: ID 1860 (Node Exporter Full)"
 echo "  4. Check Logs: kubectl logs -n monitoring daemonset/promtail"
 echo "  5. Run Security Hardening: ./scripts/security/apply-security-hardening.sh"
-echo "  6. Verify DB: ./scripts/database/diagnose-db-products-issue.sh"
+echo "  6. Verify DB: ./scripts/database/diagnose-db-products-issue.sh
+  7. [Phase 2] Enable Velero Backup: ./scripts/enterprise-features/install-velero.sh
+  8. [Phase 2] Enable HTTPS (Cert-Manager): ./scripts/enterprise-features/install-cert-manager.sh
+  9. [Phase 2] Enable Vault Secrets: ./scripts/enterprise-features/install-vault.sh"
 echo ""
 echo -e "${BLUE}📄 Documentation Reference:${NC}"
 echo "  - deployment: 4-HOUR-DEPLOYMENT.md"

@@ -159,6 +159,30 @@ If a specific step fails, go to the corresponding directory and fix it manually.
 
 ---
 
+## 🏢 Phase 4: Enterprise Features (Post-Deployment)
+
+Once the core system is stable, enable the "Wow" features (Backup, HTTPS, Secrets).
+
+### 1. Enable Automated Backups (Velero)
+```bash
+./scripts/enterprise-features/install-velero.sh
+```
+*   **Result**: Velero pod running, Daily backup scheduled for 2:00 AM.
+
+### 2. Enable HTTPS (Cert-Manager)
+```bash
+./scripts/enterprise-features/install-cert-manager.sh
+```
+*   **Result**: Cert-Manager installed. Ingress needs update (see `PHASE-2-TECH-SPEC.md`).
+
+### 3. Enable Vault Secrets
+```bash
+./scripts/enterprise-features/install-vault.sh
+```
+*   **Result**: Vault running. Ready for manual secret configuration.
+
+---
+
 ## 🧹 Cleanup (End of 4-Hour Window)
 
 **CRITICAL**: Destroy resources to avoid extra bills.
