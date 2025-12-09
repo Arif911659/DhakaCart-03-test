@@ -52,10 +52,16 @@ echo ""
 
 # Step 3: Update node configuration scripts
 echo -e "${YELLOW}[3/7] 📝 Updating node configuration scripts...${NC}"
-cd "$PROJECT_ROOT/terraform/simple-k8s/nodes-config-steps"
+cd "$PROJECT_ROOT/scripts/nodes-config"
 ./extract-terraform-outputs.sh
 ./generate-scripts.sh
 echo -e "${GREEN}✅ Scripts generated${NC}"
+echo ""
+
+# Step 3.1: Change Hostnames (New)
+echo -e "${YELLOW}[3.1/7] 🏷️  Updating Hostnames...${NC}"
+bash "$PROJECT_ROOT/scripts/internal/hostname/change-hostname-via-bastion.sh" --all --yes
+echo -e "${GREEN}✅ Hostnames updated${NC}"
 echo ""
 
 # Step 4: Upload to Bastion and configure nodes
@@ -163,8 +169,15 @@ echo "  Frontend: http://${ALB_DNS}"
 echo "  Grafana:  http://${ALB_DNS}/grafana/"
 echo "  Login:    admin / dhakacart123"
 echo ""
-echo -e "${YELLOW}💡 Next Steps:${NC}"
+echo -e "${YELLOW}💡 Manual Verification Needed:${NC}"
 echo "  1. Test frontend: curl -I http://${ALB_DNS}"
-echo "  2. Access Grafana and import dashboard 1860"
-echo "  3. Run security hardening: ./scripts/security/apply-security-hardening.sh"
+echo "  2. Access Grafana: http://${ALB_DNS}/grafana/ (User: admin / Pass: dhakacart123)"
+echo "  3. Import Grafana Dashboard: ID 1860 (Node Exporter Full)"
+echo "  4. Check Logs: kubectl logs -n monitoring daemonset/promtail"
+echo "  5. Run Security Hardening: ./scripts/security/apply-security-hardening.sh"
+echo "  6. Verify DB: ./scripts/database/diagnose-db-products-issue.sh"
+echo ""
+echo -e "${BLUE}📄 Documentation Reference:${NC}"
+echo "  - deployment: 4-HOUR-DEPLOYMENT.md"
+echo "  - verification: QUICK-REFERENCE.md"
 echo ""

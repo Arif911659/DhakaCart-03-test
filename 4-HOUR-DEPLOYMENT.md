@@ -65,7 +65,10 @@ We use a single master script to handle 90% of the work. This avoids manual erro
     -   Runs `kubeadm init`.
     -   SSH into Workers and joins them.
 
-4.  **App Deploy (`scripts/k8s-deployment/update-and-deploy.sh`)**:
+4.  **Hostname Setup (Automated)**:
+    -   Updates all node hostnames (Bastion, Masters, Workers).
+
+5.  **App Deploy (`scripts/k8s-deployment/update-and-deploy.sh`)**:
     -   Copies `k8s/` folder to Master.
     -   Applies `kubectl apply -f k8s/`.
 
@@ -150,7 +153,7 @@ If a specific step fails, go to the corresponding directory and fix it manually.
 |----------------|------------------|----------------|
 | **Terraform Error** | `terraform/simple-k8s/` | `terraform apply` (Run again) |
 | **SSH Error** | `terraform/simple-k8s/` | Check `dhakacart-k8s-key.pem` permissions (600) |
-| **Nodes Not Ready** | `scripts/nodes-config-steps/` | Log in to worker, run `kubeadm join` manually |
+| **Nodes Not Ready** | `scripts/nodes-config/` | Log in to worker, run `kubeadm join` manually |
 | **App Not Loading** | `k8s/deployments/` | Check `kubectl logs deployment/dhakacart-backend -n dhakacart` |
 | **ALB 503 Error** | `terraform/simple-k8s/` | `./register-workers-to-alb.sh` (Re-run registration) |
 

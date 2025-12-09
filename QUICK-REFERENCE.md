@@ -173,9 +173,9 @@ scripts/
 │   ├── seed-database.sh             # Seed database
 │   └── diagnose-db-issues.sh        # Diagnose DB issues
 │
-└── hostname/                        # Hostname management
-    ├── change-hostname.sh           # Local hostname change
-    └── change-hostname-via-bastion.sh  # Remote via Bastion
+├── internal/hostname/           # Hostname management
+│   ├── change-hostname.sh           # Local hostname change
+│   └── change-hostname-via-bastion.sh  # Remote via Bastion
 ```
 
 ---

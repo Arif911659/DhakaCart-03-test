@@ -16,9 +16,15 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 # Configuration
-BASTION_IP="54.255.165.250"
-MASTER1_IP="10.0.10.102"
-SSH_KEY_PATH="terraform/simple-k8s/dhakacart-k8s-key.pem"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+
+# Load infrastructure config
+source "$PROJECT_ROOT/scripts/load-infrastructure-config.sh"
+
+BASTION_IP="$BASTION_IP"
+MASTER1_IP="${MASTER_IPS[0]}"
+SSH_KEY_PATH="$PROJECT_ROOT/terraform/simple-k8s/dhakacart-k8s-key.pem"
 REMOTE_USER="ubuntu"
 
 echo -e "${BLUE}===========================================${NC}"

@@ -27,11 +27,8 @@ terraform/simple-k8s/
 ├── outputs/                     # Output files
 │   └── aws_instances_output.txt # EC2 instances information
 │
-├── backups/                     # Backup directory
-│   └── (terraform state backups)
-│
-└── nodes-config-steps/          # Node configuration steps
-    └── (various configuration files)
+└── backups/                     # Backup directory
+    └── (terraform state backups)
 ```
 
 ## Quick Start

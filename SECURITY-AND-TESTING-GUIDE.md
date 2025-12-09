@@ -27,124 +27,37 @@ You have **2 important directories**:
 ## 🚀 Part 1: Security Implementation
 
 ### Step 1: Install Trivy (Vulnerability Scanner)
+**Note:** The automation script handles this, but for manual install:
 
 **On your local machine:**
 ```bash
-# Install Trivy
-curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+# Install Trivy to local bin
+mkdir -p $HOME/.local/bin
+curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b $HOME/.local/bin
+export PATH=$HOME/.local/bin:$PATH
 
 # Verify
 trivy --version
 ```
 
-### Step 2: Scan Your Docker Images
+### Step 2: Automated Security Hardening (Recommended)
+
+Instead of running steps manualy, use the automation script:
 
 ```bash
-cd ~/DhakaCart-03-test/security/scanning
-
-# Run security scan
-./trivy-scan.sh
+cd ~/DhakaCart-03-test/scripts/security
+./apply-security-hardening.sh
 ```
 
-**What this does:**
-- Scans `arifhossaincse22/dhakacart-backend:latest`
-- Scans `arifhossaincse22/dhakacart-frontend:latest`  
-- Finds CRITICAL/HIGH/MEDIUM vulnerabilities
-- Creates report in `/tmp/trivy-reports-<timestamp>/`
+**This script automatically:**
+1. Copies network policies to Master-1
+2. Applies policies for Frontend and Database
+3. Runs Trivy vulnerability scan
+4. Checks NPM dependencies
+5. Verifies network isolation
 
-**Example Output:**
-```
-========================================
-   DhakaCart Security Scan (Trivy)
-========================================
-Scanning: arifhossaincse22/dhakacart-backend:latest
-  CRITICAL: 0
-  HIGH: 2
-  MEDIUM: 5
-  LOW: 10
-
-Reports saved to: /tmp/trivy-reports-20251207_100000/
-```
-
-**View detailed report:**
-```bash
-cat /tmp/trivy-reports-*/arifhossaincse22_dhakacart-backend_latest.txt
-```
-
-### Step 3: Check NPM Dependencies
-
-```bash
-cd ~/DhakaCart-03-test/security/scanning
-
-# Check for vulnerable packages
-./dependency-check.sh
-```
-
-**Output shows:**
-- Backend vulnerabilities (from `package.json`)
-- Frontend vulnerabilities
-- Severity levels
-
-**Fix vulnerabilities:**
-```bash
-# Backend
-cd ~/DhakaCart-03-test/backend
-npm audit fix
-
-# Frontend  
-cd ~/DhakaCart-03-test/frontend
-npm audit fix
-```
-
-### Step 4: Apply Network Policies (Kubernetes)
-
-**These policies block unauthorized access between pods.**
-
-**SSH to Master-1 and run:**
-```bash
-cd ~/k8s
-
-# Create a security directory
-mkdir -p security/network-policies
-
-# Copy policies (if not already synced)
-# Files: frontend-policy.yaml, backend-policy.yaml, database-policy.yaml
-```
-
-**On local machine, add policies to k8s folder:**
-```bash
-cd ~/DhakaCart-03-test
-
-# Copy network policies to k8s
-cp -r security/network-policies k8s/security/
-
-# Sync to Master
-./scripts/k8s-deployment/sync-k8s-to-master1.sh
-```
-
-**On Master-1:**
-```bash
-cd ~/k8s/security/network-policies
-
-# Apply policies
-# Apply policies (Frontend & Database only for stability)
-kubectl apply -f frontend-policy.yaml
-kubectl apply -f database-policy.yaml
-
-# Note: Backend/Redis policies are available but disabled for connectivity stability
-# kubectl apply -f backend-policy.yaml  
-# kubectl apply -f redis-policy.yaml
-
-# Verify
-kubectl get networkpolicies -n dhakacart
-```
-
-**Expected Output:**
-```
-NAME                      POD-SELECTOR              AGE
-dhakacart-frontend-policy   app=dhakacart-frontend    10s
-dhakacart-database-policy   app=dhakacart-db          10s
-```
+### Step 3: View Reports
+The script saves reports to: `/tmp/trivy-reports-*/`
 
 ### Step 5: Test Network Policies
 

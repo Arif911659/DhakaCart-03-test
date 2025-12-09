@@ -150,7 +150,15 @@ This interactive script will:
 
 **Follow the prompts** and confirm each step.
 
-### Step 2.2: Verify Configuration
+### Step 2.4: Automated Hostname Configuration
+(This is handled automatically by `deploy-4-hour-window.sh`)
+
+If running manually:
+```bash
+./scripts/internal/hostname/change-hostname-via-bastion.sh --all --yes
+```
+
+### Step 2.5: Verify Nodesnfiguration
 
 ```bash
 # Test config loader
@@ -304,99 +312,36 @@ kubectl get pods -n monitoring
 
 ## Phase 6: Security Hardening
 
-### Step 6.1: Apply Network Policies
-
-Network policies implement zero-trust networking - pods can only communicate with explicitly allowed services.
-
-```bash
-# SSH to Master-1
-cd ~/k8s
-
-# Create security directory
-mkdir -p security/network-policies
-```
-
-**On your local machine**, copy network policies to k8s folder:
+### Step 6.1: Run Automated Security Hardening
+This single script applies network policies, scans images, and checks dependencies.
 
 ```bash
-cd /home/arif/DhakaCart-03-test
-
-# Copy policies
-cp -r security/network-policies k8s/security/
-
-# Sync to Master-1
-./scripts/k8s-deployment/sync-k8s-to-master1.sh
-```
-
-**Back on Master-1**, apply the policies:
-
-```bash
-cd ~/k8s/security/network-policies
-
-# Apply all network policies
-# Apply all network policies (Frontend & Database only)
-kubectl apply -f frontend-policy.yaml
-kubectl apply -f database-policy.yaml
-# kubectl apply -f backend-policy.yaml (Disabled for stability)
-
-# Verify policies are applied
-kubectl get networkpolicies -n dhakacart
+cd /home/arif/DhakaCart-03-test/scripts/security
+./apply-security-hardening.sh
 ```
 
 **Expected output**:
 ```
-NAME                        POD-SELECTOR              AGE
-dhakacart-frontend-policy   app=dhakacart-frontend    10s
-dhakacart-database-policy   app=dhakacart-db          10s
+✅ Network policies applied
+✅ Security scans completed
+✅ Dependency check completed
+✅ Network isolation verified
 ```
 
-### Step 6.2: Container Vulnerability Scanning
-
-**On your local machine**, scan Docker images for security vulnerabilities:
+### Step 6.2: View Security Reports (Optional)
+Reports are generated in `/tmp`:
 
 ```bash
-cd /home/arif/DhakaCart-03-test/security/scanning
-
-# Install Trivy (if not installed)
-curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
-
-# Run security scan
-./trivy-scan.sh
-```
-
-**Expected output**:
-```
-========================================
-   DhakaCart Security Scan (Trivy)
-========================================
-Scanning: arifhossaincse22/dhakacart-backend:latest
-  CRITICAL: 0
-  HIGH: 2
-  MEDIUM: 5
-
-Reports saved to: /tmp/trivy-reports-TIMESTAMP/
-```
-
-**View detailed reports**:
-```bash
+ls -l /tmp/trivy-reports-*/
 cat /tmp/trivy-reports-*/SUMMARY.txt
 ```
 
-### Step 6.3: Dependency Security Audit
+### Step 6.3: Fix Vulnerabilities (If critical)
+If the report shows critical issues:
 
-Check npm packages for vulnerabilities:
-
-```bash
-cd /home/arif/DhakaCart-03-test/security/scanning
-
-# Check dependencies
-./dependency-check.sh
-```
-
-**Fix vulnerabilities** (if found):
 ```bash
 # Backend
-cd ../../backend
+cd /home/arif/DhakaCart-03-test/backend
 npm audit fix
 
 # Frontend  

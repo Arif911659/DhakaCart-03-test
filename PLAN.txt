@@ -1,0 +1,27 @@
+PLAN: আমার প্রজেক্ট স্ট্রাকচার ক্লিন এবং অর্গানাইজড করতে চাই Error Free Project । আর তুমি যা কাজ করবে তার একটা log রাখা দরকার সেটা CHANGELOG.md এ রাখবা ।  
+
+[x] 1 - /home/arif/DhakaCart-03-test/terraform/ চেক করো এখানে অপ্রয়োজনীয় কোন .sh , .md file আছে কিনা যা আমার আখন Project structure অনুযায়ী না থাকে , 
+কারন আমি Project টাকে organized করতে চাই।
+Status: [DONE] - Moved redundant docs to archive-2025-dec-cleanup/.
+
+[x] 2 - আমি এখন /home/arif/DhakaCart-03-test/terraform/simple-k8s/nodes-config-steps/ এটা কি এখানে থাকবে নাকি 
+/home/arif/DhakaCart-03-test/scripts/ বা /home/arif/DhakaCart-03-test/k8s/ এর মধ্য রাখা উচিত? suggest করো।
+Status: [DONE] - Moved to scripts/nodes-config/ and updated all references.
+
+[x] 3 - Terraform Apply -> Nodes Host-naming (Bastion,Master-1,Master-2,Worker-1,2,3)- /home/arif/DhakaCart-03-test/scripts/internal/hostname/ এখানে  manually দিতে হয়েছে (0-6)
+0-All এ কাজ করে না এটা ঠিক করবে -> /home/arif/DhakaCart-03-test/scripts/k8s-deployment/ এটাও deploy-4-hour-window.sh এ আছে কিনা চেক করবা -> /home/arif/DhakaCart-03-test/k8s টা terraform apply করার 
+পরে  Master-1 node এ  upload হয় না কারনটা খুজে বের করে আমাকে জানাবা আর deploy-4-hour-window.sh কিছু missing আছে কিনা দেখবা । -> 
+এবং related .md file গুলাও update করো যেমন ঃ SECURITY-AND-TESTING-GUIDE.md QUICK-REFERENCE.md PROJECT-STRUCTURE.md DEPLOYMENT-GUIDE.md 4-HOUR-DEPLOYMENT.md
+আমি চাই deploy-4-hour-window.sh এটা execute করলে যেন সব রেয়াদ্য হয়ে যায় আমি হইতো ২/১টা কাজ manually করবো এবং কি কি 
+কাজ manually করবো তাও যেন deploy-4-hour-window.sh এর শেষে terminal output message এ নির্দেশনা থাকে বা পরবর্তি কোন documents follow 
+করবো তা নির্দেশনা থাকে, - এসবের মূল কারন আমার সময় বাচানো।
+Status: [DONE] - 
+- Sync script fixed (dynamic IPs).
+- Hostname script automated (--yes flag).
+- Main script updated with integration and manual steps.
+- Documentation updated.
+
+4 - 
+
+
+See CHANGELOG.md for details.

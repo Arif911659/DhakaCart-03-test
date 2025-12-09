@@ -137,7 +137,7 @@ kubectl wait --for=condition=ready pod --all -n dhakacart --timeout=300s
 # Check status
 kubectl get all -n dhakacart
 
-# Complete guide available at: k8s/DEPLOYMENT_GUIDE.md
+# Complete guide available at: DEPLOYMENT-GUIDE.md
 ```
 
 ### Option 4: Cloud Deployment with Terraform

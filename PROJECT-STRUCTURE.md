@@ -54,8 +54,7 @@ terraform/simple-k8s/
 ├── outputs/                      # Output files
 │   └── aws_instances_output.txt
 │
-├── backups/                      # State backups
-└── nodes-config-steps/           # Node configs
+└── backups/                      # State backups
 ```
 
 ## Scripts Directory
@@ -65,6 +64,11 @@ scripts/
 ├── load-infrastructure-config.sh # Config loader
 ├── post-terraform-setup.sh       # Post-terraform automation
 ├── fetch-kubeconfig.sh           # Fetch Kubeconfig for CI/CD
+│
+├── nodes-config/                 # Node configuration scripts
+│   ├── extract-terraform-outputs.sh
+│   ├── generate-scripts.sh
+│   └── upload-to-bastion.sh
 │
 ├── k8s-deployment/               # K8s deployment
 │   ├── update-and-deploy.sh
@@ -89,10 +93,11 @@ scripts/
 │   ├── seed-database.sh
 │   └── diagnose-db-products-issue.sh
 │
-└── hostname/                     # Hostname management
-    ├── change-hostname.sh
-    ├── change-hostname-via-bastion.sh
-    └── README-hostname-change.md
+└── internal/                     # Internal utility scripts
+    └── hostname/                 # Hostname management
+        ├── change-hostname.sh
+        ├── change-hostname-via-bastion.sh
+        └── README-hostname-change.md
 ```
 
 ## Security Directory

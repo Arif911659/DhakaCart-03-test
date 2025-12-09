@@ -21,6 +21,7 @@ SSH_KEY_LOCAL="./${SSH_KEY_NAME}"
 SSH_KEY_BASTION="~/.ssh/${SSH_KEY_NAME}"
 SSH_USER="ubuntu"
 DRY_RUN=false
+FORCE_YES=false
 
 # Function to print colored messages
 print_message() {
@@ -52,6 +53,7 @@ OPTIONS:
     --masters           Change hostnames on all Master nodes
     --workers           Change hostnames on all Worker nodes
     --node <name>       Change hostname on specific node (e.g., Master-1, Worker-2)
+    -y, --yes           Skip confirmation prompts (for automation)
     --dry-run           Show what would be executed without making changes
     -h, --help          Display this help message
 
@@ -391,6 +393,10 @@ main() {
                 print_message "$YELLOW" "DRY RUN MODE ENABLED - No changes will be made"
                 shift
                 ;;
+            -y|--yes)
+                FORCE_YES=true
+                shift
+                ;;
             -h|--help)
                 usage
                 ;;
@@ -410,7 +416,12 @@ main() {
     # Execute based on mode
     case $mode in
         all)
-            read -p "Change hostnames on ALL nodes? (yes/no): " confirm
+            if [ "$FORCE_YES" = true ]; then
+                confirm="yes"
+            else
+                read -p "Change hostnames on ALL nodes? (yes/no): " confirm
+            fi
+            
             if [[ "$confirm" =~ ^[Yy][Ee][Ss]$ ]]; then
                 change_bastion_hostname
                 change_masters_hostnames
@@ -420,15 +431,37 @@ main() {
             fi
             ;;
         bastion)
-            change_bastion_hostname
+            if [ "$FORCE_YES" = true ]; then
+               change_bastion_hostname
+            else
+               read -p "Change Bastion hostname? (yes/no): " confirm
+               if [[ "$confirm" =~ ^[Yy][Ee][Ss]$ ]]; then
+                 change_bastion_hostname
+               fi
+            fi
             ;;
         masters)
-            change_masters_hostnames
+            if [ "$FORCE_YES" = true ]; then
+               change_masters_hostnames
+            else
+               read -p "Change Masters hostnames? (yes/no): " confirm
+               if [[ "$confirm" =~ ^[Yy][Ee][Ss]$ ]]; then
+                 change_masters_hostnames
+               fi
+            fi
             ;;
         workers)
-            change_workers_hostnames
+             if [ "$FORCE_YES" = true ]; then
+               change_workers_hostnames
+            else
+               read -p "Change Workers hostnames? (yes/no): " confirm
+               if [[ "$confirm" =~ ^[Yy][Ee][Ss]$ ]]; then
+                 change_workers_hostnames
+               fi
+            fi
             ;;
         specific)
+            # No confirmation for specific node unless strictly needed
             change_specific_node "$specific_node"
             ;;
         interactive)
