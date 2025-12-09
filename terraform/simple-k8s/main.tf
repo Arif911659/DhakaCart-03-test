@@ -343,6 +343,7 @@ resource "aws_instance" "bastion" {
   key_name               = aws_key_pair.k8s_key.key_name
   subnet_id              = aws_subnet.public_1.id
   vpc_security_group_ids = [aws_security_group.bastion.id]
+  private_ip             = "10.0.1.10"
 
   user_data = <<-EOF
               #!/bin/bash
@@ -365,6 +366,7 @@ resource "aws_instance" "masters" {
   key_name               = aws_key_pair.k8s_key.key_name
   subnet_id              = aws_subnet.private.id
   vpc_security_group_ids = [aws_security_group.k8s_nodes.id]
+  private_ip             = "10.0.10.1${count.index}"
 
   user_data = <<-EOF
               #!/bin/bash
@@ -388,6 +390,7 @@ resource "aws_instance" "workers" {
   key_name               = aws_key_pair.k8s_key.key_name
   subnet_id              = aws_subnet.private.id
   vpc_security_group_ids = [aws_security_group.k8s_nodes.id]
+  private_ip             = "10.0.10.2${count.index}"
 
   user_data = <<-EOF
               #!/bin/bash

@@ -7,6 +7,7 @@ All notable changes to the DhakaCart project will be documented in this file.
 ### Added
 -   **Hostname Automation**: Added `--yes` flag to `change-hostname-via-bastion.sh` for non-interactive execution.
 -   **Integration**: Integrated hostname change step into `deploy-4-hour-window.sh`.
+-   **Static Private IPs**: Implemented fixed private IPs in `terraform/simple-k8s/main.tf` for Bastion (.10), Masters (.10-.11), and Workers (.20-.22) to eliminate dynamic IP discovery issues.
 -   **Manual Verification Output**: Added detailed list of manual verification steps at the end of the deployment script.
 
 ### Changed

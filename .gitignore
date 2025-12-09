@@ -34,6 +34,8 @@ Thumbs.db
 
 # Testing
 coverage/
+testing/load-tests/reports
+
 
 # Misc
 .cache/
