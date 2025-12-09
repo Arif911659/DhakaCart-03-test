@@ -21,7 +21,15 @@ Status: [DONE] -
 - Main script updated with integration and manual steps.
 - Documentation updated.
 
-4 - 
+[x] 4 - /home/arif/DhakaCart-03-test/terraform/README.md & /home/arif/DhakaCart-03-test/terraform/simple-k8s/docs/README.md marge করে একটা নতুন README.md তৈরি করো।
+Status: [DONE] - Merged successfully. simple-k8s/docs/ removed.
+
+[x] 5 - /home/arif/DhakaCart-03-test/testing এটা চেক করো কোন ইসু আছে কিনা এবং /home/arif/DhakaCart-03-test/testing/README.md update করো ।
+Status: [DONE] - Fixed paths in README and enabled auto-ALB detection in run-load-test.sh.
+
+[x] 6 - /home/arif/DhakaCart-03-test/README.md এটা আমার মূল ফাইল যেখান থেকে একটা Good Overview পাবে so এটাকে আমার well polished,organized,structured and architectural হতে হবে । 
+Status: [DONE] - Completely overhauled with Mermaid architecture, prioritized deployment options, and better navigation. 
+
 
 
 See CHANGELOG.md for details.

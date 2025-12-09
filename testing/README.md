@@ -36,14 +36,14 @@ k6 version
 ```
 
 ### Run Load Tests
-
+ 
 ```bash
-cd /home/arif/DhakaCart-03/testing/load-tests/
+cd testing/load-tests/
 
-# Interactive test selection
+# Interactive test selection (Auto-detects ALB URL)
 ./run-load-test.sh
 
-# Specific test type
+# Override URL manually
 BASE_URL=http://your-server.com ./run-load-test.sh
 ```
 
@@ -133,7 +133,7 @@ thresholds: {
 ### Apache Bench Tests
 
 ```bash
-cd /home/arif/DhakaCart-03/testing/performance/
+cd testing/performance/
 
 # Run benchmarks
 ./benchmark.sh

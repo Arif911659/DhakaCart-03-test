@@ -121,7 +121,7 @@ cd scripts/security
 ### 2. Run Load Test (Smoke Test)
 ```bash
 cd ../../testing/load-tests
-BASE_URL=http://<ALB_DNS> ./run-load-test.sh
+./run-load-test.sh
 ```
 *   **Select Option 1** (Smoke Test).
 *   **Success**: Products load, 0% Error Rate (or <1%), Response time <200ms.

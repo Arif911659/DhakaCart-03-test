@@ -403,7 +403,18 @@ kubectl exec -it -n dhakacart deployment/dhakacart-db -- curl -m 5 https://googl
   - [ ] Loki collecting logs
   - [ ] Dashboards showing data
 
-### Verification Commands
+### Phase 7.1: Performance Testing (Optional)
+ 
+ Validate system performance under load:
+ 
+ ```bash
+ cd /home/arif/DhakaCart-03-test/testing/load-tests
+ ./run-load-test.sh
+ ```
+ *   **Select**: Option 2 (Load Test) for standard validation.
+ *   **Auto-detection**: The script automatically finds the ALB URL.
+ 
+ ### Verification Commands
 
 ```bash
 # Check all pods across namespaces

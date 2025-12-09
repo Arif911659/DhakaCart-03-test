@@ -37,6 +37,19 @@ if ! command -v k6 &> /dev/null; then
 fi
 
 # Get target URL
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+
+# Try to load infrastructure config if not set manually
+if [ -z "$BASE_URL" ] && [ -f "$PROJECT_ROOT/scripts/load-infrastructure-config.sh" ]; then
+    echo -e "${YELLOW}Loading infrastructure config...${NC}"
+    source "$PROJECT_ROOT/scripts/load-infrastructure-config.sh" > /dev/null 2>&1
+    if [ ! -z "$ALB_DNS" ]; then
+        BASE_URL="http://$ALB_DNS"
+        echo -e "${GREEN}✓ Auto-detected ALB: $BASE_URL${NC}"
+    fi
+fi
+
 BASE_URL="${BASE_URL:-http://localhost:5000}"
 echo -e "${YELLOW}Target URL: $BASE_URL${NC}"
 echo ""

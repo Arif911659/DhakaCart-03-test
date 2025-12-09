@@ -95,11 +95,11 @@ k6 version
 ```bash
 cd ~/DhakaCart-03-test/testing/load-tests
 
-# Interactive mode (choose test type)
+# Interactive mode (Auto-detects ALB URL)
 ./run-load-test.sh
 
-# Or specify your ALB URL
-BASE_URL=http://dhakacart-k8s-alb-1190423189.ap-southeast-1.elb.amazonaws.com ./run-load-test.sh
+# Or specify your ALB URL manually
+BASE_URL=http://your-alb-url.com ./run-load-test.sh
 ```
 
 **Test Options:**

@@ -99,7 +99,16 @@ cd ../../security/scanning
 ./trivy-scan.sh
 
 # Check network policies
+# Check network policies
 kubectl get networkpolicies -n dhakacart
+
+### Testing
+
+```bash
+# Run Load Test (Auto-detects ALB)
+cd testing/load-tests
+./run-load-test.sh
+```
 ```
 
 ### Manual Release (Makefile)
