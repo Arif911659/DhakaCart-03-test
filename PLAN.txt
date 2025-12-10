@@ -119,3 +119,12 @@ Target: Make the "Roadmap" items into "Implemented" items to get full marks.
 - Submit Link: https://forms.gle/KUrxqhVhxPR2cbMd6 (Deadline: Dec 15).
 
 See CHANGELOG.md for details.
+
+Must Update যে কাজগুলা করা হয়েছেঃ
+- 4-HOUR-DEPLOYMENT.md
+- MANUAL_RELEASE_GUIDE.md   
+- PROJECT-STRUCTURE.md
+- QUICK-REFERENCE.md
+- SECURITY-AND-TESTING-GUIDE.md
+- DEPLOYMENT-GUIDE.md
+- 
