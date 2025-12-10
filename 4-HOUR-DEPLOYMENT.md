@@ -98,6 +98,10 @@ cd ../../testing/load-tests
 ```
 *   **Select Option 1** (Smoke Test).
 
+### ⚠️ Load Test Issues?
+- **Rate Limit Error**: Check if `trust proxy` is enabled in backend.
+- **400 Bad Request**: Ensure K6 payload includes `total_amount`.
+
 ---
 
 ## 🏢 Phase 4: Exam Compliance: Enterprise Features
@@ -137,6 +141,8 @@ If the automated script stops, check the error message.
 | **Terraform Lock** | `cd terraform/simple-k8s && terraform force-unlock <ID>` |
 | **SSH Permission** | `chmod 600 terraform/simple-k8s/dhakacart-k8s-key.pem` |
 | **DB Not Seeding** | Run `./scripts/database/seed-database.sh --automated` manually |
+| **Grafana 404** | Run `scripts/monitoring/setup-grafana-alb.sh` |
+| **Loki No Logs** | `kubectl rollout restart ds/promtail -n monitoring` |
 
 ---
 

@@ -57,7 +57,8 @@ DhakaCart-03-test/
 │   ├── 📂 enterprise-features/         # [Phase 2] Installers
 │   │   ├── install-cert-manager.sh
 │   │   ├── install-vault.sh
-│   │   └── install-velero.sh
+│   │   ├── install-velero.sh
+│   │   └── minio-manifests.yaml        # S3-compatible backend for Velero
 │   ├── 📂 internal/                    # Internal Helpers
 │   │   └── 📂 hostname/                # Node Naming
 │   ├── 📂 k8s-deployment/              # Deployment Helpers
@@ -76,6 +77,7 @@ DhakaCart-03-test/
 │   ├── 📂 security/                    # Security Automation
 │   │   └── apply-security-hardening.sh
 │   ├── deploy-4-hour-window.sh         # 🚀 MASTER SCRIPT: 0 to Production
+│   ├── .deploy_state                   # 🔄 State tracking for Resume Capability
 │   ├── fetch-kubeconfig.sh             # CI/CD Helper
 │   └── load-infrastructure-config.sh   # State Loader
 │

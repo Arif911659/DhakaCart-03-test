@@ -11,6 +11,13 @@ This guide explains how to manually build, push, and deploy new versions of the 
 
 The `Makefile` simplifies the process into single commands. Open a terminal in the project root.
 
+### 0. Safety First (Recommended)
+Before releasing a new version, ensure you have a recent backup:
+```bash
+# SSH to Master-1 and run:
+velero backup create pre-release-backup --include-namespaces dhakacart
+```
+
 ### 1. Build Images
 Builds the Docker images locally with the version defined in the Makefile (currently `v1.0.4`).
 ```bash

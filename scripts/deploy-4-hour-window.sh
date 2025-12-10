@@ -276,6 +276,26 @@ else
     update_state 7
 fi
 
+# Step 8: Enterprise Features (Phase 8)
+if [ "$LAST_STEP" -ge 8 ]; then
+    echo -e "${GREEN}✅ [8/8] Enterprise features already deployed. Skipping...${NC}"
+else
+    echo -e "${YELLOW}[8/8] 🛡️  Deploying Enterprise Features (Velero, Vault, Cert-Manager)...${NC}"
+    
+    # Run installation scripts on Master-1
+    ssh -i "$SSH_KEY_PATH" ubuntu@${BASTION_IP} \
+      "ssh -i ~/.ssh/dhakacart-k8s-key.pem -o StrictHostKeyChecking=no ubuntu@${MASTER_IPS[0]} \
+       'cd ~/scripts/enterprise-features && \
+        chmod +x *.sh && \
+        echo \"Installing Velero...\" && ./install-velero.sh && \
+        echo \"Installing Cert-Manager...\" && ./install-cert-manager.sh && \
+        echo \"Installing Vault...\" && ./install-vault.sh'"
+    
+    echo -e "${GREEN}✅ Enterprise features deployed${NC}"
+    update_state 8
+    echo ""
+fi
+
 echo ""
 echo -e "${GREEN}========================================${NC}"
 echo -e "${GREEN}  ✅ Deployment Complete!${NC}"
@@ -294,13 +314,8 @@ echo "  2. Access Grafana: http://${ALB_DNS}/grafana/ (User: admin / Pass: dhaka
 echo "  3. Import Grafana Dashboard: ID 1860 (Node Exporter Full)"
 echo "  4. Check Logs: kubectl logs -n monitoring daemonset/promtail"
 echo "  5. Run Security Hardening: ./scripts/security/apply-security-hardening.sh"
-echo "  6. Verify DB: ./scripts/database/diagnose-db-products-issue.sh
-  7. [Exam Compliance] Enable Automated Backups (MinIO+Velero):
-     ./scripts/enterprise-features/install-velero.sh
-  8. [Exam Compliance] Enable HTTPS (Cert-Manager):
-     ./scripts/enterprise-features/install-cert-manager.sh
-  9. [Exam Compliance] Enable Secrets (Vault):
-     ./scripts/enterprise-features/install-vault.sh"
+echo "  6. Verify DB: ./scripts/database/diagnose-db-products-issue.sh"
+echo ""
 echo ""
 echo -e "${BLUE}📄 Documentation Reference:${NC}"
 echo "  - deployment: 4-HOUR-DEPLOYMENT.md"

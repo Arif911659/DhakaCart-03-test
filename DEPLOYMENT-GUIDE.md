@@ -274,6 +274,25 @@ kubectl get pods -n monitoring
    - Query: `{job="kubernetes-pods"}`
    - Should show logs from all pods
 
+### Step 5.4: Troubleshooting Monitoring
+| Issue | Command | Fix |
+|-------|---------|-----|
+| **Pods Pending** | `kubectl get pods -n monitoring` | Check node resources |
+| **Grafana 404** | `curl -I http://<ALB_DNS>/grafana/` | Run `scripts/monitoring/setup-grafana-alb.sh` |
+| **No Logs (Loki)** | `kubectl logs -n monitoring ds/promtail` | `kubectl rollout restart ds/promtail -n monitoring` |
+| **No Metrics** | Check Prometheus Target | Check ServiceMonitor or Pod Annotations |
+
+### Step 5.5: Manual Setup (If Automated Fails)
+If the master script fails to deploy monitoring:
+```bash
+# 1. Deploy Stack
+kubectl apply -f k8s/monitoring/ --recursive
+
+# 2. Setup ALB Ingress
+cd scripts/monitoring
+./setup-grafana-alb.sh
+```
+
 ---
 
 ## Phase 6: Security Hardening
@@ -380,6 +399,12 @@ kubectl exec -it -n dhakacart deployment/dhakacart-db -- curl -m 5 https://googl
  *   **Select**: Option 2 (Load Test) for standard validation.
  *   **Auto-detection**: The script automatically finds the ALB URL.
  
+ ### Load Test Troubleshooting
+ 
+ **1. High Error Rate (`http_req_failed`)**:
+ - **Rate Limiting**: If backend logs show `ERR_ERL_UNEXPECTED_X_FORWARDED_FOR`, add `app.set('trust proxy', 1)` to `server.js`.
+ - **Bad Request (400)**: Ensure K6 script sends valid `total_amount` and `price`.
+ 
  ### Verification Commands
 
 ```bash
@@ -406,6 +431,9 @@ curl http://<ALB_DNS>/api/health
 ---
 
 ## Phase 8: Exam Compliance (Enterprise Features)
+
+> **✨ Automated:** This phase is now handled automatically by `deploy-4-hour-window.sh` (Step 8).
+> Use the steps below **only** if you need to run them manually or for troubleshooting.
 
 To meet the 10 Exam Constraints, these scripts must be run **on the Master Node**.
 
@@ -499,8 +527,21 @@ cd /home/arif/DhakaCart-03-test/scripts
 # Check Promtail
 kubectl logs -n monitoring daemonset/promtail
 
+
 # Restart Promtail
 kubectl rollout restart daemonset/promtail -n monitoring
+```
+
+#### 6. Prometheus Targets Down
+**Error**: Targets show 0/0 or Down in Grafana.
+**Solution**:
+```bash
+# Check Node Exporter
+kubectl get pods -n monitoring -l app=node-exporter
+
+# Check Service Discovery
+kubectl get endpoints -n monitoring
+```
 ```
 
 ### Getting Help

@@ -397,6 +397,51 @@ kubectl logs -n dhakacart deployment/dhakacart-backend --tail=50
 
 ---
 
+## 🔐 Part 3: Enterprise Security & Reliability (Phase 2)
+
+### Step 1: Automated Backup (Velero + MinIO)
+
+**Why:** Disaster recovery. If the cluster crashes, you lose everything without backups.
+**Implementation:** `scripts/enterprise-features/install-velero.sh`
+
+**Verification:**
+```bash
+# Check Backup Schedule
+velero schedule get
+
+# Trigger Manual Backup
+velero backup create test-backup --include-namespaces dhakacart
+
+# Verify Backup Status
+velero backup get
+# Expected: Completed (or partially failed if metadata issues, but data is safe)
+```
+
+### Step 2: Secrets Management (Vault)
+
+**Why:** Storing passwords in plain text (ConfigMaps) is insecure. Vault encrypts them.
+**Implementation:** `scripts/enterprise-features/install-vault.sh`
+
+**Verification:**
+```bash
+# Check Vault Status
+kubectl get pods -n vault
+# Expected: vault-0 Running
+```
+
+### Step 3: HTTPS/TLS (Cert-Manager)
+
+**Why:** Encrypts traffic between user and load balancer.
+**Implementation:** `scripts/enterprise-features/install-cert-manager.sh`
+
+**Verification:**
+```bash
+# Check Cert-Manager Pods
+kubectl get pods -n cert-manager
+```
+
+---
+
 ## 🚀 Next Steps
 
 1. **Add to deployment guide** - Update `Project-Deployment-Steps-(06-12-2025).md` with security phase

@@ -42,7 +42,7 @@ export const options = {
 const BASE_URL = __ENV.BASE_URL || 'http://localhost:5000';
 
 // Test scenarios
-export default function () {
+export default function (data) {
   // Homepage / Product Listing
   group('Browse Products', function () {
     const productsRes = http.get(`${BASE_URL}/api/products`);
@@ -89,13 +89,26 @@ export default function () {
 
   // Create Order (simulate checkout)
   group('Create Order', function () {
+    // Pick a random product from setup data
+    // If setup failed or no products, fallback to hardcoded (though setup should have caught it)
+    const products = data.products || [];
+    const product = products[Math.floor(Math.random() * products.length)] || { id: 1, price: 1000 };
+
+    const quantity = 1;
+    const totalAmount = product.price * quantity;
+
     const orderPayload = JSON.stringify({
       customer_name: 'Test Customer',
       customer_email: `test${__VU}@example.com`,
       customer_phone: '01700000000',
       delivery_address: 'Dhaka, Bangladesh',
+      total_amount: totalAmount,
       items: [
-        { product_id: Math.floor(Math.random() * 10) + 1, quantity: 1 },
+        {
+          product_id: product.id,
+          quantity: quantity,
+          price: product.price
+        },
       ],
     });
 
@@ -112,7 +125,7 @@ export default function () {
 
     check(orderRes, {
       'order created': (r) => r.status === 200 || r.status === 201,
-      'has order ID': (r) => r.json('id') !== undefined,
+      'has order ID': (r) => r.json('order') && r.json('order').id !== undefined,
       'order creation < 2s': (r) => r.timings.duration < 2000,
     }) || errorRate.add(1);
 
@@ -146,7 +159,19 @@ export function setup() {
     throw new Error('Application is not healthy. Aborting test.');
   }
 
-  return { startTime: Date.now() };
+  // Fetch products to use in test
+  const productsRes = http.get(`${BASE_URL}/api/products`);
+  let products = [];
+  if (productsRes.status === 200) {
+    try {
+      products = productsRes.json('data');
+      console.log(`Loaded ${products.length} products for testing`);
+    } catch (e) {
+      console.error('Failed to parse products');
+    }
+  }
+
+  return { startTime: Date.now(), products: products };
 }
 
 // Teardown function - runs once after test

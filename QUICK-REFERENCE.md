@@ -109,6 +109,14 @@ kubectl get networkpolicies -n dhakacart
 cd testing/load-tests
 ./run-load-test.sh
 ```
+
+### ⚠️ Load Test Troubleshooting
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `http_req_failed` > 0% | Rate Limit or Bad Request | Check Backend logs |
+| `ERR_ERL_UNEXPECTED` | Missing `trust proxy` | Add `app.set('trust proxy', 1)` in server.js |
+| `400 Bad Request` | Invalid Order Payload | Update K6 script to include `total_amount` |
+
 ```
 
 ### Manual Release (Makefile)
@@ -160,6 +168,24 @@ cd scripts/enterprise-features
 ```bash
 # 1. Backups (Velero + MinIO)
 ./scripts/enterprise-features/install-velero.sh
+
+#### 🛠️ Velero Commands (Run on Master-1)
+```bash
+# 1. Manual Backup
+velero backup create manual-backup-01 --include-namespaces dhakacart
+
+# 2. Automated Daily Backup (Cron)
+velero schedule create daily-backup --schedule="0 0 * * *" --include-namespaces dhakacart
+
+# 3. Check Backups
+velero backup get
+
+# 4. Check Schedules
+velero schedule get
+
+# 5. Restore from Backup
+velero restore create --from-backup manual-backup-01
+```
 
 # 2. HTTPS (Cert-Manager)
 ./scripts/enterprise-features/install-cert-manager.sh

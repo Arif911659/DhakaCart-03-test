@@ -7,6 +7,13 @@
     - [x] Align "Key Goals" with our Enterprise Features <!-- id: 4 -->
     - [x] Update Backup strategy (MinIO vs S3) <!-- id: 5 -->
     - [x] Clarify Secrets Management (Vault) <!-- id: 6 -->
+- [x] **Enterprise Features (Phase 8)**
+  - [x] Install Velero (Backup)
+  - [x] Install Cert-Manager (HTTPS)
+  - [x] Install Vault (Secrets)
+- [x] **Final Verification**
+  - [x] Verify Load Test Results
+  - [x] Verify Enterprise Pods
 - [x] **Update Execution Plan** <!-- id: 7 -->
     - [x] Identify gaps (e.g., Database Replication mentioned in exam) <!-- id: 8 -->
     - [x] Update `PLAN.txt` with "What is left" <!-- id: 9 -->
@@ -17,3 +24,11 @@
     - [ ] Practice "Zero to Hero" Deployment <!-- id: 14 -->
     - [ ] Record Video Presentation <!-- id: 15 -->
     - [ ] Submit to Exam Portal <!-- id: 16 -->
+Must Update যে কাজগুলা করা হয়েছেঃ
+- 4-HOUR-DEPLOYMENT.md
+- MANUAL_RELEASE_GUIDE.md   
+- PROJECT-STRUCTURE.md
+- QUICK-REFERENCE.md
+- SECURITY-AND-TESTING-GUIDE.md
+- DEPLOYMENT-GUIDE.md
+- 
