@@ -106,7 +106,7 @@ DhakaCart-03-test/
 ## 🧩 Component Descriptions
 
 ### 1. Automation Core (`scripts/`)
-*   **`deploy-4-hour-window.sh`**: The orchestrator. It calls Terraform, configures nodes, and deploys K8s. This is your "One-Click" solution.
+*   **`deploy-4-hour-window.sh`**: The orchestrator. It calls Terraform, configures nodes, deploys K8s, and **auto-seeds** the DB. Features **Smart Resume** to recover from interruptions.
 *   **`enterprise-features/`**: Scripts to install Phase 2 tools (Backup, Security) *after* the main deployment.
 *   **`nodes-config/`**: Handles the complex logic of `kubeadm init` and `kubeadm join` ensuring nodes connect correctly.
 

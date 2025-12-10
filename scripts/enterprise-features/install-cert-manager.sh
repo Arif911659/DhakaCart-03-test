@@ -7,6 +7,16 @@ set -e
 
 echo "🚀 Starting Cert-Manager Installation..."
 
+# 0. Check/Install Helm
+if ! command -v helm &> /dev/null; then
+    echo "⬇️  Helm not found. Installing..."
+    curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+    chmod 700 get_helm.sh
+    ./get_helm.sh
+    rm get_helm.sh
+    echo "✅ Helm installed."
+fi
+
 # 1. Add Helm Repo
 echo "📦 Adding Jetstack Helm Repo..."
 helm repo add jetstack https://charts.jetstack.io
@@ -26,9 +36,12 @@ echo "⏳ Waiting for Cert-Manager to be ready..."
 kubectl rollout status deployment/cert-manager -n cert-manager --timeout=120s
 kubectl rollout status deployment/cert-manager-webhook -n cert-manager --timeout=120s
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+
 # 4. Apply ClusterIssuer
 echo "📝 Applying Let's Encrypt ClusterIssuer..."
-kubectl apply -f ../../k8s/enterprise-features/cert-manager/cluster-issuer.yaml
+kubectl apply -f "$PROJECT_ROOT/k8s/enterprise-features/cert-manager/cluster-issuer.yaml"
 
 echo "🎉 Cert-Manager Setup Complete!"
 echo "Next: Add 'cert-manager.io/cluster-issuer: letsencrypt-prod' to your Ingress."

@@ -15,9 +15,12 @@ NC='\033[0m'
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-BASTION_IP="54.255.165.250"
-MASTER1_IP="10.0.10.102"
-SSH_KEY_PATH="/home/arif/DhakaCart-03-test/terraform/simple-k8s/dhakacart-k8s-key.pem"
+# Load infrastructure config
+source "$PROJECT_ROOT/load-infrastructure-config.sh"
+
+BASTION_IP="$BASTION_IP"
+MASTER1_IP="${MASTER_IPS[0]}" # Assuming first master
+SSH_KEY_PATH="$SSH_KEY_PATH"
 REMOTE_USER="ubuntu"
 NAMESPACE="dhakacart"
 INIT_SQL="/home/arif/DhakaCart-03-test/database/init.sql"
@@ -26,6 +29,13 @@ echo -e "${BLUE}===========================================${NC}"
 echo -e "${BLUE}Seed Database with Products${NC}"
 echo -e "${BLUE}===========================================${NC}"
 echo ""
+
+
+# Check for automation flag
+AUTOMATED=false
+if [[ "$1" == "--automated" || "$1" == "-y" ]]; then
+    AUTOMATED=true
+fi
 
 # Check if init.sql exists
 if [ ! -f "$INIT_SQL" ]; then
@@ -49,8 +59,9 @@ scp -i "$SSH_KEY_PATH" "$INIT_SQL" "$REMOTE_USER@$BASTION_IP:/tmp/init.sql" > /d
 echo -e "${BLUE}Copying init.sql to Master-1...${NC}"
 ssh -i "$SSH_KEY_PATH" "$REMOTE_USER@$BASTION_IP" "scp -i ~/.ssh/dhakacart-k8s-key.pem /tmp/init.sql $REMOTE_USER@$MASTER1_IP:/tmp/init.sql" > /dev/null 2>&1
 
-ssh -i "$SSH_KEY_PATH" "$REMOTE_USER@$BASTION_IP" "ssh -i ~/.ssh/dhakacart-k8s-key.pem -o StrictHostKeyChecking=no $REMOTE_USER@$MASTER1_IP" << 'EOF'
+ssh -i "$SSH_KEY_PATH" "$REMOTE_USER@$BASTION_IP" "ssh -i ~/.ssh/dhakacart-k8s-key.pem -o StrictHostKeyChecking=no $REMOTE_USER@$MASTER1_IP 'bash -s' -- $AUTOMATED" << 'EOF'
 set -e
+AUTOMATED=$1
 
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -97,11 +108,16 @@ if [ "$PRODUCT_COUNT" -gt 0 ]; then
     echo -e "${YELLOW}  2. Recreate tables${NC}"
     echo -e "${YELLOW}  3. Insert sample products${NC}"
     echo ""
-    read -p "Continue? (y/n): " -n 1 -r
-    echo ""
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo -e "${BLUE}Operation cancelled${NC}"
+    if [ "$AUTOMATED" = true ]; then
+        echo -e "${GREEN}✅ Database already seeded. Skipping...${NC}"
         exit 0
+    else
+        read -p "Continue? (y/n): " -n 1 -r
+        echo ""
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            echo -e "${BLUE}Operation cancelled${NC}"
+            exit 0
+        fi
     fi
     
     # Drop tables

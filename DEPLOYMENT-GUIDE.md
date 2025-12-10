@@ -131,65 +131,31 @@ terraform output > infrastructure-outputs.txt
 
 ---
 
-## Phase 2: Post-Terraform Configuration
-
-### Step 2.1: Run Post-Terraform Setup Script
-
-```bash
-cd ../../scripts
-./post-terraform-setup.sh
-```
-
-This interactive script will:
-1. ✅ Load infrastructure configuration from Terraform
-2. ✅ Validate infrastructure
-3. ✅ Update all scripts with current IPs (optional)
-4. ✅ Change hostnames on cluster nodes (optional)
-5. ✅ Setup Grafana ALB routing (optional)
-6. ✅ Display next steps
-
-**Follow the prompts** and confirm each step.
-
-### Step 2.4: Automated Hostname Configuration
-(This is handled automatically by `deploy-4-hour-window.sh`)
-
-If running manually:
-```bash
-./scripts/internal/hostname/change-hostname-via-bastion.sh --all --yes
-```
-
-### Step 2.5: Verify Nodesnfiguration
-
-```bash
-# Test config loader
-source load-infrastructure-config.sh
-
-# Should display:
-# Bastion IP:    54.251.183.40
-# Master-1 IP:   10.0.10.82
-# Worker Count:  3
-# ALB DNS:       dhakacart-k8s-alb-xxxxx...
-```
-
-### Step 2.3: Copy SSH Key to Bastion
-
-```bash
-cd ../terraform/simple-k8s
-scp -i dhakacart-k8s-key.pem dhakacart-k8s-key.pem ubuntu@<BASTION_IP>:~/.ssh/
-```
-
-**Set permissions on Bastion**:
-```bash
-ssh -i dhakacart-k8s-key.pem ubuntu@<BASTION_IP>
-chmod 600 ~/.ssh/dhakacart-k8s-key.pem
-exit
-```
-
----
-
-## Phase 3: Kubernetes Cluster Setup
-
-### Step 3.1: Deploy Kubernetes Cluster
+## Phase 2: Automated Deployment (Recommended)
+ 
+ ### Step 2.1: Run the Master Deployment Script
+ 
+ We now use a single, resumable script that handles Infrastructure, Config, Node Setup, App Deployment, and Seeding.
+ 
+ ```bash
+ cd /home/arif/DhakaCart-03-test
+ ./scripts/deploy-4-hour-window.sh
+ ```
+ 
+ **Features:**
+ - **Auto-Resume**: If it fails, run it again; it picks up where it left off.
+ - **Automated Seeding**: No need to run seeding scripts manually.
+ - **Full Stack**: Deploys Infra + K8s + App + Monitoring.
+ 
+ **Expected Time**: ~25-30 minutes.
+ 
+ ---
+ 
+ ## Phase 3: Kubernetes Cluster Setup (Manual Fallback)
+ 
+ *Only follow this phase if you are NOT using the master script above.*
+ 
+ ### Step 3.1: Deploy Kubernetes Cluster
 
 ```bash
 cd ../../scripts/k8s-deployment
@@ -243,22 +209,22 @@ kubectl get pods -n dhakacart
 ## Phase 4: Application Deployment
 
 ### Step 4.1: Register Workers to ALB
-
-```bash
-cd /home/arif/DhakaCart-03-test/terraform/simple-k8s
-./register-workers-to-alb.sh
-```
+ (Automated by `deploy-4-hour-window.sh`. If manual:)
+ ```bash
+ cd /home/arif/DhakaCart-03-test/terraform/simple-k8s
+ ./register-workers-to-alb.sh
+ ```
 
 **Expected**: All workers registered and healthy
 
-### Step 4.2: Seed Database (Optional)
-
-```bash
-cd ../../scripts
-./seed-database.sh
-```
-
-This will populate the database with sample products.
+### Step 4.2: Seed Database (Automated)
+ 
+ This is handled automatically by the master script.
+ If you need to re-seed manually:
+ ```bash
+ cd ../../scripts
+ ./seed-database.sh --automated
+ ```
 
 ### Step 4.3: Access Application
 
@@ -439,27 +405,27 @@ curl http://<ALB_DNS>/api/health
 
 ---
 
-## Phase 7.5: Enterprise Features (Post-Deployment)
+## Phase 8: Exam Compliance (Enterprise Features)
 
-Enhance the cluster with Backup, HTTPS, and Secrets Management.
+To meet the 10 Exam Constraints, run these scripts immediately after deployment:
 
-### Step 7.5.1: Install Velero (Backup)
+### Step 8.1: Install Velero + MinIO (Backups)
+Bypasses AWS S3 permission issues by running MinIO in-cluster.
 ```bash
 ./scripts/enterprise-features/install-velero.sh
 ```
-*   **Verifying**: `velero backup get` should show a scheduled backup.
 
-### Step 7.5.2: Install Cert-Manager (HTTPS)
+### Step 8.2: Install Cert-Manager (HTTPS)
+Enables per-pod TLS certificates.
 ```bash
 ./scripts/enterprise-features/install-cert-manager.sh
 ```
-*   **Verifying**: Visit `https://<ALB_DNS>` after updating Ingress annotations.
 
-### Step 7.5.3: Install Vault (Secrets)
+### Step 8.3: Install Vault (Secrets)
+Enables bank-grade secret management.
 ```bash
 ./scripts/enterprise-features/install-vault.sh
 ```
-*   **Verifying**: `kubectl get pods -n vault` should be running.
 
 ---
 

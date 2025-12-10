@@ -79,7 +79,11 @@ Designed for high availability, security, and scalability on AWS.
 Choose your deployment method. **Option 1 is recommended** for the full experience.
 
 ### ✅ Option 1: Automated AWS Deployment (Recommended)
-This uses our **4-Hour Deployment Script** to provision infrastructure, configure K8s, and deploy the app in one go.
+This uses our **Smart Resumable Deployment Script** (`deploy-4-hour-window.sh`) to provision infrastructure, configure K8s, deploy the app, and seed the database in one go.
+
+**New Features:**
+- 🔄 **Auto-Resume**: Picks up where it left off if interrupted.
+- 🌱 **Auto-Seed**: Populates database automatically.
 
 > **Guide:** [📄 4-HOUR-DEPLOYMENT.md](./4-HOUR-DEPLOYMENT.md)
 
@@ -122,10 +126,12 @@ kubectl apply -f k8s/ --recursive
 - **Terraform**: Infrastructure as Code (IaC) for AWS VPC, EC2, ALB.
 - **Ansible**: Configuration management for nodes.
 
-### 🛡️ Security Implementation
+### 🛡️ Security & Reliability (Exam Enterprise Features)
+- **Automated Backups**: Velero + MinIO Integration (Daily Snapshots).
+- **Secrets Management**: HashiCorp Vault for handling sensitive data.
+- **HTTPS/TLS**: Cert-Manager with Let's Encrypt.
 - **Trivy**: Container image vulnerability scanning.
 - **Network Policies**: Backend isolated from internet; Database isolated from Frontend.
-- **Encryption**: SSL/TLS termination at ALB.
 
 ### 📊 Observability (Monitoring Stack)
 - **Prometheus**: Real-time metrics collection.

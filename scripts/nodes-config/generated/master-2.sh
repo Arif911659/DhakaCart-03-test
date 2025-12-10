@@ -53,7 +53,7 @@ sudo apt-mark hold kubelet kubeadm kubectl
 #   kubeadm token create --print-join-command
 #   kubeadm init phase upload-certs --upload-certs
 
-MASTER_1_IP="10.0.10.18"
+MASTER_1_IP="10.0.10.10"
 echo "Joining Master-2 to cluster at $MASTER_1_IP:6443..."
 
 echo ""

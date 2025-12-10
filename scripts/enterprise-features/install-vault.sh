@@ -8,10 +8,23 @@ set -e
 
 echo "🚀 Starting Vault Installation..."
 
+# 0. Check/Install Helm
+if ! command -v helm &> /dev/null; then
+    echo "⬇️  Helm not found. Installing..."
+    curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+    chmod 700 get_helm.sh
+    ./get_helm.sh
+    rm get_helm.sh
+    echo "✅ Helm installed."
+fi
+
 # 1. Add Helm Repo
 echo "📦 Adding HashiCorp Helm Repo..."
 helm repo add hashicorp https://helm.releases.hashicorp.com
 helm repo update
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 # 2. Install Vault
 echo "🛠️  Installing Vault (Dev Mode)..."
@@ -19,7 +32,7 @@ helm install vault hashicorp/vault \
   --namespace vault \
   --create-namespace \
   --version 0.25.0 \
-  -f ../../k8s/enterprise-features/vault/values.yaml
+  -f "$PROJECT_ROOT/k8s/enterprise-features/vault/values.yaml"
 
 # 3. Wait for Vault
 echo "⏳ Waiting for Vault to be ready..."

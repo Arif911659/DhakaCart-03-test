@@ -60,6 +60,7 @@ ssh -i "$KEY_FILE_PATH" ubuntu@"$BASTION_PUBLIC_IP" "mkdir -p ~/.ssh ~/nodes-con
 
 # Upload SSH key
 echo -e "${GREEN}🔑 Uploading SSH key...${NC}"
+ssh -i "$KEY_FILE_PATH" -o StrictHostKeyChecking=no ubuntu@"$BASTION_PUBLIC_IP" "rm -f ~/.ssh/${CLUSTER_NAME}-key.pem"
 scp -i "$KEY_FILE_PATH" "$KEY_FILE_PATH" ubuntu@"$BASTION_PUBLIC_IP:~/.ssh/${CLUSTER_NAME}-key.pem" || {
     echo -e "${RED}❌ Error: Failed to upload SSH key!${NC}"
     exit 1

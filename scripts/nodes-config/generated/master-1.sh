@@ -26,7 +26,9 @@ EOF
 sudo sysctl --system
 
 # Containerd install & Cgroup fix
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+curl -fSL https://download.docker.com/linux/ubuntu/gpg -o /tmp/docker.gpg
+sudo gpg --dearmor --yes -o /usr/share/keyrings/docker-archive-keyring.gpg /tmp/docker.gpg
+rm /tmp/docker.gpg
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
 sudo apt-get install -y containerd.io
@@ -39,7 +41,9 @@ sudo systemctl enable containerd
 
 # Kubernetes tools install (v1.29)
 sudo rm /etc/apt/sources.list.d/kubernetes.list 2>/dev/null
-curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+curl -fSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key -o /tmp/k8s.key
+sudo gpg --dearmor --yes -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg /tmp/k8s.key
+rm /tmp/k8s.key
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
 sudo apt-get update
@@ -47,7 +51,7 @@ sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 
 # Initialize Master-1
-MASTER_1_IP="10.0.10.18"
+MASTER_1_IP="10.0.10.10"
 echo "Initializing Kubernetes cluster on Master-1 (IP: $MASTER_1_IP)..."
 
 sudo kubeadm init \

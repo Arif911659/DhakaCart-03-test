@@ -3,7 +3,7 @@
 # Auto-generated from template - DO NOT EDIT MANUALLY
 # IPs and values will be replaced automatically
 
-set -e
+# set -e # Disabled to allow resuming/retrying without full exit on minor errors
 
 # System update
 sudo apt-get update
@@ -26,7 +26,9 @@ EOF
 sudo sysctl --system
 
 # Containerd install & Cgroup fix
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+curl -fSL https://download.docker.com/linux/ubuntu/gpg -o /tmp/docker.gpg
+sudo gpg --dearmor --yes -o /usr/share/keyrings/docker-archive-keyring.gpg /tmp/docker.gpg
+rm /tmp/docker.gpg
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
 sudo apt-get install -y containerd.io
@@ -39,7 +41,10 @@ sudo systemctl enable containerd
 
 # Kubernetes tools install ({{KUBERNETES_VERSION}})
 sudo rm /etc/apt/sources.list.d/kubernetes.list 2>/dev/null
-curl -fsSL https://pkgs.k8s.io/core:/stable:/{{KUBERNETES_VERSION}}/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+sudo mkdir -p /etc/apt/keyrings
+curl -fSL https://pkgs.k8s.io/core:/stable:/{{KUBERNETES_VERSION}}/deb/Release.key -o /tmp/k8s.key
+sudo gpg --dearmor --yes -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg /tmp/k8s.key
+rm /tmp/k8s.key
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/{{KUBERNETES_VERSION}}/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
 sudo apt-get update
@@ -50,11 +55,15 @@ sudo apt-mark hold kubelet kubeadm kubectl
 MASTER_1_IP="{{MASTER_1_IP}}"
 echo "Initializing Kubernetes cluster on Master-1 (IP: $MASTER_1_IP)..."
 
-sudo kubeadm init \
-  --pod-network-cidr=10.244.0.0/16 \
-  --control-plane-endpoint "${MASTER_1_IP}:6443" \
-  --upload-certs \
-  --ignore-preflight-errors=NumCPU
+if [ -f /etc/kubernetes/admin.conf ]; then
+    echo "✅ Cluster already initialized. Skipping init..."
+else
+    sudo kubeadm init \
+      --pod-network-cidr=10.244.0.0/16 \
+      --control-plane-endpoint "${MASTER_1_IP}:6443" \
+      --upload-certs \
+      --ignore-preflight-errors=NumCPU
+fi
 
 # Configure kubectl for the user
 mkdir -p $HOME/.kube

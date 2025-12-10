@@ -95,12 +95,14 @@ k6 version
 ```bash
 cd ~/DhakaCart-03-test/testing/load-tests
 
-# Interactive mode (Auto-detects ALB URL)
-./run-load-test.sh
+```bash
+cd ~/DhakaCart-03-test/testing/load-tests
 
-# Or specify your ALB URL manually
-BASE_URL=http://your-alb-url.com ./run-load-test.sh
+# Run Load Test (Auto-detects ALB URL)
+./run-load-test.sh
 ```
+
+**Note**: The script automatically fetches the ALB URL from your infrastructure config. No manual finding required!
 
 **Test Options:**
 1. **Smoke Test** - Quick 30-second check (2 users)

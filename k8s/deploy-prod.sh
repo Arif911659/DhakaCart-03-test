@@ -129,14 +129,26 @@ check_and_seed_db() {
     
     # Get Pod Name
     DB_POD=$(kubectl get pod -l app=dhakacart-db -n dhakacart -o jsonpath="{.items[0].metadata.name}")
+
+    # Check/Create Database
+    echo "Checking if database 'dhakacart' exists..."
+    DB_EXISTS=$(kubectl exec -i -n dhakacart "$DB_POD" -- psql -U dhakacart -d postgres -t -c "SELECT 1 FROM pg_database WHERE datname='dhakacart';" 2>/dev/null || echo "0")
     
-    # Check if products table exists and has data
+    if [ "$(echo "$DB_EXISTS" | tr -d '[:space:]')" != "1" ]; then
+        echo -e "${YELLOW}⚡ Database 'dhakacart' not found. Creating...${NC}"
+        kubectl exec -i -n dhakacart "$DB_POD" -- psql -U dhakacart -d postgres -c "CREATE DATABASE dhakacart;"
+        echo -e "${GREEN}✅ Database 'dhakacart' created.${NC}"
+    else
+        echo -e "${GREEN}✅ Database 'dhakacart' exists.${NC}"
+    fi
+    
+    # Check if products table exists
     ROW_COUNT=$(kubectl exec -i -n dhakacart "$DB_POD" -- psql -U dhakacart -d dhakacart -t -c "SELECT count(*) FROM information_schema.tables WHERE table_name = 'products';" 2>/dev/null || echo "0")
     
     if [ "$(echo "$ROW_COUNT" | tr -d '[:space:]')" = "1" ]; then
-         echo -e "${GREEN}✅ Database already initialized (products table found). Skipping seed.${NC}"
+         echo -e "${GREEN}✅ Schema already initialized (products table found). Skipping seed.${NC}"
     else
-         echo -e "${YELLOW}⚡ Database empty. Seeding data...${NC}"
+         echo -e "${YELLOW}⚡ Schema missing/empty. Seeding data...${NC}"
          kubectl exec -i -n dhakacart "$DB_POD" -- psql -U dhakacart -d dhakacart < "$SCRIPT_DIR/../database/init.sql"
          echo -e "${GREEN}✅ Database seeded successfully!${NC}"
     fi

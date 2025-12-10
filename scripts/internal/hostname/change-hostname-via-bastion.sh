@@ -234,9 +234,9 @@ change_masters_hostnames() {
         local hostname="Master-$((i + 1))"
         
         if change_remote_hostname "$master_ip" "$hostname"; then
-            ((success_count++))
+            success_count=$((success_count + 1))
         else
-            ((fail_count++))
+            fail_count=$((fail_count + 1))
         fi
         
         echo ""
@@ -257,9 +257,9 @@ change_workers_hostnames() {
         local hostname="Worker-$((i + 1))"
         
         if change_remote_hostname "$worker_ip" "$hostname"; then
-            ((success_count++))
+            success_count=$((success_count + 1))
         else
-            ((fail_count++))
+            fail_count=$((fail_count + 1))
         fi
         
         echo ""

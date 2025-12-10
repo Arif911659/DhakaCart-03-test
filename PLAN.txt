@@ -97,4 +97,25 @@ Status: [DONE] - Created `PROJECT_DEFENSE.md` with:
 - **Secrets**: Research HashiCorp Vault integration (or document why AWS Secrets Manager is preferred for Cloud).
 Target: Make the "Roadmap" items into "Implemented" items to get full marks.
 
+[x] 10 - ✅ Velero CLI installed & S3 Issue Solved.
+[🚀 DONE] We switched to **MinIO** (Self-Hosted S3) to bypass AWS permissions. Script: `scripts/enterprise-features/install-velero.sh` is updated.
+
+---
+
+### 📝 What is Left? (Exam Checklist)
+
+[x] 11 - **Verify Enterprise Features (Manual Run)**:
+[🚀 DONE] All scripts executed successfully on Master Node via SSH.
+- [x] Backups (Velero+MinIO) -> Ready
+- [x] HTTPS (Cert-Manager) -> Ready
+- [x] Seconds (Vault) -> Ready
+
+[ ] 12 - **Practice Presentation**:
+- Use `PROJECT_DEFENSE.md` as your script.
+- Record the video explaining the "Problem -> Solution" using the new tech specs.
+
+[ ] 13 - **Submit**:
+- Push all changes to GitHub.
+- Submit Link: https://forms.gle/KUrxqhVhxPR2cbMd6 (Deadline: Dec 15).
+
 See CHANGELOG.md for details.

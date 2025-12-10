@@ -52,7 +52,7 @@ sudo apt-mark hold kubelet kubeadm kubectl
 # Get token by running on Master-1:
 #   kubeadm token create --print-join-command
 
-MASTER_1_IP="10.0.10.18"
+MASTER_1_IP="10.0.10.10"
 echo "Joining Worker node to cluster at $MASTER_1_IP:6443..."
 
 echo ""

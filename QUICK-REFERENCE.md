@@ -145,16 +145,17 @@ ansible all -m command -a "df -h"
 ./scripts/fetch-kubeconfig.sh
 ```
 
-### Phase 2 (Enterprise)
+### Phase 8 (Exam Compliance Features)
+Run these on Master-1 via SSH:
 
 ```bash
-# Enable Backup (Velero)
+# 1. Backups (Velero + MinIO)
 ./scripts/enterprise-features/install-velero.sh
 
-# Enable HTTPS (Cert-Manager)
+# 2. HTTPS (Cert-Manager)
 ./scripts/enterprise-features/install-cert-manager.sh
 
-# Enable Secrets (Vault)
+# 3. Secrets (Vault)
 ./scripts/enterprise-features/install-vault.sh
 ```
 
