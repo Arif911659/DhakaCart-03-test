@@ -46,4 +46,4 @@ testing/load-tests/reports
 *-key.pem
 terraform.tfvars
 *.tfvars
-!*.tfvars.example
+!*.tfvars.example.deploy_state

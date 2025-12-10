@@ -3,7 +3,7 @@
 # Auto-generated from template - DO NOT EDIT MANUALLY
 # IPs and values will be replaced automatically
 
-set -e
+# set -e # Disabled to allow resuming/retrying without full exit on minor errors
 
 # System update
 sudo apt-get update
@@ -41,6 +41,7 @@ sudo systemctl enable containerd
 
 # Kubernetes tools install (v1.29)
 sudo rm /etc/apt/sources.list.d/kubernetes.list 2>/dev/null
+sudo mkdir -p /etc/apt/keyrings
 curl -fSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key -o /tmp/k8s.key
 sudo gpg --dearmor --yes -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg /tmp/k8s.key
 rm /tmp/k8s.key
@@ -54,11 +55,15 @@ sudo apt-mark hold kubelet kubeadm kubectl
 MASTER_1_IP="10.0.10.10"
 echo "Initializing Kubernetes cluster on Master-1 (IP: $MASTER_1_IP)..."
 
-sudo kubeadm init \
-  --pod-network-cidr=10.244.0.0/16 \
-  --control-plane-endpoint "${MASTER_1_IP}:6443" \
-  --upload-certs \
-  --ignore-preflight-errors=NumCPU
+if [ -f /etc/kubernetes/admin.conf ]; then
+    echo "✅ Cluster already initialized. Skipping init..."
+else
+    sudo kubeadm init \
+      --pod-network-cidr=10.244.0.0/16 \
+      --control-plane-endpoint "${MASTER_1_IP}:6443" \
+      --upload-certs \
+      --ignore-preflight-errors=NumCPU
+fi
 
 # Configure kubectl for the user
 mkdir -p $HOME/.kube

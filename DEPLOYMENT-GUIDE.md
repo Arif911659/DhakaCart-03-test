@@ -407,24 +407,33 @@ curl http://<ALB_DNS>/api/health
 
 ## Phase 8: Exam Compliance (Enterprise Features)
 
-To meet the 10 Exam Constraints, run these scripts immediately after deployment:
+To meet the 10 Exam Constraints, these scripts must be run **on the Master Node**.
 
-### Step 8.1: Install Velero + MinIO (Backups)
-Bypasses AWS S3 permission issues by running MinIO in-cluster.
+### Step 8.1: Connect to Master Node
 ```bash
-./scripts/enterprise-features/install-velero.sh
+# 1. SSH to Master-1 (via Bastion)
+ssh -i terraform/simple-k8s/dhakacart-k8s-key.pem ubuntu@<BASTION_IP>
+ssh -i ~/.ssh/dhakacart-k8s-key.pem ubuntu@<MASTER1_IP>
+
+# 2. Go to scripts directory
+cd ~/scripts/enterprise-features
 ```
 
-### Step 8.2: Install Cert-Manager (HTTPS)
-Enables per-pod TLS certificates.
+### Step 8.2: Run Enterprise Scripts
+
+**A. Enable Automated Backups (Velero):**
 ```bash
-./scripts/enterprise-features/install-cert-manager.sh
+./install-velero.sh
 ```
 
-### Step 8.3: Install Vault (Secrets)
-Enables bank-grade secret management.
+**B. Enable HTTPS (Cert-Manager):**
 ```bash
-./scripts/enterprise-features/install-vault.sh
+./install-cert-manager.sh
+```
+
+**C. Enable Vault Secrets:**
+```bash
+./install-vault.sh
 ```
 
 ---

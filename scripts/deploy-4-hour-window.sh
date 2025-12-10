@@ -109,40 +109,40 @@ fi
 # Step 4: Upload to Bastion, Propagate, and Configure Nodes
 if [ "$LAST_STEP" -ge 4 ]; then
      echo -e "${GREEN}✅ [4/7] Kubernetes nodes already configured (Upload & Hostnames). Skipping...${NC}"
-else
-    echo -e "${YELLOW}[4/7] 🚀 Configuring Kubernetes nodes (Upload & Propagate)...${NC}"
-    # Step 4.0: Upload to Bastion
-    "$PROJECT_ROOT/scripts/nodes-config/upload-to-bastion.sh"
-    
-    # Upload prereq templates to Bastion (needed for automated join)
-    echo -e "${YELLOW}📤 Uploading prereq templates to Bastion...${NC}"
-    scp -i "$SSH_KEY_PATH" "$PROJECT_ROOT/scripts/nodes-config/templates/master-2-prereq.sh" ubuntu@${BASTION_IP}:~/nodes-config/
-    scp -i "$SSH_KEY_PATH" "$PROJECT_ROOT/scripts/nodes-config/templates/workers-prereq.sh" ubuntu@${BASTION_IP}:~/nodes-config/
-    
-    # Propagate scripts from Bastion to Internal Nodes
-    echo -e "${YELLOW}🚀 Propagating scripts to internal nodes...${NC}"
-    
-    # Master-1
-    ssh -i "$SSH_KEY_PATH" ubuntu@${BASTION_IP} \
-      "scp -i ~/.ssh/dhakacart-k8s-key.pem ~/nodes-config/master-1.sh ubuntu@${MASTER_IPS[0]}:~/"
-    
-    # Master-2
-    if [ ${#MASTER_IPS[@]} -gt 1 ]; then
-    ssh -i "$SSH_KEY_PATH" ubuntu@${BASTION_IP} \
-      "scp -i ~/.ssh/dhakacart-k8s-key.pem ~/nodes-config/master-2-prereq.sh ubuntu@${MASTER_IPS[1]}:~/"
-    fi
-    
-    # Workers
-    for worker_ip in "${WORKER_IPS[@]}"; do
-    ssh -i "$SSH_KEY_PATH" ubuntu@${BASTION_IP} \
-      "scp -i ~/.ssh/dhakacart-k8s-key.pem ~/nodes-config/workers-prereq.sh ubuntu@$worker_ip:~/"
-    done
-    
-    echo -e "${GREEN}✅ Scripts propagated${NC}"
-    
-    echo "⏳ Waiting 30s for Bastion readiness..."
-    sleep 30
-    
+     else
+         echo -e "${YELLOW}[4/7] 🚀 Configuring Kubernetes nodes (Upload & Propagate)...${NC}"
+             # Step 4.0: Upload to Bastion
+                 "$PROJECT_ROOT/scripts/nodes-config/upload-to-bastion.sh"
+
+                         # Upload prereq templates to Bastion (needed for automated join)
+                             echo -e "${YELLOW}📤 Uploading prereq templates to Bastion...${NC}"
+                                 scp -i "$SSH_KEY_PATH" "$PROJECT_ROOT/scripts/nodes-config/templates/master-2-prereq.sh" ubuntu@${BASTION_IP}:~/nodes-config/
+                                     scp -i "$SSH_KEY_PATH" "$PROJECT_ROOT/scripts/nodes-config/templates/workers-prereq.sh" ubuntu@${BASTION_IP}:~/nodes-config/
+
+                                             # Propagate scripts from Bastion to Internal Nodes
+                                                 echo -e "${YELLOW}🚀 Propagating scripts to internal nodes...${NC}"
+
+                                                         # Master-1
+                                                             ssh -i "$SSH_KEY_PATH" -o StrictHostKeyChecking=no ubuntu@${BASTION_IP} \
+                                                                   "scp -i ~/.ssh/dhakacart-k8s-key.pem -o StrictHostKeyChecking=no ~/nodes-config/master-1.sh ubuntu@${MASTER_IPS[0]}:~/"
+
+                                                                           # Master-2
+                                                                               if [ ${#MASTER_IPS[@]} -gt 1 ]; then
+                                                                                   ssh -i "$SSH_KEY_PATH" -o StrictHostKeyChecking=no ubuntu@${BASTION_IP} \
+                                                                                         "scp -i ~/.ssh/dhakacart-k8s-key.pem -o StrictHostKeyChecking=no ~/nodes-config/master-2-prereq.sh ubuntu@${MASTER_IPS[1]}:~/"
+                                                                                             fi
+
+                                                                                                     # Workers
+                                                                                                         for worker_ip in "${WORKER_IPS[@]}"; do
+                                                                                                             ssh -i "$SSH_KEY_PATH" -o StrictHostKeyChecking=no ubuntu@${BASTION_IP} \
+                                                                                                                   "scp -i ~/.ssh/dhakacart-k8s-key.pem -o StrictHostKeyChecking=no ~/nodes-config/workers-prereq.sh ubuntu@$worker_ip:~/"
+                                                                                                                       done
+
+                                                                                                                               echo -e "${GREEN}✅ Scripts propagated${NC}"
+
+                                                                                                                                       echo "⏳ Waiting 30s for Bastion readiness..."
+                                                                                                                                           sleep 30
+                                                                                                                                               
     # Step 4.1: Change Hostnames
     echo -e "${YELLOW}[4.1/7] 🏷️  Updating Hostnames...${NC}"
     bash "$PROJECT_ROOT/scripts/internal/hostname/change-hostname-via-bastion.sh" --all --yes
@@ -217,7 +217,6 @@ else
     
     wait
     echo -e "${GREEN}✅ All ${#WORKER_IPS[@]} workers joined${NC}"
-    
     update_state 5
     echo ""
 fi

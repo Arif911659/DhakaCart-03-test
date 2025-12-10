@@ -105,20 +105,23 @@ cd ../../testing/load-tests
 To meet the **10 Constraints** of the exam, you MUST run these scripts after the main deployment.
 
 ### 1. Enable Automated Backups (Velero)
-*Use `sudo` password if prompted.*
+> **⚠️ Run on Master Node:**
+> `ssh -i terraform/simple-k8s/dhakacart-k8s-key.pem ubuntu@<MASTER_IP>`
+
 ```bash
-./scripts/enterprise-features/install-velero.sh
+cd scripts/enterprise-features
+./install-velero.sh
 ```
-*   **Result**: Velero installed, S3 backup bucket configured.
+*   **Result**: Velero installed, MinIO bucket configured.
 
 ### 2. Enable HTTPS (Cert-Manager)
 ```bash
-./scripts/enterprise-features/install-cert-manager.sh
+./install-cert-manager.sh
 ```
 
 ### 3. Enable Vault Secrets
 ```bash
-./scripts/enterprise-features/install-vault.sh
+./install-vault.sh
 ```
 
 ---

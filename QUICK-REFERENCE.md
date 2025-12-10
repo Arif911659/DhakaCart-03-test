@@ -146,7 +146,16 @@ ansible all -m command -a "df -h"
 ```
 
 ### Phase 8 (Exam Compliance Features)
-Run these on Master-1 via SSH:
+**⚠️ Run on Master-1 via SSH:**
+
+```bash
+# SSH to Master-1 from Bastion
+ssh -i terraform/simple-k8s/dhakacart-k8s-key.pem ubuntu@<BASTION_IP>
+ssh -i ~/.ssh/dhakacart-k8s-key.pem ubuntu@<MASTER1_IP>
+
+# Go to scripts
+cd scripts/enterprise-features
+```
 
 ```bash
 # 1. Backups (Velero + MinIO)

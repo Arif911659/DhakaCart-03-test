@@ -10,6 +10,9 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const ADMIN_API_KEY = process.env.ADMIN_API_KEY;
 
+// Trust Proxy for ALB/Nginx
+app.set('trust proxy', 1);
+
 // Middleware
 const corsOptions = {
   origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
