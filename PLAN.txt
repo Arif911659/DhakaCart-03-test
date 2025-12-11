@@ -124,6 +124,7 @@ See CHANGELOG.md for details.
 15 - [DONE] Cleaned up `docs/` directory by removing old debugging logs and redundant setup guides. Kept only architecture, guides, and runbooks subfolders. 
 16 - [DONE] Verified and updated `docs/architecture/system-architecture.md`. Added missing Enterprise Features (Vault, Velero, Cert-Manager) to match current project state. Deleted outdated `DEPLOYMENT_ARCHITECTURE(29-11-25).md`. 
 17 - [DONE] Added detailed bilingual (English + Bangla) comments to all critical shell scripts (`deploy-4-hour-window.sh`, Enterprise Features, Core Utilities). This covers the most important scripts for the defense. 
+18 - [FUTURE] Create a "Clean Export" repository for the examiner (excluding private notes/scripts) before final submission. Strategy: Create fresh repo from `DhakaCart-Submission` folder. 
 
 Must Update যে কাজগুলা করা হয়েছেঃ
 - 4-HOUR-DEPLOYMENT.md
