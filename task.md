@@ -20,7 +20,7 @@
 - [x] **Verify Implementation** <!-- id: 10 -->
     - [x] Check status of `install-velero.sh` <!-- id: 11 -->
     - [x] Verify MinIO backup works <!-- id: 12 -->
-- [ ] **Final Exam Defense** <!-- id: 13 -->
+- [/] **Final Exam Defense** <!-- id: 13 -->
     - [ ] Practice "Zero to Hero" Deployment <!-- id: 14 -->
     - [ ] Record Video Presentation <!-- id: 15 -->
     - [ ] Submit to Exam Portal <!-- id: 16 -->

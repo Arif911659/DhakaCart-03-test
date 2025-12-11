@@ -120,6 +120,8 @@ Target: Make the "Roadmap" items into "Implemented" items to get full marks.
 
 See CHANGELOG.md for details.
 
+14 - [DONE] `PROJECT_DEFENSE.md` renamed to `INTERNAL_DEFENSE_SCRIPT.md` and removed from public documentation (README, etc.) so it remains private for your use. 
+
 Must Update যে কাজগুলা করা হয়েছেঃ
 - 4-HOUR-DEPLOYMENT.md
 - MANUAL_RELEASE_GUIDE.md   
