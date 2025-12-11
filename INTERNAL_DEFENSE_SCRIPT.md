@@ -23,70 +23,76 @@
 
 ### Current System Problems (From EXAM_CONTENT.txt)
 
-**Hardware & Hosting Issues:**
-- Single desktop computer (2015) with 8GB RAM
-- CPU overheated to 95°C during sales, auto-shutdown
-- No backup server - single point of failure
-- Struggles beyond 5,000 concurrent visitors
+**Hardware & Hosting Issues (হার্ডওয়্যার ও হোস্টিং সমস্যা):**
+- Single desktop computer (2015) with 8GB RAM - **একটি মাত্র desktop computer, 8GB RAM**
+- CPU overheated to 95°C during sales, auto-shutdown - **সেল চলাকালীন CPU 95°C-তে গরম হয়ে auto-shutdown**
+- No backup server - single point of failure - **কোনো backup server নেই, single point of failure**
+- Struggles beyond 5,000 concurrent visitors - **5,000-এর বেশি concurrent visitor-এ সমস্যা**
 
-**Deployment & Maintenance Issues:**
-- 1-3 hours downtime for every code update
-- Manual file transfer via FileZilla
-- No testing/staging environment
-- Site offline 2-3 times per week
+**Deployment & Maintenance Issues (ডিপ্লয়মেন্ট ও মেইনটেন্যান্স সমস্যা):**
+- 1-3 hours downtime for every code update - **প্রতিটি code update-এ 1-3 ঘণ্টা downtime**
+- Manual file transfer via FileZilla - **FileZilla দিয়ে manual file transfer**
+- No testing/staging environment - **কোনো testing/staging environment নেই**
+- Site offline 2-3 times per week - **সপ্তাহে 2-3 বার site offline**
 
-**Monitoring & Logging Issues:**
-- No monitoring system
-- Downtime discovered only when customers complain
-- Manual log file inspection (500MB files, 4+ hours per incident)
+**Monitoring & Logging Issues (মনিটরিং ও লগিং সমস্যা):**
+- No monitoring system - **কোনো monitoring system নেই**
+- Downtime discovered only when customers complain - **Customer complain করলে তবেই downtime জানা যায়**
+- Manual log file inspection (500MB files, 4+ hours per incident) - **500MB log file manually check করতে 4+ ঘণ্টা লাগে**
 
-**Security & Data Management Issues:**
-- Database passwords hard-coded in source code
-- Database publicly accessible, no firewall
-- No HTTPS - plain text data transmission
-- Weak password encryption, no rate-limiting
+**Security & Data Management Issues (সিকিউরিটি ও ডাটা ম্যানেজমেন্ট সমস্যা):**
+- Database passwords hard-coded in source code - **Database password source code-এ hard-coded**
+- Database publicly accessible, no firewall - **Database publicly accessible, কোনো firewall নেই**
+- No HTTPS - plain text data transmission - **HTTPS নেই, plain text data transmission**
+- Weak password encryption, no rate-limiting - **দুর্বল password encryption, rate-limiting নেই**
 
-**Source Code & Backup Issues:**
-- Code only on laptop and production computer
-- No version control (Git)
-- Manual backups to external drive (recently failed)
-- Risk of permanent data loss
+**Source Code & Backup Issues (সোর্স কোড ও ব্যাকআপ সমস্যা):**
+- Code only on laptop and production computer - **Code শুধু laptop ও production computer-এ**
+- No version control (Git) - **কোনো version control (Git) নেই**
+- Manual backups to external drive (recently failed) - **External drive-এ manual backup (সম্প্রতি fail করেছে)**
+- Risk of permanent data loss - **Permanent data loss-এর ঝুঁকি**
 
-### Our Solution: Cloud-Native Transformation
+### Our Solution: Cloud-Native Transformation (আমাদের সমাধান: Cloud-Native Transformation)
 
-**Transformation Summary:**
-- **Before:** Single machine, manual deployment, no monitoring, insecure
-- **After:** Cloud-native, automated deployment, full observability, enterprise security
+**Transformation Summary (রূপান্তরের সারাংশ):**
+- **Before (আগে):** Single machine, manual deployment, no monitoring, insecure - **একটি মাত্র machine, manual deployment, কোনো monitoring নেই, insecure**
+- **After (পরে):** Cloud-native, automated deployment, full observability, enterprise security - **Cloud-native, automated deployment, full observability, enterprise security**
 
 ---
 
-## 📋 Problem-Solution Matrix
+## 📋 Problem-Solution Matrix (সমস্যা-সমাধান ম্যাট্রিক্স)
+
+এই টেবিলে আমরা দেখাচ্ছি কিভাবে প্রতিটি সমস্যার সমাধান করেছি:
 
 | Problem Category | Original Problem | Our Solution | Implementation |
 |-----------------|-----------------|--------------|----------------|
-| **Hardware** | Single machine, 8GB RAM, CPU overheating | Multi-instance cloud architecture (2 Masters, 3 Workers) | `terraform/simple-k8s/main.tf` - EC2 instances with auto-scaling |
-| **Scalability** | Struggles beyond 5,000 visitors | Load balancer + Auto-scaling (HPA) | `k8s/hpa.yaml` - Horizontal Pod Autoscaler (3-10 backend, 2-8 frontend) |
-| **Deployment** | 1-3 hours downtime, manual FileZilla | Automated CI/CD pipeline | `scripts/deploy-4-hour-window.sh` - One-command deployment |
-| **Monitoring** | No monitoring, discover downtime from customers | Prometheus + Grafana dashboards | `k8s/monitoring/` - Complete observability stack |
-| **Logging** | Manual 500MB log file inspection | Centralized logging with Loki | `k8s/monitoring/loki/` + `promtail/` - Log aggregation |
-| **Security** | Hard-coded passwords, no HTTPS, public DB | Secrets management + HTTPS + Network policies | `k8s/enterprise-features/vault/` + `cert-manager/` + `security/network-policies/` |
-| **Backup** | Manual Sunday backups, external drive failed | Automated daily backups | `k8s/enterprise-features/velero/` - Daily automated backups to MinIO |
-| **Version Control** | No Git, code in Gmail attachments | Git repository with proper commits | GitHub repository with commit history |
-| **Infrastructure** | Manual server setup | Infrastructure as Code | `terraform/simple-k8s/` - Complete IaC definition |
-| **Documentation** | No documentation, knowledge in developer's head | Comprehensive documentation | `README.md`, `4-HOUR-DEPLOYMENT.md`, `PROJECT-STRUCTURE.md` |
+| **Hardware** | Single machine, 8GB RAM, CPU overheating<br/>**একটি মাত্র machine, CPU overheating** | Multi-instance cloud architecture (2 Masters, 3 Workers)<br/>**Multi-instance cloud architecture** | `terraform/simple-k8s/main.tf` - EC2 instances with auto-scaling |
+| **Scalability** | Struggles beyond 5,000 visitors<br/>**5,000 visitor-এর বেশি হলে সমস্যা** | Load balancer + Auto-scaling (HPA)<br/>**Load balancer + Auto-scaling** | `k8s/hpa.yaml` - Horizontal Pod Autoscaler (3-10 backend, 2-8 frontend) |
+| **Deployment** | 1-3 hours downtime, manual FileZilla<br/>**1-3 ঘণ্টা downtime, manual FileZilla** | Automated CI/CD pipeline<br/>**Automated CI/CD pipeline** | `scripts/deploy-4-hour-window.sh` - One-command deployment |
+| **Monitoring** | No monitoring, discover downtime from customers<br/>**কোনো monitoring নেই, customer complain করলে জানা যায়** | Prometheus + Grafana dashboards<br/>**Prometheus + Grafana dashboards** | `k8s/monitoring/` - Complete observability stack |
+| **Logging** | Manual 500MB log file inspection<br/>**500MB log file manually check** | Centralized logging with Loki<br/>**Loki দিয়ে centralized logging** | `k8s/monitoring/loki/` + `promtail/` - Log aggregation |
+| **Security** | Hard-coded passwords, no HTTPS, public DB<br/>**Hard-coded passwords, HTTPS নেই, public DB** | Secrets management + HTTPS + Network policies<br/>**Secrets management + HTTPS + Network policies** | `k8s/enterprise-features/vault/` + `cert-manager/` + `security/network-policies/` |
+| **Backup** | Manual Sunday backups, external drive failed<br/>**Manual Sunday backup, external drive fail** | Automated daily backups<br/>**Automated daily backups** | `k8s/enterprise-features/velero/` - Daily automated backups to MinIO |
+| **Version Control** | No Git, code in Gmail attachments<br/>**Git নেই, code Gmail attachment-এ** | Git repository with proper commits<br/>**Git repository with proper commits** | GitHub repository with commit history |
+| **Infrastructure** | Manual server setup<br/>**Manual server setup** | Infrastructure as Code<br/>**Infrastructure as Code** | `terraform/simple-k8s/` - Complete IaC definition |
+| **Documentation** | No documentation, knowledge in developer's head<br/>**কোনো documentation নেই, knowledge developer-এর মাথায়** | Comprehensive documentation<br/>**Comprehensive documentation** | `README.md`, `4-HOUR-DEPLOYMENT.md`, `PROJECT-STRUCTURE.md` |
 
 ---
 
-## 🏗️ Detailed Requirement Coverage
+## 🏗️ Detailed Requirement Coverage (বিস্তারিত Requirement কভারেজ)
 
 ### Requirement 1: Cloud Infrastructure & Scalability ✅
 
-**Exam Requirement:**
-- Migrate to cloud with redundancy and load balancing
-- Run multiple instances behind load balancer
-- Enable auto-scaling
-- Protect database with private subnets and firewalls
-- Define everything using Infrastructure-as-Code (IaC)
+**📹 Video Brief (ভিডিও সংক্ষিপ্তসার):**
+আমরা single machine থেকে multi-instance cloud architecture-তে migrate করেছি। AWS ALB দিয়ে load balancing, HPA দিয়ে auto-scaling, এবং Terraform IaC দিয়ে সব infrastructure define করেছি। Database-কে private subnet ও network policies দিয়ে protect করেছি।
+**Key Files:** `terraform/simple-k8s/main.tf`, `k8s/hpa.yaml`
+
+**Exam Requirement (পরীক্ষার Requirement):**
+- Migrate to cloud with redundancy and load balancing - **Cloud-এ migrate করুন redundancy ও load balancing সহ**
+- Run multiple instances behind load balancer - **Load balancer-এর পিছনে multiple instances চালান**
+- Enable auto-scaling - **Auto-scaling enable করুন**
+- Protect database with private subnets and firewalls - **Private subnets ও firewalls দিয়ে database protect করুন**
+- Define everything using Infrastructure-as-Code (IaC) - **Infrastructure-as-Code (IaC) দিয়ে সব define করুন**
 
 **Our Implementation:**
 
@@ -99,9 +105,9 @@
 - **1 Bastion Host:** Secure access point
 - **Static IP Strategy:** Predictable networking (Bastion: 10.0.1.10, Masters: 10.0.10.10-11, Workers: 10.0.10.20-22)
 
-**How it solves the problem:**
-- **Before:** Single machine failure = complete outage
-- **After:** Multiple nodes - if one fails, others continue serving traffic
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** Single machine failure = complete outage - **একটি machine fail হলে পুরো system down**
+- **After (পরে):** Multiple nodes - if one fails, others continue serving traffic - **Multiple nodes - একটি fail হলে অন্যগুলো traffic serve করতে থাকে**
 
 **Verification:**
 ```bash
@@ -119,9 +125,9 @@ kubectl get nodes
   - Backend: Port 30081 (NodePort)
 - **Path-based routing:** `/api*` → Backend, `/` → Frontend
 
-**How it solves the problem:**
-- **Before:** Single point of failure, no traffic distribution
-- **After:** Load distributed across multiple worker nodes, automatic failover
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** Single point of failure, no traffic distribution - **Single point of failure, traffic distribution নেই**
+- **After (পরে):** Load distributed across multiple worker nodes, automatic failover - **Multiple worker nodes-এ load distribute, automatic failover**
 
 **Verification:**
 ```bash
@@ -140,9 +146,9 @@ curl http://<ALB_DNS>/
   - CPU threshold: 70%
   - Memory threshold: 80%
 
-**How it solves the problem:**
-- **Before:** Fixed capacity, CPU overheating at 5,000 visitors
-- **After:** Automatic scaling to handle 100,000+ concurrent visitors
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** Fixed capacity, CPU overheating at 5,000 visitors - **Fixed capacity, 5,000 visitor-এ CPU overheating**
+- **After (পরে):** Automatic scaling to handle 100,000+ concurrent visitors - **100,000+ concurrent visitor handle করার জন্য automatic scaling**
 
 **Verification:**
 ```bash
@@ -161,9 +167,9 @@ kubectl describe hpa dhakacart-backend-hpa -n dhakacart
   - ALB → Worker nodes (ports 30080, 30081)
   - Bastion → All nodes (SSH only)
 
-**How it solves the problem:**
-- **Before:** Database publicly accessible, no firewall
-- **After:** Database in private subnet, network policies restrict access
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** Database publicly accessible, no firewall - **Database publicly accessible, firewall নেই**
+- **After (পরে):** Database in private subnet, network policies restrict access - **Database private subnet-এ, network policies access restrict করে**
 
 **Verification:**
 ```bash
@@ -177,9 +183,9 @@ kubectl describe networkpolicy dhakacart-database-policy -n dhakacart
 - `terraform/simple-k8s/alb-backend-config.tf` - ALB configuration
 - `terraform/simple-k8s/variables.tf` - Configuration variables
 
-**How it solves the problem:**
-- **Before:** Manual server setup, no reproducibility
-- **After:** Complete infrastructure defined in code, version-controlled, reproducible
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** Manual server setup, no reproducibility - **Manual server setup, reproducibility নেই**
+- **After (পরে):** Complete infrastructure defined in code, version-controlled, reproducible - **Code-এ complete infrastructure define, version-controlled, reproducible**
 
 **Verification:**
 ```bash
@@ -192,12 +198,16 @@ terraform apply
 
 ### Requirement 2: Containerization & Orchestration ✅
 
-**Exam Requirement:**
-- Containerize all components (React frontend, Node.js backend, database, cache)
-- Use orchestration system (Kubernetes)
-- Maintain multiple healthy replicas
-- Perform health checks and self-healing
-- Enable rolling updates without downtime
+**📹 Video Brief (ভিডিও সংক্ষিপ্তসার):**
+সব components (React frontend, Node.js backend, database, cache) Docker container-এ convert করেছি। Kubernetes orchestration দিয়ে multiple replicas maintain করছি, health checks ও self-healing enable করেছি, এবং zero downtime rolling updates support করছি।
+**Key Files:** `backend/Dockerfile`, `frontend/Dockerfile`, `k8s/deployments/*.yaml`
+
+**Exam Requirement (পরীক্ষার Requirement):**
+- Containerize all components (React frontend, Node.js backend, database, cache) - **সব components containerize করুন**
+- Use orchestration system (Kubernetes) - **Orchestration system (Kubernetes) ব্যবহার করুন**
+- Maintain multiple healthy replicas - **Multiple healthy replicas maintain করুন**
+- Perform health checks and self-healing - **Health checks ও self-healing perform করুন**
+- Enable rolling updates without downtime - **Downtime ছাড়াই rolling updates enable করুন**
 
 **Our Implementation:**
 
@@ -213,9 +223,9 @@ terraform apply
 - **Database:** `postgres:15-alpine`
 - **Redis:** `redis:7-alpine`
 
-**How it solves the problem:**
-- **Before:** Environment differences between local and production
-- **After:** Consistent containerized environment everywhere
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** Environment differences between local and production - **Local ও production-এ environment difference**
+- **After (পরে):** Consistent containerized environment everywhere - **সব জায়গায় consistent containerized environment**
 
 #### 2.2 Kubernetes Orchestration
 **Files:**
@@ -230,9 +240,9 @@ terraform apply
 - **Database:** 1 replica with persistent storage
 - **Redis:** 1 replica with persistent storage
 
-**How it solves the problem:**
-- **Before:** Single instance, no redundancy
-- **After:** Multiple replicas, automatic failover
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** Single instance, no redundancy - **Single instance, redundancy নেই**
+- **After (পরে):** Multiple replicas, automatic failover - **Multiple replicas, automatic failover**
 
 **Verification:**
 ```bash
@@ -261,9 +271,9 @@ readinessProbe:
   periodSeconds: 5
 ```
 
-**How it solves the problem:**
-- **Before:** No health monitoring, manual intervention required
-- **After:** Automatic health checks, Kubernetes restarts unhealthy pods
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** No health monitoring, manual intervention required - **কোনো health monitoring নেই, manual intervention লাগে**
+- **After (পরে):** Automatic health checks, Kubernetes restarts unhealthy pods - **Automatic health checks, Kubernetes unhealthy pods restart করে**
 
 **Verification:**
 ```bash
@@ -285,9 +295,9 @@ strategy:
     maxUnavailable: 0  # Zero downtime
 ```
 
-**How it solves the problem:**
-- **Before:** 1-3 hours downtime for updates
-- **After:** Zero downtime rolling updates
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** 1-3 hours downtime for updates - **Update-এ 1-3 ঘণ্টা downtime**
+- **After (পরে):** Zero downtime rolling updates - **Zero downtime rolling updates**
 
 **Verification:**
 ```bash
@@ -300,13 +310,17 @@ kubectl rollout status deployment/dhakacart-backend -n dhakacart
 
 ### Requirement 3: Continuous Integration & Deployment (CI/CD) ✅
 
-**Exam Requirement:**
-- Fully automated CI/CD pipeline
-- On each commit: run tests → build containers → deploy automatically
-- Rolling or blue-green deployments for zero downtime
-- Automatic rollback if errors occur
-- Send notifications for deployment status
-- Target: Reduce 3-hour manual updates to 10-minute automated deployments
+**📹 Video Brief (ভিডিও সংক্ষিপ্তসার):**
+GitHub Actions দিয়ে fully automated CI/CD pipeline তৈরি করেছি। প্রতিটি commit-এ automatically tests run হয়, containers build হয়, এবং deploy হয়। Zero downtime rolling deployments ও automatic rollback support করি। 3 ঘণ্টার manual deployment এখন 10 মিনিটে automated হয়ে যায়।
+**Key Files:** `.github/workflows/ci.yml`, `.github/workflows/cd.yml`, `scripts/deploy-4-hour-window.sh`
+
+**Exam Requirement (পরীক্ষার Requirement):**
+- Fully automated CI/CD pipeline - **Fully automated CI/CD pipeline**
+- On each commit: run tests → build containers → deploy automatically - **প্রতিটি commit-এ: tests run → containers build → automatically deploy**
+- Rolling or blue-green deployments for zero downtime - **Zero downtime-এর জন্য rolling বা blue-green deployments**
+- Automatic rollback if errors occur - **Error হলে automatic rollback**
+- Send notifications for deployment status - **Deployment status-এর জন্য notifications send করুন**
+- Target: Reduce 3-hour manual updates to 10-minute automated deployments - **লক্ষ্য: 3 ঘণ্টার manual update 10 মিনিটের automated deployment-এ reduce করুন**
 
 **Our Implementation:**
 
@@ -325,9 +339,9 @@ kubectl rollout status deployment/dhakacart-backend -n dhakacart
 - **Frontend Tests:** React component tests, build verification
 - **Security Scanning:** Trivy vulnerability scanner
 
-**How it solves the problem:**
-- **Before:** No testing, deployments break in production
-- **After:** Automated tests catch issues before deployment
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** No testing, deployments break in production - **কোনো testing নেই, production-এ deployment break**
+- **After (পরে):** Automated tests catch issues before deployment - **Automated tests deployment-এর আগে issues catch করে**
 
 **Verification:**
 ```bash
@@ -345,9 +359,9 @@ cd frontend && npm test
 - Pushes to Docker Hub with version tags
 - Caches layers for faster builds
 
-**How it solves the problem:**
-- **Before:** Manual Docker build and push
-- **After:** Automatic build and push on code commit
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** Manual Docker build and push - **Manual Docker build ও push**
+- **After (পরে):** Automatic build and push on code commit - **Code commit-এ automatic build ও push**
 
 #### 3.4 Automated Deployment
 **File:** `scripts/deploy-4-hour-window.sh`
@@ -358,9 +372,9 @@ cd frontend && npm test
 - **Auto-Seed:** Automatically seeds database with initial data
 - **Verification:** Checks system health after deployment
 
-**How it solves the problem:**
-- **Before:** 3-hour manual deployment with FileZilla
-- **After:** 10-minute automated deployment with one command
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** 3-hour manual deployment with FileZilla - **FileZilla দিয়ে 3 ঘণ্টার manual deployment**
+- **After (পরে):** 10-minute automated deployment with one command - **একটি command দিয়ে 10 মিনিটের automated deployment**
 
 **Verification:**
 ```bash
@@ -377,19 +391,23 @@ cd frontend && npm test
 kubectl rollout undo deployment/dhakacart-backend -n dhakacart
 ```
 
-**How it solves the problem:**
-- **Before:** No rollback mechanism, manual recovery
-- **After:** Automatic rollback if deployment fails
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** No rollback mechanism, manual recovery - **কোনো rollback mechanism নেই, manual recovery**
+- **After (পরে):** Automatic rollback if deployment fails - **Deployment fail হলে automatic rollback**
 
 ---
 
 ### Requirement 4: Monitoring & Alerting ✅
 
-**Exam Requirement:**
-- Deploy monitoring tools (Prometheus + Grafana)
-- Create real-time dashboards with system health indicators
-- Use color-coded status (green/yellow/red)
-- Configure alerts for anomalies (high CPU, failed health checks, low disk space)
+**📹 Video Brief (ভিডিও সংক্ষিপ্তসার):**
+Prometheus দিয়ে metrics collect করি এবং Grafana দিয়ে real-time dashboards দেখি। Color-coded status (green/yellow/red) দিয়ে system health monitor করি। High CPU, failed health checks, low disk space-এর মতো anomalies-এর জন্য alerts configure করেছি।
+**Key Files:** `k8s/monitoring/prometheus/`, `k8s/monitoring/grafana/`
+
+**Exam Requirement (পরীক্ষার Requirement):**
+- Deploy monitoring tools (Prometheus + Grafana) - **Monitoring tools (Prometheus + Grafana) deploy করুন**
+- Create real-time dashboards with system health indicators - **System health indicators সহ real-time dashboards তৈরি করুন**
+- Use color-coded status (green/yellow/red) - **Color-coded status (green/yellow/red) ব্যবহার করুন**
+- Configure alerts for anomalies (high CPU, failed health checks, low disk space) - **Anomalies-এর জন্য alerts configure করুন (high CPU, failed health checks, low disk space)**
 
 **Our Implementation:**
 
@@ -407,9 +425,9 @@ kubectl rollout undo deployment/dhakacart-backend -n dhakacart
 - Scrape interval: 15 seconds
 - Retention: Configurable
 
-**How it solves the problem:**
-- **Before:** No monitoring, discover issues from customer complaints
-- **After:** Real-time metrics collection, proactive issue detection
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** No monitoring, discover issues from customer complaints - **কোনো monitoring নেই, customer complaints থেকে issues জানা যায়**
+- **After (পরে):** Real-time metrics collection, proactive issue detection - **Real-time metrics collection, proactive issue detection**
 
 **Verification:**
 ```bash
@@ -435,9 +453,9 @@ kubectl port-forward -n monitoring svc/prometheus-service 9090:9090
 - Network I/O
 - Request rates and errors
 
-**How it solves the problem:**
-- **Before:** No visibility into system health
-- **After:** Real-time dashboards with color-coded status
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** No visibility into system health - **System health-এ কোনো visibility নেই**
+- **After (পরে):** Real-time dashboards with color-coded status - **Color-coded status সহ real-time dashboards**
 
 **Verification:**
 ```bash
@@ -459,9 +477,9 @@ curl http://<ALB_DNS>/grafana/
 - Disk space low (<20%)
 - Failed health checks
 
-**How it solves the problem:**
-- **Before:** Discover issues only when customers complain
-- **After:** Proactive alerts before issues impact users
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** Discover issues only when customers complain - **Customer complain করলে তবেই issues জানা যায়**
+- **After (পরে):** Proactive alerts before issues impact users - **Issues users-কে impact করার আগেই proactive alerts**
 
 **Verification:**
 ```bash
@@ -472,10 +490,14 @@ kubectl get configmap prometheus-alert-rules -n monitoring -o yaml
 
 ### Requirement 5: Centralized Logging ✅
 
-**Exam Requirement:**
-- Aggregate logs from all servers
-- Support quick searches ("Errors in the last hour", "Requests from specific customer")
-- Enable visual trend analysis and pattern detection
+**📹 Video Brief (ভিডিও সংক্ষিপ্তসার):**
+Loki দিয়ে সব servers থেকে logs aggregate করি, Promtail দিয়ে logs collect করি। Grafana-তে quick searches support করি ("Errors in the last hour", "Requests from specific customer")। Visual trend analysis ও pattern detection enable করেছি।
+**Key Files:** `k8s/monitoring/loki/`, `k8s/monitoring/promtail/`
+
+**Exam Requirement (পরীক্ষার Requirement):**
+- Aggregate logs from all servers - **সব servers থেকে logs aggregate করুন**
+- Support quick searches ("Errors in the last hour", "Requests from specific customer") - **Quick searches support করুন ("Errors in the last hour", "Requests from specific customer")**
+- Enable visual trend analysis and pattern detection - **Visual trend analysis ও pattern detection enable করুন**
 
 **Our Implementation:**
 
@@ -490,9 +512,9 @@ kubectl get configmap prometheus-alert-rules -n monitoring -o yaml
 - Indexed by namespace, pod, container
 - Retention: Configurable
 
-**How it solves the problem:**
-- **Before:** Manual inspection of 500MB log files, 4+ hours per incident
-- **After:** Centralized searchable logs, instant queries
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** Manual inspection of 500MB log files, 4+ hours per incident - **500MB log files manually inspect, প্রতি incident-এ 4+ ঘণ্টা**
+- **After (পরে):** Centralized searchable logs, instant queries - **Centralized searchable logs, instant queries**
 
 #### 5.2 Promtail (Log Shipper)
 **Files:**
@@ -505,9 +527,9 @@ kubectl get configmap prometheus-alert-rules -n monitoring -o yaml
 - Ships to Loki
 - Labels logs with namespace, pod, container
 
-**How it solves the problem:**
-- **Before:** Logs scattered across multiple machines
-- **After:** All logs automatically collected and centralized
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** Logs scattered across multiple machines - **Multiple machines-এ logs scattered**
+- **After (পরে):** All logs automatically collected and centralized - **সব logs automatically collect ও centralized**
 
 **Verification:**
 ```bash
@@ -530,20 +552,24 @@ kubectl get pods -n monitoring -l app=promtail
 {namespace="dhakacart"} |= "customer_id:12345"
 ```
 
-**How it solves the problem:**
-- **Before:** Manual grep through large log files
-- **After:** Instant searchable queries with visual trends
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** Manual grep through large log files - **বড় log files-এ manual grep**
+- **After (পরে):** Instant searchable queries with visual trends - **Visual trends সহ instant searchable queries**
 
 ---
 
 ### Requirement 6: Security & Compliance ✅
 
-**Exam Requirement:**
-- Manage passwords and API keys using secrets management
-- Enforce HTTPS (SSL/TLS)
-- Apply network segmentation to isolate database
-- Use strong password hashing, rate-limiting, RBAC
-- Add container image vulnerability scanning in CI/CD
+**📹 Video Brief (ভিডিও সংক্ষিপ্তসার):**
+HashiCorp Vault দিয়ে passwords ও API keys manage করি, Cert-Manager দিয়ে HTTPS enforce করি। Network policies দিয়ে database isolate করেছি। Strong password hashing, rate-limiting, RBAC implement করেছি। CI/CD pipeline-এ Trivy দিয়ে container image vulnerability scanning add করেছি।
+**Key Files:** `k8s/enterprise-features/vault/`, `k8s/enterprise-features/cert-manager/`, `k8s/security/network-policies/`
+
+**Exam Requirement (পরীক্ষার Requirement):**
+- Manage passwords and API keys using secrets management - **Secrets management দিয়ে passwords ও API keys manage করুন**
+- Enforce HTTPS (SSL/TLS) - **HTTPS (SSL/TLS) enforce করুন**
+- Apply network segmentation to isolate database - **Database isolate করার জন্য network segmentation apply করুন**
+- Use strong password hashing, rate-limiting, RBAC - **Strong password hashing, rate-limiting, RBAC ব্যবহার করুন**
+- Add container image vulnerability scanning in CI/CD - **CI/CD-এ container image vulnerability scanning add করুন**
 
 **Our Implementation:**
 
@@ -558,9 +584,9 @@ kubectl get pods -n monitoring -l app=promtail
 - Encrypted at rest
 - Secrets rotation support
 
-**How it solves the problem:**
-- **Before:** Passwords hard-coded in source code
-- **After:** Encrypted secrets management, no passwords in code
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** Passwords hard-coded in source code - **Source code-এ passwords hard-coded**
+- **After (পরে):** Encrypted secrets management, no passwords in code - **Encrypted secrets management, code-এ passwords নেই**
 
 **Verification:**
 ```bash
@@ -578,9 +604,9 @@ kubectl get pods -n vault
 - Let's Encrypt integration (or self-signed for internal)
 - Automatic certificate renewal
 
-**How it solves the problem:**
-- **Before:** No HTTPS, plain text data transmission
-- **After:** Encrypted HTTPS traffic, automatic certificate management
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** No HTTPS, plain text data transmission - **HTTPS নেই, plain text data transmission**
+- **After (পরে):** Encrypted HTTPS traffic, automatic certificate management - **Encrypted HTTPS traffic, automatic certificate management**
 
 **Verification:**
 ```bash
@@ -599,9 +625,9 @@ kubectl get certificates -n dhakacart
 - **Backend Policy:** Only accessible from frontend and monitoring
 - **Frontend Policy:** Public access via load balancer only
 
-**How it solves the problem:**
-- **Before:** Database publicly accessible, no firewall
-- **After:** Network policies isolate database, zero-trust model
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** Database publicly accessible, no firewall - **Database publicly accessible, firewall নেই**
+- **After (পরে):** Network policies isolate database, zero-trust model - **Network policies database isolate করে, zero-trust model**
 
 **Verification:**
 ```bash
@@ -621,9 +647,9 @@ const apiLimiter = rateLimit({
 app.use('/api', apiLimiter);
 ```
 
-**How it solves the problem:**
-- **Before:** No rate limiting, vulnerable to abuse
-- **After:** Rate limiting prevents abuse and DDoS attacks
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** No rate limiting, vulnerable to abuse - **Rate limiting নেই, abuse-এর জন্য vulnerable**
+- **After (পরে):** Rate limiting prevents abuse and DDoS attacks - **Rate limiting abuse ও DDoS attacks prevent করে**
 
 #### 6.5 Vulnerability Scanning
 **File:** `.github/workflows/security-scan.yml`
@@ -633,9 +659,9 @@ app.use('/api', apiLimiter);
 - Scans Docker images for vulnerabilities
 - Reports to GitHub Security tab
 
-**How it solves the problem:**
-- **Before:** No security scanning
-- **After:** Automated vulnerability detection in CI/CD
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** No security scanning - **কোনো security scanning নেই**
+- **After (পরে):** Automated vulnerability detection in CI/CD - **CI/CD-এ automated vulnerability detection**
 
 **Verification:**
 ```bash
@@ -648,11 +674,15 @@ trivy image arifhossaincse22/dhakacart-backend:latest
 
 ### Requirement 7: Database Backup & Disaster Recovery ✅
 
-**Exam Requirement:**
-- Automate daily backups stored in secure, redundant locations
-- Support point-in-time recovery
-- Test restoration regularly
-- Consider database replication for automatic failover
+**📹 Video Brief (ভিডিও সংক্ষিপ্তসার):**
+Velero দিয়ে daily automated backups করি, MinIO-তে secure ও redundant storage-এ store করি। Point-in-time recovery support করি এবং regularly restoration test করি। Database replication-এর মাধ্যমে automatic failover support করেছি।
+**Key Files:** `k8s/enterprise-features/velero/`, `scripts/enterprise-features/install-velero.sh`
+
+**Exam Requirement (পরীক্ষার Requirement):**
+- Automate daily backups stored in secure, redundant locations - **Secure, redundant locations-এ daily backups automate করুন**
+- Support point-in-time recovery - **Point-in-time recovery support করুন**
+- Test restoration regularly - **Regularly restoration test করুন**
+- Consider database replication for automatic failover - **Automatic failover-এর জন্য database replication consider করুন**
 
 **Our Implementation:**
 
@@ -667,9 +697,9 @@ trivy image arifhossaincse22/dhakacart-backend:latest
 - **Schedule:** Daily at 2:00 AM
 - **Retention:** 30 days
 
-**How it solves the problem:**
-- **Before:** Manual Sunday backups to external drive (recently failed)
-- **After:** Automated daily backups to redundant storage
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** Manual Sunday backups to external drive (recently failed) - **External drive-এ manual Sunday backups (সম্প্রতি fail)**
+- **After (পরে):** Automated daily backups to redundant storage - **Redundant storage-এ automated daily backups**
 
 **Verification:**
 ```bash
@@ -686,9 +716,9 @@ velero backup describe <backup-name>
 - Persistent volume for data retention
 - Accessible within cluster
 
-**How it solves the problem:**
-- **Before:** External drive backup (single point of failure)
-- **After:** Redundant storage with versioning
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** External drive backup (single point of failure) - **External drive backup (single point of failure)**
+- **After (পরে):** Redundant storage with versioning - **Versioning সহ redundant storage**
 
 #### 7.3 Disaster Recovery Testing
 **Process:**
@@ -703,18 +733,22 @@ velero restore create test-restore --from-backup test-backup
 kubectl get pods -n dhakacart
 ```
 
-**How it solves the problem:**
-- **Before:** No recovery testing, backups may be corrupted
-- **After:** Regular testing ensures backups are valid
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** No recovery testing, backups may be corrupted - **কোনো recovery testing নেই, backups corrupted হতে পারে**
+- **After (পরে):** Regular testing ensures backups are valid - **Regular testing backups valid নিশ্চিত করে**
 
 ---
 
 ### Requirement 8: Infrastructure as Code (IaC) ✅
 
-**Exam Requirement:**
-- Represent all resources in code using Terraform or Pulumi
-- Version control all configurations in Git
-- Allow quick provisioning, replication, or full recovery from code alone
+**📹 Video Brief (ভিডিও সংক্ষিপ্তসার):**
+Terraform দিয়ে সব resources code-এ define করেছি। Git-এ version control করেছি। Code থেকে quick provisioning, replication, বা full recovery করতে পারি। One-command deployment দিয়ে complete infrastructure minutes-এ provision করতে পারি।
+**Key Files:** `terraform/simple-k8s/main.tf`, `terraform/simple-k8s/alb-backend-config.tf`
+
+**Exam Requirement (পরীক্ষার Requirement):**
+- Represent all resources in code using Terraform or Pulumi - **Terraform বা Pulumi দিয়ে code-এ সব resources represent করুন**
+- Version control all configurations in Git - **Git-এ সব configurations version control করুন**
+- Allow quick provisioning, replication, or full recovery from code alone - **Code থেকে quick provisioning, replication, বা full recovery allow করুন**
 
 **Our Implementation:**
 
@@ -733,9 +767,9 @@ kubectl get pods -n dhakacart
 - Target groups and listener rules
 - SSH key pair
 
-**How it solves the problem:**
-- **Before:** Manual server setup, no reproducibility
-- **After:** Complete infrastructure in code, version-controlled, reproducible
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** Manual server setup, no reproducibility - **Manual server setup, reproducibility নেই**
+- **After (পরে):** Complete infrastructure in code, version-controlled, reproducible - **Code-এ complete infrastructure, version-controlled, reproducible**
 
 **Verification:**
 ```bash
@@ -755,9 +789,9 @@ terraform apply
 - Automation scripts in `scripts/`
 - Documentation in root and `docs/`
 
-**How it solves the problem:**
-- **Before:** Code in Gmail attachments, no version control
-- **After:** Complete Git history, collaborative development
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** Code in Gmail attachments, no version control - **Gmail attachments-এ code, version control নেই**
+- **After (পরে):** Complete Git history, collaborative development - **Complete Git history, collaborative development**
 
 #### 8.3 Reproducibility
 **One-Command Deployment:**
@@ -772,18 +806,22 @@ terraform apply
 4. Seeds database
 5. Verifies deployment
 
-**How it solves the problem:**
-- **Before:** Complex manual setup, different results each time
-- **After:** Consistent, reproducible deployment every time
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** Complex manual setup, different results each time - **Complex manual setup, প্রতিবার different results**
+- **After (পরে):** Consistent, reproducible deployment every time - **প্রতিবার consistent, reproducible deployment**
 
 ---
 
 ### Requirement 9: Automation & Operations ✅
 
-**Exam Requirement:**
-- Script server provisioning, software setup, and configuration
-- Automate routine maintenance (log rotation, patching, security updates)
-- Simplify new-developer onboarding - setup with just a few commands
+**📹 Video Brief (ভিডিও সংক্ষিপ্তসার):**
+Scripts দিয়ে server provisioning, software setup, ও configuration automate করেছি। Routine maintenance (log rotation, patching, security updates) automate করেছি। New developer onboarding সহজ করেছি - কয়েকটি command দিয়ে setup করা যায়।
+**Key Files:** `scripts/deploy-4-hour-window.sh`, `scripts/nodes-config/`
+
+**Exam Requirement (পরীক্ষার Requirement):**
+- Script server provisioning, software setup, and configuration - **Server provisioning, software setup, ও configuration script করুন**
+- Automate routine maintenance (log rotation, patching, security updates) - **Routine maintenance automate করুন (log rotation, patching, security updates)**
+- Simplify new-developer onboarding - setup with just a few commands - **New-developer onboarding simplify করুন - কয়েকটি command দিয়ে setup**
 
 **Our Implementation:**
 
@@ -796,9 +834,9 @@ terraform apply
 - **Error Handling:** Retries on failure
 - **Verification:** Checks system health
 
-**How it solves the problem:**
-- **Before:** 3-4 hours manual deployment
-- **After:** 10-minute automated deployment
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** 3-4 hours manual deployment - **3-4 ঘণ্টার manual deployment**
+- **After (পরে):** 10-minute automated deployment - **10 মিনিটের automated deployment**
 
 #### 9.2 Node Configuration Automation
 **Files:**
@@ -812,9 +850,9 @@ terraform apply
 - Network plugin installation
 - Hostname configuration
 
-**How it solves the problem:**
-- **Before:** Manual node configuration, error-prone
-- **After:** Automated, consistent node setup
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** Manual node configuration, error-prone - **Manual node configuration, error-prone**
+- **After (পরে):** Automated, consistent node setup - **Automated, consistent node setup**
 
 #### 9.3 Maintenance Automation
 **Features:**
@@ -823,9 +861,9 @@ terraform apply
 - **Rolling Updates:** Zero-downtime updates
 - **Backup Automation:** Scheduled daily backups
 
-**How it solves the problem:**
-- **Before:** Manual maintenance, frequent downtime
-- **After:** Automated maintenance, minimal downtime
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** Manual maintenance, frequent downtime - **Manual maintenance, frequent downtime**
+- **After (পরে):** Automated maintenance, minimal downtime - **Automated maintenance, minimal downtime**
 
 #### 9.4 Developer Onboarding
 **Documentation:**
@@ -840,20 +878,24 @@ cd DhakaCart-03-test
 ./scripts/deploy-4-hour-window.sh
 ```
 
-**How it solves the problem:**
-- **Before:** Complex manual setup, knowledge in developer's head
-- **After:** Simple setup with documentation, anyone can deploy
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** Complex manual setup, knowledge in developer's head - **Complex manual setup, knowledge developer-এর মাথায়**
+- **After (পরে):** Simple setup with documentation, anyone can deploy - **Documentation সহ simple setup, যে কেউ deploy করতে পারে**
 
 ---
 
 ### Requirement 10: Documentation & Runbooks ✅
 
-**Exam Requirement:**
-- Architecture diagrams
-- Setup and deployment guides
-- Troubleshooting and recovery runbooks
-- Emergency procedures for outages
-- Ensure even junior engineers can understand and operate the system
+**📹 Video Brief (ভিডিও সংক্ষিপ্তসার):**
+Comprehensive documentation তৈরি করেছি - architecture diagrams, setup ও deployment guides, troubleshooting ও recovery runbooks, emergency procedures। এমনভাবে লিখেছি যাতে junior engineers-ও understand ও operate করতে পারে।
+**Key Files:** `README.md`, `4-HOUR-DEPLOYMENT.md`, `PROJECT-STRUCTURE.md`, `QUICK-REFERENCE.md`
+
+**Exam Requirement (পরীক্ষার Requirement):**
+- Architecture diagrams - **Architecture diagrams**
+- Setup and deployment guides - **Setup ও deployment guides**
+- Troubleshooting and recovery runbooks - **Troubleshooting ও recovery runbooks**
+- Emergency procedures for outages - **Outages-এর জন্য emergency procedures**
+- Ensure even junior engineers can understand and operate the system - **নিশ্চিত করুন যে junior engineers-ও system understand ও operate করতে পারে**
 
 **Our Implementation:**
 
@@ -869,9 +911,9 @@ cd DhakaCart-03-test
 - Data flow diagrams
 - Security architecture
 
-**How it solves the problem:**
-- **Before:** No documentation, knowledge in developer's head
-- **After:** Comprehensive architecture documentation
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** No documentation, knowledge in developer's head - **কোনো documentation নেই, knowledge developer-এর মাথায়**
+- **After (পরে):** Comprehensive architecture documentation - **Comprehensive architecture documentation**
 
 #### 10.2 Setup & Deployment Guides
 **Files:**
@@ -885,9 +927,9 @@ cd DhakaCart-03-test
 - Verification steps
 - Troubleshooting tips
 
-**How it solves the problem:**
-- **Before:** No setup guide, trial and error
-- **After:** Clear step-by-step guides
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** No setup guide, trial and error - **কোনো setup guide নেই, trial and error**
+- **After (পরে):** Clear step-by-step guides - **Clear step-by-step guides**
 
 #### 10.3 Troubleshooting Runbooks
 **Files:**
@@ -901,9 +943,9 @@ cd DhakaCart-03-test
 - Recovery procedures
 - Emergency contacts
 
-**How it solves the problem:**
-- **Before:** 4+ hours to diagnose issues
-- **After:** Quick troubleshooting with runbooks
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** 4+ hours to diagnose issues - **Issues diagnose করতে 4+ ঘণ্টা**
+- **After (পরে):** Quick troubleshooting with runbooks - **Runbooks দিয়ে quick troubleshooting**
 
 #### 10.4 Emergency Procedures
 **Documentation:**
@@ -911,15 +953,17 @@ cd DhakaCart-03-test
 - Disaster recovery steps
 - Incident response
 
-**How it solves the problem:**
-- **Before:** No emergency procedures, panic during outages
-- **After:** Clear procedures for emergency situations
+**How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
+- **Before (আগে):** No emergency procedures, panic during outages - **কোনো emergency procedures নেই, outages-এ panic**
+- **After (পরে):** Clear procedures for emergency situations - **Emergency situations-এর জন্য clear procedures**
 
 ---
 
-## 🏗️ Architecture Overview
+## 🏗️ Architecture Overview (আর্কিটেকচার ওভারভিউ)
 
-### System Architecture
+### System Architecture (সিস্টেম আর্কিটেকচার)
+
+এই diagram-এ আমাদের complete system architecture দেখানো হয়েছে:
 
 ```
                     Internet
@@ -977,67 +1021,69 @@ cd DhakaCart-03-test
    └────────────────────────────────────────┘
 ```
 
-### Technology Stack
+### Technology Stack (টেকনোলজি স্ট্যাক)
 
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
-| **Cloud** | AWS (EC2, VPC, ALB) | Infrastructure hosting |
-| **Orchestration** | Kubernetes (Kubeadm) | Container orchestration |
-| **IaC** | Terraform | Infrastructure definition |
-| **CI/CD** | GitHub Actions | Automated pipeline |
-| **Monitoring** | Prometheus + Grafana | Metrics and dashboards |
-| **Logging** | Loki + Promtail | Centralized logging |
-| **Security** | Vault + Cert-Manager | Secrets and HTTPS |
-| **Backup** | Velero + MinIO | Automated backups |
-| **Frontend** | React + Nginx | User interface |
-| **Backend** | Node.js + Express | API server |
-| **Database** | PostgreSQL | Data storage |
-| **Cache** | Redis | Session and caching |
+| **Cloud** | AWS (EC2, VPC, ALB) | Infrastructure hosting - **Infrastructure hosting** |
+| **Orchestration** | Kubernetes (Kubeadm) | Container orchestration - **Container orchestration** |
+| **IaC** | Terraform | Infrastructure definition - **Infrastructure definition** |
+| **CI/CD** | GitHub Actions | Automated pipeline - **Automated pipeline** |
+| **Monitoring** | Prometheus + Grafana | Metrics and dashboards - **Metrics ও dashboards** |
+| **Logging** | Loki + Promtail | Centralized logging - **Centralized logging** |
+| **Security** | Vault + Cert-Manager | Secrets and HTTPS - **Secrets ও HTTPS** |
+| **Backup** | Velero + MinIO | Automated backups - **Automated backups** |
+| **Frontend** | React + Nginx | User interface - **User interface** |
+| **Backend** | Node.js + Express | API server - **API server** |
+| **Database** | PostgreSQL | Data storage - **Data storage** |
+| **Cache** | Redis | Session and caching - **Session ও caching** |
 
 ---
 
-## 🚀 Deployment Demonstration
+## 🚀 Deployment Demonstration (ডিপ্লয়মেন্ট ডেমোনস্ট্রেশন)
 
-### The "Magic Button" Script
+### The "Magic Button" Script (The "Magic Button" Script)
 
 **File:** `scripts/deploy-4-hour-window.sh`
 
-**What it does:**
-1. **Infrastructure Provisioning** (Terraform)
-   - Creates VPC, subnets, security groups
-   - Launches EC2 instances (Bastion, Masters, Workers)
-   - Configures Application Load Balancer
-   - Sets up static IPs for predictable networking
+এই script-টি আমাদের "Magic Button" - একটি command দিয়ে complete deployment:
 
-2. **Configuration Extraction**
-   - Automatically extracts IPs from Terraform output
-   - Updates configuration files
-   - No manual copy-paste required
+**What it does (কি করে):**
+1. **Infrastructure Provisioning (Infrastructure Provisioning)** (Terraform)
+   - Creates VPC, subnets, security groups - **VPC, subnets, security groups তৈরি করে**
+   - Launches EC2 instances (Bastion, Masters, Workers) - **EC2 instances launch করে (Bastion, Masters, Workers)**
+   - Configures Application Load Balancer - **Application Load Balancer configure করে**
+   - Sets up static IPs for predictable networking - **Predictable networking-এর জন্য static IPs setup করে**
 
-3. **Cluster Bootstrapping**
-   - Initializes Kubernetes master nodes
-   - Joins worker nodes to cluster
-   - Installs network plugin (Flannel)
-   - Configures hostnames
+2. **Configuration Extraction (Configuration Extraction)**
+   - Automatically extracts IPs from Terraform output - **Terraform output থেকে automatically IPs extract করে**
+   - Updates configuration files - **Configuration files update করে**
+   - No manual copy-paste required - **কোনো manual copy-paste লাগে না**
 
-4. **Application Deployment**
-   - Deploys all Kubernetes manifests
-   - Creates namespaces, secrets, configmaps
-   - Deploys frontend, backend, database, redis
-   - Automatically seeds database with initial data
+3. **Cluster Bootstrapping (Cluster Bootstrapping)**
+   - Initializes Kubernetes master nodes - **Kubernetes master nodes initialize করে**
+   - Joins worker nodes to cluster - **Worker nodes cluster-এ join করে**
+   - Installs network plugin (Flannel) - **Network plugin (Flannel) install করে**
+   - Configures hostnames - **Hostnames configure করে**
 
-5. **Monitoring Setup**
-   - Deploys Prometheus, Grafana, Loki
-   - Configures datasources
-   - Sets up alert rules
+4. **Application Deployment (Application Deployment)**
+   - Deploys all Kubernetes manifests - **সব Kubernetes manifests deploy করে**
+   - Creates namespaces, secrets, configmaps - **Namespaces, secrets, configmaps তৈরি করে**
+   - Deploys frontend, backend, database, redis - **Frontend, backend, database, redis deploy করে**
+   - Automatically seeds database with initial data - **Automatically database-এ initial data seed করে**
 
-6. **Verification**
-   - Checks pod status
-   - Verifies services
-   - Tests endpoints
-   - Generates health report
+5. **Monitoring Setup (Monitoring Setup)**
+   - Deploys Prometheus, Grafana, Loki - **Prometheus, Grafana, Loki deploy করে**
+   - Configures datasources - **Datasources configure করে**
+   - Sets up alert rules - **Alert rules setup করে**
 
-**Time:** Complete deployment in <10 minutes (vs 3-4 hours manual)
+6. **Verification (Verification)**
+   - Checks pod status - **Pod status check করে**
+   - Verifies services - **Services verify করে**
+   - Tests endpoints - **Endpoints test করে**
+   - Generates health report - **Health report generate করে**
+
+**Time (সময়):** Complete deployment in <10 minutes (vs 3-4 hours manual) - **Complete deployment <10 মিনিটে (vs 3-4 ঘণ্টা manual)**
 
 **Demo Script:**
 ```bash
@@ -1054,57 +1100,65 @@ kubectl get all -n monitoring
 
 ---
 
-## 🎬 Video Presentation Guide
+## 🎬 Video Presentation Guide (ভিডিও উপস্থাপনা গাইড)
 
-### Part 1: Introduction (2 minutes)
+### Part 1: Introduction (2 minutes) - Part 1: Introduction (2 মিনিট)
 
-**Script:**
+**Script (স্ক্রিপ্ট):**
 > "Good morning/afternoon. My name is [Your Name], and I'm presenting the DhakaCart E-Commerce Platform transformation project. This project transforms a fragile single-machine setup into a resilient, scalable, cloud-native system."
+> 
+> **বাংলায়:** "সুপ্রভাত/সুপ্রভাত। আমার নাম [Your Name], এবং আমি DhakaCart E-Commerce Platform transformation project উপস্থাপন করছি। এই project একটি fragile single-machine setup-কে resilient, scalable, cloud-native system-এ transform করে।"
 
-**Show:**
-- Project structure in VS Code
-- `PROJECT-STRUCTURE.md` file
+**Show (দেখান):**
+- Project structure in VS Code - **VS Code-এ project structure**
+- `PROJECT-STRUCTURE.md` file - **`PROJECT-STRUCTURE.md` file**
 
-### Part 2: Problem Statement (3 minutes)
+### Part 2: Problem Statement (3 minutes) - Part 2: Problem Statement (3 মিনিট)
 
-**Script:**
+**Script (স্ক্রিপ্ট):**
 > "Let me first show you the problems we were solving. According to the exam requirements, the original system had these critical issues:"
+> 
+> **বাংলায়:** "প্রথমে আমি দেখাচ্ছি আমরা কি সমস্যা solve করেছি। Exam requirements অনুযায়ী, original system-এ এই critical issues ছিল:"
 
-**Show Problem-Solution Matrix:**
-- Single machine → Multi-instance cloud
-- Manual deployment → Automated CI/CD
-- No monitoring → Full observability
-- Insecure → Enterprise security
+**Show Problem-Solution Matrix (Problem-Solution Matrix দেখান):**
+- Single machine → Multi-instance cloud - **Single machine → Multi-instance cloud**
+- Manual deployment → Automated CI/CD - **Manual deployment → Automated CI/CD**
+- No monitoring → Full observability - **No monitoring → Full observability**
+- Insecure → Enterprise security - **Insecure → Enterprise security**
 
-### Part 3: Architecture Overview (3 minutes)
+### Part 3: Architecture Overview (3 minutes) - Part 3: Architecture Overview (3 মিনিট)
 
-**Script:**
+**Script (স্ক্রিপ্ট):**
 > "Here's how we solved these problems. Our architecture has 4 main layers:"
+> 
+> **বাংলায়:** "এভাবেই আমরা এই সমস্যাগুলো solve করেছি। আমাদের architecture-এ 4টি main layer আছে:"
 
-**Show:**
-1. Infrastructure Layer (`terraform/`)
-2. Application Layer (`k8s/`)
-3. Automation Layer (`scripts/`)
-4. CI/CD Layer (`.github/`)
+**Show (দেখান):**
+1. Infrastructure Layer (`terraform/`) - **Infrastructure Layer (`terraform/`)**
+2. Application Layer (`k8s/`) - **Application Layer (`k8s/`)**
+3. Automation Layer (`scripts/`) - **Automation Layer (`scripts/`)**
+4. CI/CD Layer (`.github/`) - **CI/CD Layer (`.github/`)**
 
-### Part 4: Live Deployment Demo (5 minutes)
+### Part 4: Live Deployment Demo (5 minutes) - Part 4: Live Deployment Demo (5 মিনিট)
 
-**Script:**
+**Script (স্ক্রিপ্ট):**
 > "Now, let me demonstrate our automated deployment. This script transforms a 3-4 hour manual process into a 10-minute automated deployment."
+> 
+> **বাংলায়:** "এখন আমি আমাদের automated deployment demonstrate করছি। এই script একটি 3-4 ঘণ্টার manual process-কে 10 মিনিটের automated deployment-এ transform করে।"
 
-**Actions:**
-1. Open terminal
-2. Run: `./scripts/deploy-4-hour-window.sh`
-3. Explain each step as it runs
-4. Show final verification report
+**Actions (কর্ম):**
+1. Open terminal - **Terminal খুলুন**
+2. Run: `./scripts/deploy-4-hour-window.sh` - **Run করুন: `./scripts/deploy-4-hour-window.sh`**
+3. Explain each step as it runs - **প্রতিটি step explain করুন যতক্ষণ এটি run করছে**
+4. Show final verification report - **Final verification report দেখান**
 
-### Part 5: Requirement Coverage (10 minutes)
+### Part 5: Requirement Coverage (10 minutes) - Part 5: Requirement Coverage (10 মিনিট)
 
-**For each requirement (1-10):**
-1. State the requirement
-2. Show implementation files
-3. Demonstrate functionality
-4. Explain how it solves the original problem
+**For each requirement (1-10) (প্রতিটি requirement-এর জন্য (1-10)):**
+1. State the requirement - **Requirement state করুন**
+2. Show implementation files - **Implementation files দেখান**
+3. Demonstrate functionality - **Functionality demonstrate করুন**
+4. Explain how it solves the original problem - **ব্যাখ্যা করুন কিভাবে এটি original problem solve করে**
 
 **Example for Requirement 1 (Cloud Infrastructure):**
 ```bash
@@ -1131,20 +1185,24 @@ kubectl port-forward -n monitoring svc/prometheus-service 9090:9090
 # Open: http://localhost:9090/prometheus/targets
 ```
 
-### Part 6: Enterprise Features (3 minutes)
+### Part 6: Enterprise Features (3 minutes) - Part 6: Enterprise Features (3 মিনিট)
 
-**Script:**
+**Script (স্ক্রিপ্ট):**
 > "For security and backup requirements, we've implemented enterprise-grade solutions:"
+> 
+> **বাংলায়:** "Security ও backup requirements-এর জন্য, আমরা enterprise-grade solutions implement করেছি:"
 
-**Show:**
-1. Velero backup: `./scripts/enterprise-features/install-velero.sh`
-2. Vault secrets: `./scripts/enterprise-features/install-vault.sh`
-3. Cert-Manager HTTPS: Show certificates
+**Show (দেখান):**
+1. Velero backup: `./scripts/enterprise-features/install-velero.sh` - **Velero backup: `./scripts/enterprise-features/install-velero.sh`**
+2. Vault secrets: `./scripts/enterprise-features/install-vault.sh` - **Vault secrets: `./scripts/enterprise-features/install-vault.sh`**
+3. Cert-Manager HTTPS: Show certificates - **Cert-Manager HTTPS: Certificates দেখান**
 
-### Part 7: Conclusion (2 minutes)
+### Part 7: Conclusion (2 minutes) - Part 7: Conclusion (2 মিনিট)
 
-**Script:**
+**Script (স্ক্রিপ্ট):**
 > "In summary, we've transformed DhakaCart from a fragile single-machine setup to a production-grade, cloud-native system that can handle 100,000+ concurrent visitors with zero downtime. All requirements from the exam have been met and demonstrated. Thank you."
+> 
+> **বাংলায়:** "সংক্ষেপে, আমরা DhakaCart-কে একটি fragile single-machine setup থেকে production-grade, cloud-native system-এ transform করেছি যা zero downtime-এ 100,000+ concurrent visitors handle করতে পারে। Exam-এর সব requirements meet ও demonstrate করা হয়েছে। ধন্যবাদ।"
 
 ---
 
@@ -1201,28 +1259,30 @@ kubectl port-forward -n monitoring svc/prometheus-service 9090:9090
 
 ---
 
-## 📝 Conclusion & Evidence
+## 📝 Conclusion & Evidence (কনক্লুশন ও প্রমাণ)
 
-### Summary
+### Summary (সারাংশ)
 
 This project successfully transforms DhakaCart from a fragile single-machine setup to a **production-grade, cloud-native system** that meets all exam requirements:
 
-1. ✅ **Scalability:** Handles 100,000+ concurrent visitors via auto-scaling
-2. ✅ **Reliability:** Multi-instance architecture with automatic failover
-3. ✅ **Security:** Enterprise-grade security with Vault, HTTPS, and network policies
-4. ✅ **Automation:** Complete CI/CD pipeline reducing deployment from 3 hours to 10 minutes
-5. ✅ **Observability:** Full monitoring and logging for proactive issue detection
-6. ✅ **Disaster Recovery:** Automated daily backups with testing
-7. ✅ **Reproducibility:** Complete Infrastructure as Code
-8. ✅ **Documentation:** Comprehensive guides for operations
+এই project successfully DhakaCart-কে একটি fragile single-machine setup থেকে **production-grade, cloud-native system**-এ transform করেছে যা সব exam requirements meet করে:
 
-### Key Achievements
+1. ✅ **Scalability (স্কেলেবিলিটি):** Handles 100,000+ concurrent visitors via auto-scaling - **Auto-scaling দিয়ে 100,000+ concurrent visitors handle করে**
+2. ✅ **Reliability (রিলায়াবিলিটি):** Multi-instance architecture with automatic failover - **Automatic failover সহ multi-instance architecture**
+3. ✅ **Security (সিকিউরিটি):** Enterprise-grade security with Vault, HTTPS, and network policies - **Vault, HTTPS, ও network policies সহ enterprise-grade security**
+4. ✅ **Automation (অটোমেশন):** Complete CI/CD pipeline reducing deployment from 3 hours to 10 minutes - **Complete CI/CD pipeline যা deployment 3 ঘণ্টা থেকে 10 মিনিটে reduce করে**
+5. ✅ **Observability (অবজারভেবিলিটি):** Full monitoring and logging for proactive issue detection - **Proactive issue detection-এর জন্য full monitoring ও logging**
+6. ✅ **Disaster Recovery (ডিজাস্টার রিকভারি):** Automated daily backups with testing - **Testing সহ automated daily backups**
+7. ✅ **Reproducibility (রিপ্রোডুসিবিলিটি):** Complete Infrastructure as Code - **Complete Infrastructure as Code**
+8. ✅ **Documentation (ডকুমেন্টেশন):** Comprehensive guides for operations - **Operations-এর জন্য comprehensive guides**
 
-- **Zero Downtime:** Rolling updates, health checks, self-healing
-- **Automation:** One-command deployment (`deploy-4-hour-window.sh`)
-- **Security:** Zero-trust network, encrypted secrets, HTTPS
-- **Observability:** Real-time dashboards, centralized logging
-- **Disaster Recovery:** Automated backups, tested restoration
+### Key Achievements (মূল অর্জনসমূহ)
+
+- **Zero Downtime (জিরো ডাউনটাইম):** Rolling updates, health checks, self-healing - **Rolling updates, health checks, self-healing**
+- **Automation (অটোমেশন):** One-command deployment (`deploy-4-hour-window.sh`) - **One-command deployment (`deploy-4-hour-window.sh`)**
+- **Security (সিকিউরিটি):** Zero-trust network, encrypted secrets, HTTPS - **Zero-trust network, encrypted secrets, HTTPS**
+- **Observability (অবজারভেবিলিটি):** Real-time dashboards, centralized logging - **Real-time dashboards, centralized logging**
+- **Disaster Recovery (ডিজাস্টার রিকভারি):** Automated backups, tested restoration - **Automated backups, tested restoration**
 
 ### Evidence Files
 
