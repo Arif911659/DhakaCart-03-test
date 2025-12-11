@@ -21,6 +21,15 @@
     - [x] Check status of `install-velero.sh` <!-- id: 11 -->
     - [x] Verify MinIO backup works <!-- id: 12 -->
 - [/] **Final Exam Defense** <!-- id: 13 -->
+    - [x] Rename `PROJECT_DEFENSE.md` to `INTERNAL_DEFENSE_SCRIPT.md` <!-- id: 18 -->
+    - [x] Clean up `docs/` directory <!-- id: 19 -->
+    - [x] Update `system-architecture.md` <!-- id: 20 -->
+    - [x] **Document All Shell Scripts (Bilingual)** <!-- id: 21 -->
+        - [x] Core & Enterprise Scripts (8 files) <!-- id: 22 -->
+        - [x] Internal Utility Scripts (Hostname, DB, etc.) <!-- id: 23 -->
+        - [x] Monitoring & Security Scripts <!-- id: 24 -->
+        - [x] Node Config & Templates <!-- id: 25 -->
+        - [x] Remaining Helper Scripts <!-- id: 26 -->
     - [ ] Practice "Zero to Hero" Deployment <!-- id: 14 -->
     - [ ] Record Video Presentation <!-- id: 15 -->
     - [ ] Submit to Exam Portal <!-- id: 16 -->

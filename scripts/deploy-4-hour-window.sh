@@ -3,6 +3,9 @@
 ##############################################
 # DhakaCart 4-Hour Deployment Automation
 # Complete infrastructure to production in one script
+#
+# 🇧🇩 এই স্ক্রিপ্ট সম্পূর্ণ প্রোজেক্ট ডিপ্লয় করবে (Infrastructure + K8s + App)
+# 🇺🇸 This script automates the full deployment (Infrastructure + K8s + App)
 ##############################################
 
 set -e
@@ -35,6 +38,8 @@ if [ -f "$STATE_FILE" ]; then
     LAST_STEP=$(cat "$STATE_FILE")
 fi
 
+# Helper function to save progress state
+# 🇧🇩 এই ফাংশনটি আমাদের জানিয়ে দেয় আমরা কোন স্টেপে আছি, যাতে স্ক্রিপ্ট বন্ধ হলে সেখান থেকে শুরু করা যায় (State Management)
 update_state() {
     echo "$1" > "$STATE_FILE"
 }
@@ -51,6 +56,8 @@ fi
 echo ""
 
 # Step 1: Infrastructure (Terraform)
+# 🇧🇩 ধাপ ১: ইনফ্রাস্ট্রাকচার তৈরি করা (VPC, EC2, Load Balancer)
+# 🇺🇸 Step 1: Provision Infrastructure (VPC, EC2, Load Balancer) using Terraform
 if [ "$LAST_STEP" -ge 1 ]; then
     echo -e "${GREEN}✅ [1/7] Infrastructure already deployed. Skipping...${NC}"
 else
@@ -72,6 +79,8 @@ else
 fi
 
 # Step 2: Extract configuration
+# 🇧🇩 ধাপ ২: আইপি অ্যাড্রেস এবং ডিএনএস খুঁজে বের করা (যা Terraform আউটপুট দিয়েছে)
+# 🇺🇸 Step 2: Extract IPs and DNS from Terraform output
 if [ "$LAST_STEP" -ge 2 ]; then
     echo -e "${GREEN}✅ [2/7] Configuration already extracted. Skipping...${NC}"
     # We still need to load variables for subsequent steps
@@ -94,6 +103,8 @@ if [ -z "$BASTION_IP" ]; then
 fi
 
 # Step 3: Update node configuration scripts
+# 🇧🇩 ধাপ ৩: সার্ভার কনফিগ করার জন্য স্ক্রিপ্ট জেনারেট করা (IP বসানো)
+# 🇺🇸 Step 3: Generate node configuration scripts with dynamic IPs
 if [ "$LAST_STEP" -ge 3 ]; then
     echo -e "${GREEN}✅ [3/7] Node configuration scripts already updated. Skipping...${NC}"
 else
@@ -107,6 +118,8 @@ else
 fi
 
 # Step 4: Upload to Bastion, Propagate, and Configure Nodes
+# 🇧🇩 ধাপ ৪: স্ক্রিপ্টগুলো Bastion এ আপলোড করা এবং সব নোডে পাঠিয়ে দেয়া
+# 🇺🇸 Step 4: Upload scripts to Bastion and propagate to all internal nodes
 if [ "$LAST_STEP" -ge 4 ]; then
      echo -e "${GREEN}✅ [4/7] Kubernetes nodes already configured (Upload & Hostnames). Skipping...${NC}"
      else
@@ -144,6 +157,8 @@ if [ "$LAST_STEP" -ge 4 ]; then
                                                                                                                                            sleep 30
                                                                                                                                                
     # Step 4.1: Change Hostnames
+    # 🇧🇩 সব নোডের নাম (Hostname) ঠিক করা (যেমন: master-1, worker-1)
+    # 🇺🇸 Set correct hostnames for all nodes
     echo -e "${YELLOW}[4.1/7] 🏷️  Updating Hostnames...${NC}"
     bash "$PROJECT_ROOT/scripts/internal/hostname/change-hostname-via-bastion.sh" --all --yes
     echo -e "${GREEN}✅ Hostnames updated${NC}"
@@ -154,6 +169,8 @@ fi
 
 
 # Step 5: Configure Master-1 and Join Nodes
+# 🇧🇩 ধাপ ৫: কুবারনেটিস ক্লাস্টার তৈরি করা এবং বাকি নোডগুলোকে জয়েন করানো
+# 🇺🇸 Step 5: Initialize K8s cluster and join all nodes
 if [ "$LAST_STEP" -ge 5 ]; then
     echo -e "${GREEN}✅ [5/7] Cluster initialized and nodes joined. Skipping...${NC}"
 else
@@ -222,6 +239,8 @@ else
 fi
 
 # Step 6: Deploy Application
+# 🇧🇩 ধাপ ৬: ঢাকা কার্ট অ্যাপ ও ডাটাবেস ডিপ্লয় করা
+# 🇺🇸 Step 6: Deploy DhakaCart App, DB, and Redis
 if [ "$LAST_STEP" -ge 6 ]; then
     echo -e "${GREEN}✅ [6/7] Application already deployed. Skipping...${NC}"
 else
@@ -245,6 +264,8 @@ else
 fi
 
 # Step 6.1: Seed Database
+# 🇧🇩 ধাপ ৬.১: ডাটাবেসে স্যাম্পল ডাটা (Products, Users) ঢুকানো
+# 🇺🇸 Step 6.1: Populate database with initial data
 if [ "$LAST_STEP" -ge 61 ]; then
     echo -e "${GREEN}✅ [6.1/7] Database already seeded. Skipping...${NC}"
 else
@@ -257,6 +278,8 @@ else
 fi
 
 # Step 7: Register ALB Targets & Verification
+# 🇧🇩 ধাপ ৭: লোড ব্যালেন্সারের সাথে ওয়ার্কার নোড কানেক্ট করা
+# 🇺🇸 Step 7: Register Worker nodes to ALB Target Group
 if [ "$LAST_STEP" -ge 7 ]; then
     echo -e "${GREEN}✅ [7/7] ALB targets registered and verified. Skipping...${NC}"
 else
@@ -277,6 +300,8 @@ else
 fi
 
 # Step 8: Enterprise Features (Phase 8)
+# 🇧🇩 ধাপ ৮: এনটারপ্রাইজ ও সিকিউরিটি ফিচার সেটআপ (Velero, Vault, HTTPS)
+# 🇺🇸 Step 8: Install Enterprise Features (Backup, Secrets, SSL)
 if [ "$LAST_STEP" -ge 8 ]; then
     echo -e "${GREEN}✅ [8/8] Enterprise features already deployed. Skipping...${NC}"
 else

@@ -3,6 +3,14 @@
 # Upload Files to Bastion Script
 # Purpose: Upload .pem key and .sh scripts to Bastion host
 
+# ==========================================
+# Upload to Bastion
+# ==========================================
+# 🇧🇩 এই স্ক্রিপ্ট প্রয়োজনীয় সব ফাইল Bastion সার্ভারে আপলোড করে।
+# 🇺🇸 This script uploads all necessary files to the Bastion server.
+#
+# Usage: ./upload-to-bastion.shost
+
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

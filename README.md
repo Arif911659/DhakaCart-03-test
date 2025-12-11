@@ -532,7 +532,7 @@ kubectl port-forward -n monitoring svc/prometheus-service 9090:9090
 ## 👥 Contributors & License
 
 **Maintained by:** DhakaCart DevOps Team  
-**License:** MIT - Free for educational use.
+**License:** Free for educational use.
 
 **Made with ❤️ in Bangladesh 🇧🇩**
 
@@ -543,7 +543,6 @@ kubectl port-forward -n monitoring svc/prometheus-service 9090:9090
 - **Issues**: [GitHub Issues](https://github.com/Arif911659/DhakaCart-03/issues)
 - **Documentation**: See [📚 Documentation Index](#-documentation-index)
 - **Quick Reference**: [QUICK-REFERENCE.md](./QUICK-REFERENCE.md)
-- **Troubleshooting**: [docs/runbooks/troubleshooting.md](./docs/runbooks/troubleshooting.md)
 
 ---
 

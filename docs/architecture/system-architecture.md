@@ -342,6 +342,42 @@ Authenticated Request
 
 ---
 
+## 🛡️ Enterprise Security & Compliance (Phase 2)
+
+### 1. Secrets Management
+**Technology:** HashiCorp Vault
+
+**Architecture:**
+- **Vault Server:** Running in `vault` namespace
+- **Agent Injector:** Automatically injects secrets into pods
+- **Storage:** Encrypted at rest
+
+**Workflow:**
+1. Developer stores secret in Vault (e.g., `db_password`)
+2. Pod starts with `@vault-inject` annotation
+3. Vault Agent creates `/vault/secrets/config` file in pod
+4. Application reads secret from file (No environment variables)
+
+### 2. Backup & Disaster Recovery
+**Technology:** Velero + MinIO
+
+**Strategy:**
+- **Schedule:** Daily at 2:00 AM
+- **Storage:** Self-hosted MinIO (S3-compatible)
+- **Scope:** All `dhakacart` namespace resources + PV snapshots
+- **Retention:** 30 days
+
+### 3. Traffic Encryption (HTTPS)
+**Technology:** Cert-Manager + Let's Encrypt
+
+**Features:**
+- Automatic TLS certificate provisioning
+- Ingress integration for SSL termination at ALB/Nginx
+- Automatic renewal (30 days before expiry)
+
+---
+
+
 ## 📊 Monitoring & Observability
 
 ### Monitoring Stack
@@ -523,6 +559,10 @@ Backend-1 Backend-2 Backend-3 Backend-N
 | Visualization | Grafana | 10.x | Dashboards |
 | Logging | Loki | 2.x | Log Aggregation |
 | Config Mgmt | Ansible | 2.x | Automation |
+| Secrets | Vault | 1.14 | Secrets Management |
+| Backup | Velero | 1.11 | Cluster Backup |
+| Storage | MinIO | RELEASE | S3-Compatible Storage |
+| Security | Cert-Manager | 1.12 | Certificate Management |
 
 ---
 

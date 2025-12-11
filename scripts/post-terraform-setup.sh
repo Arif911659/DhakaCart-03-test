@@ -1,7 +1,11 @@
 #!/bin/bash
 
 # Post-Terraform Setup Script
-# Interactive automation script to configure infrastructure after terraform apply
+#
+# 🇧🇩 এই স্ক্রিপ্ট Terraform শেষের পর ইনভেন্টরি তৈরি ও কনফিগ লোড করে।
+# 🇺🇸 This script runs after Terraform to generate inventory and load config.
+#
+# Usage: ./post-terraform-setup.shion script to configure infrastructure after terraform apply
 
 set -e
 

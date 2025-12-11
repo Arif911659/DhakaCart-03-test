@@ -3,6 +3,9 @@
 # ============================================
 # Seed Database with Products
 # ============================================
+#
+# 🇧🇩 এই স্ক্রিপ্ট ডাটাবেসে স্যাম্পল প্রোডাক্ট এবং ইউজার ডাটা ইনসার্ট করবে।
+# 🇺🇸 This script populates the database with sample products and users.
 
 set -e
 
@@ -52,7 +55,9 @@ fi
 echo -e "${YELLOW}📊 Connecting to Master-1 to seed database...${NC}"
 echo ""
 
-# Copy init.sql to Bastion first, then to Master-1
+# Copy init.sql to Master-1
+# 🇧🇩 SQL ফাইলটি প্রথমে মাস্টারে পাঠানো হয়, কারণ সেখান থেকে কুবারনেটিস কমান্ড চালানো যাবে
+# 🇺🇸 Step 1: Copy SQL file to Master node to run kubectl commands
 echo -e "${BLUE}Copying init.sql to Bastion...${NC}"
 scp -i "$SSH_KEY_PATH" "$INIT_SQL" "$REMOTE_USER@$BASTION_IP:/tmp/init.sql" > /dev/null 2>&1
 
@@ -131,6 +136,8 @@ SQL
 fi
 
 # Execute init.sql
+# 🇧🇩 পডের ভেতরে psql কমান্ড চালিয়ে ডাটা ইম্পোর্ট করা হচ্ছে
+# 🇺🇸 Step 2: Execute SQL inside the database pod using psql
 echo -e "${BLUE}Executing init.sql...${NC}"
 kubectl exec -i -n $NAMESPACE $DB_POD -- psql -U dhakacart -d dhakacart_db < /tmp/init.sql 2>&1 || {
     # If file doesn't exist, try copying it

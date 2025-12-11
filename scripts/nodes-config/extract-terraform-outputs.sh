@@ -1,7 +1,12 @@
 #!/bin/bash
 
-# Extract Terraform Outputs Script
-# Purpose: Extract all required values from Terraform outputs dynamically
+# ==========================================
+# Extract Terraform Outputs
+# ==========================================
+# 🇧🇩 এই স্ক্রিপ্ট Terraform থেকে আউটপুট নিয়ে .env ফাইলে সেভ করে।
+# 🇺🇸 This script extracts Terraform outputs and saves them to a .env file.
+#
+# Usage: ./extract-terraform-outputs.sh
 
 set -e
 

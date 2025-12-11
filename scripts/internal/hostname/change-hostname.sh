@@ -60,11 +60,13 @@ change_hostname() {
     
     print_message "$BLUE" "========================================="
     print_message "$BLUE" "  Hostname Change Script"
-    print_message "$BLUE" "========================================="
-    echo ""
-    
-    # Get current hostname
-    current_hostname=$(hostname)
+# ==========================================
+# Change Hostname (Local)
+# ==========================================
+# 🇧🇩 এই স্ক্রিপ্ট বর্তমান মেশিনের হোস্টনেম পরিবর্তন করে এবং /etc/hosts ফাইল আপডেট করে।
+# 🇺🇸 This script changes the local machine's hostname and updates /etc/hosts.
+#
+# Usage: ./change-hostname.sh <new-hostname>)
     print_message "$YELLOW" "Current hostname: $current_hostname"
     print_message "$GREEN" "New hostname: $new_hostname"
     echo ""

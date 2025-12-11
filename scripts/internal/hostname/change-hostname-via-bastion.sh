@@ -40,6 +40,13 @@ print_header() {
     echo ""
 }
 
+# ==========================================
+# Change Hostname via Bastion
+# ==========================================
+# 🇧🇩 এই স্ক্রিপ্ট Bastion সার্ভার হয়ে অন্য সব নোডের হোস্টনেম পরিবর্তন করে।
+# 🇺🇸 This script changes hostnames of internal nodes via Bastion.
+#
+# Prerequisite: SSH access to Bastion and internal nodes.
 # Function to display usage
 usage() {
     cat << EOF

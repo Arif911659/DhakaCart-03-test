@@ -1,9 +1,12 @@
 #!/bin/bash
 
-# ============================================
-# Update ConfigMap with Load Balancer URL
-# ============================================
-# This script updates the ConfigMap on Master-1
+# ==========================================
+# Update ConfigMap with Load Balancer
+# ==========================================
+# 🇧🇩 এই স্ক্রিপ্ট Kubernetes ConfigMap এ লোড ব্যালেন্সারের DNS বসিয়ে দেয়।
+# 🇺🇸 This script injects the Load Balancer DNS into the Kubernetes ConfigMap.
+#
+# Usage: ./update-configmap-with-lb.shter-1
 # with the current Load Balancer URL
 # Usage: ./update-configmap-with-lb.sh [LB_URL]
 # ============================================

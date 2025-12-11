@@ -1,8 +1,13 @@
 #!/bin/bash
 
 ##############################################
-# Master-2 Prerequisites Only
-# Run this before joining control plane
+# ==========================================
+# Master-2 Prerequisites
+# ==========================================
+# 🇧🇩 এই স্ক্রিপ্ট মাস্টার-২ রেডি করে (Swap off, IP Forwarding)।
+# 🇺🇸 This script prepares Master-2 (Swap off, IP Forwarding).
+#
+# Usage: Run before joining cluster plane
 ##############################################
 
 set -e

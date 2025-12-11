@@ -1,8 +1,12 @@
 #!/bin/bash
 
-# ============================================
-# Update Grafana ALB DNS Dynamically
-# ============================================
+# ==========================================
+# Update Grafana ALB DNS
+# ==========================================
+# 🇧🇩 এই স্ক্রিপ্ট Grafana কনফিগারেশনে ALB DNS আপডেট করে।
+# 🇺🇸 This script updates the ALB DNS in Grafana configuration.
+#
+# Usage: ./update-grafana-alb-dns.sh
 
 set -e
 

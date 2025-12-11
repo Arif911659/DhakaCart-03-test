@@ -15,7 +15,13 @@ print_config_message "$BLUE" "Generating Ansible inventory..."
 
 # Create inventory content
 cat > "$INVENTORY_FILE" << EOF
-# Auto-generated Ansible Inventory
+# ==========================================
+# Generate Ansible Inventory
+# ==========================================
+# 🇧🇩 এই স্ক্রিপ্ট Terraform আউটপুট থেকে Ansible Inventory ফাইল তৈরি করে।
+# 🇺🇸 This script generates an Ansible Inventory file from Terraform outputs.
+#
+# Usage: ./generate-ansible-inventory.sh
 # Generated at: $(date)
 
 [bastion]

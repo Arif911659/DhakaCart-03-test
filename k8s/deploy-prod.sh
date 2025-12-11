@@ -3,7 +3,9 @@
 # ==============================================================================
 # DhakaCart Production Deployment Script
 # ==============================================================================
-# This script automates the deployment of DhakaCart to a Kubernetes cluster.
+# 🇧🇩 এই স্ক্রিপ্ট মাস্টার নোডের ভেতর থেকে সব কুবারনেটিস ফাইল অ্যাপ্লাই করে।
+# 🇺🇸 This script runs inside Master node to apply all K8s manifests.
+#
 # It handles:
 # 1. Applying base resources (Namespace, Secrets, Volumes)
 # 2. Applying ConfigMaps
@@ -27,6 +29,8 @@ echo -e "${GREEN}🚀 Starting DhakaCart Deployment...${NC}"
 echo ""
 
 # 1. Base Resources
+# 🇧🇩 প্রথমে নেমস্পেস, সিক্রেট এবং ভলিউম তৈরি করা হয়
+# 🇺🇸 Step 1: Create Namespace, Secrets, and Persistent Volumes
 echo -e "${YELLOW}📦 Applying Base Resources...${NC}"
 kubectl apply -f "$SCRIPT_DIR/namespace.yaml"
 kubectl apply -f "$SCRIPT_DIR/secrets/"
@@ -48,6 +52,8 @@ echo -e "${GREEN}✅ Assuming app-config.yaml was updated locally before sync.${
 echo ""
 
 # 4. Deployments and Services
+# 🇧🇩 অ্যাপ্লিকেশনের পড এবং সার্ভিস চালু করা (Frontend, Backend, DB, Redis)
+# 🇺🇸 Step 4: Deploy application Pods and Services
 echo -e "${YELLOW}🚀 Applying Deployments and Services...${NC}"
 kubectl apply -f "$SCRIPT_DIR/deployments/"
 kubectl apply -f "$SCRIPT_DIR/services/"
@@ -158,6 +164,8 @@ check_and_seed_db
 echo ""
 
 # 7. Restart for Consistency
+# 🇧🇩 কনফিগারেশন আপডেট নিশ্চিত করতে ফ্রন্টএন্ড ও ব্যাকএন্ড রিস্টার্ট করা হয়
+# 🇺🇸 Step 7: Restart pods to enforce latest config changes
 echo -e "${YELLOW}🔄 Restarting Frontend and Backend to ensure config pickup...${NC}"
 kubectl rollout restart deployment/dhakacart-frontend -n dhakacart
 kubectl rollout restart deployment/dhakacart-backend -n dhakacart

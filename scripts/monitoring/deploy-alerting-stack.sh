@@ -91,11 +91,6 @@ ssh -i "$PROJECT_ROOT/terraform/simple-k8s/dhakacart-k8s-key.pem" ubuntu@${BASTI
 echo -e "${GREEN}✅ Verification complete${NC}"
 echo ""
 
-# Step 4: Display access information
-echo -e "${GREEN}========================================${NC}"
-echo -e "${GREEN}   ✅ Alerting Stack Ready!${NC}"
-echo -e "${GREEN}========================================${NC}"
-echo ""
 echo -e "${YELLOW}Access URLs:${NC}"
 echo "  Prometheus Alerts: http://${ALB_DNS}/prometheus/alerts"
 echo "  Prometheus Targets: http://${ALB_DNS}/prometheus/targets"

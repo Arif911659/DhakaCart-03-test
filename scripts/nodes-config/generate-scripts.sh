@@ -2,6 +2,9 @@
 
 # Generate Scripts from Templates
 # Purpose: Replace placeholders in template files with actual values
+#
+# 🇧🇩 এই স্ক্রিপ্ট টেম্পলেট ফাইল থেকে আসল স্ক্রিপ্ট জেনারেট করে (IP বসিয়ে)।
+# 🇺🇸 This script generates final scripts from templates by replacing placeholders.
 
 set -e
 

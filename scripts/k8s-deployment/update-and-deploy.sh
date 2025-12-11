@@ -1,10 +1,12 @@
 #!/bin/bash
 
-# ============================================
-# DhakaCart - Update Files and Deploy Script
-# ============================================
-# This script:
-# 1. Copies updated k8s files to Master-1
+# ==========================================
+# Update and Deploy
+# ==========================================
+# 🇧🇩 এই স্ক্রিপ্ট কোড আপডেট করে এবং নতুন করে অ্যাপ ডিপ্লয় করে।
+# 🇺🇸 This script updates code and redeploys the application.
+#
+# Usage: ./update-and-deploy.sh Copies updated k8s files to Master-1
 # 2. Automatically gets Load Balancer URL
 # 3. Updates ConfigMap with Load Balancer URL
 # 4. Applies all changes
