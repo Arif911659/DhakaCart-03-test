@@ -17,7 +17,7 @@ To make the project structure look more enterprise-grade and less "Exam/Lab" lik
 | Current Name | Suggested Name | Impact (Files to Change) |
 |--------------|----------------|--------------------------|
 | `deploy-4-hour-window.sh` | `deploy-full-stack.sh` | `README.md`, `PROJECT-STRUCTURE.md`, `DEPLOYMENT-GUIDE.md`, `QUICK-REFERENCE.md`, `PLAN.txt` |
-| `4-HOUR-DEPLOYMENT.md` | `FULL-DEPLOYMENT-GUIDE.md` | `README.md`, `PROJECT-STRUCTURE.md`, `DEPLOYMENT-GUIDE.md`, `SECURITY-AND-TESTING-GUIDE.md`, `QUICK-REFERENCE.md` |
+| `4-HOUR-DEPLOYMENT.md` | `FULL-DEPLOYMENT-GUIDE.md` | `README.md`, `PROJECT-STRUCTURE.md`, `DEPLOYMENT-GUIDE.md`, `docs/SECURITY-AND-TESTING-GUIDE.md`, `QUICK-REFERENCE.md` |
 | `MANUAL_RELEASE_GUIDE.md` | `RELEASE-RUNBOOK.md` | `README.md`, `PROJECT-STRUCTURE.md` |
 | `load-infrastructure-config.sh` | `load-env.sh` | **Many Scripts**: `deploy-4-hour-window.sh`, `monitoring/*`, `testing/load-tests/run-load-test.sh`, `security/apply-security-hardening.sh`, `scripts/k8s-deployment/sync-k8s-to-master1.sh`, `scripts/monitoring/deploy-alerting-stack.sh`, `README.md`, `PROJECT-STRUCTURE.md` |
 | `generate-scripts.sh` | `generate-node-scripts.sh` | `scripts/nodes-config/automate-node-config.sh`, `scripts/nodes-config/generate-scripts.sh` (self) |

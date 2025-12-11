@@ -30,7 +30,8 @@
         - [x] Monitoring & Security Scripts <!-- id: 24 -->
         - [x] Node Config & Templates <!-- id: 25 -->
         - [x] Remaining Helper Scripts <!-- id: 26 -->
-    - [ ] Practice "Zero to Hero" Deployment <!-- id: 14 -->
+    - [x] Standardize All Directory READMEs (Bilingual) <!-- id: 27 --> 
+    - [x] Configure Vault for Secrets Management <!-- id: 11 --> 
     - [ ] Record Video Presentation <!-- id: 15 -->
     - [ ] Submit to Exam Portal <!-- id: 16 -->
 Must Update যে কাজগুলা করা হয়েছেঃ
@@ -38,6 +39,6 @@ Must Update যে কাজগুলা করা হয়েছেঃ
 - MANUAL_RELEASE_GUIDE.md   
 - PROJECT-STRUCTURE.md
 - QUICK-REFERENCE.md
-- SECURITY-AND-TESTING-GUIDE.md
+- docs/SECURITY-AND-TESTING-GUIDE.md
 - DEPLOYMENT-GUIDE.md
 - 

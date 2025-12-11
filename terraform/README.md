@@ -1,79 +1,55 @@
-# 🏗️ DhakaCart Terraform Infrastructure
+# 🏗️ Infrastructure as Code (Terraform)
 
-This directory contains Infrastructure-as-Code (IaC) for provisioning Kubernetes clusters on AWS.
+**এটি কি? (What is this?)**
+এটি AWS ক্লাউডে আমাদের ইনফ্রাস্ট্রাকচার (Server, Network, Storage) অটোমেটিক তৈরি করার কোড।
 
-## 📁 Directory Structure
+**কেন এটি দরকার? (Why do we need this?)**
+- ম্যানুয়ালি সার্ভার সেটআপ করার ঝামেলা নেই।
+- **এক কমান্ডে** VPC, Subnet, Security Group, EC2 এবং Load Balancer তৈরি হয়ে যায়।
+- ভুল হওয়ার সম্ভাবনা নেই (Zero Human Error)।
+
+---
+
+## ⚙️ কি কি তৈরি হয়? (Resources Created)
+
+| Resource | Details | Purpose | Cost Est. (Approx) |
+|----------|---------|---------|--------------------|
+| **VPC** | 10.0.0.0/16 | Isolated Network | Free |
+| **Bastion** | t3.small (10.0.1.10) | Secure Entry Point | ~$0.0208/hr |
+| **Master Nodes** | 2x t3.medium | Kubernetes Control Plane | ~$0.0832/hr |
+| **Worker Nodes** | 3x t3.medium | Application Workload | ~$0.1248/hr |
+| **ALB** | Application Load Balancer | Traffic Distribution | ~$0.0225/hr |
+
+**Total Estimated Cost:** ~$7.20/day (approx $0.30/hour)
+
+---
+
+## 📂 ফাইল স্ট্রাকচার (Folder Structure)
 
 ```
-terraform/
-├── simple-k8s/              # Standard Production setup (Used by Automation)
-│   ├── main.tf              # Main configuration
-│   ├── scripts/             # Infrastructure specific scripts
-│   └── README.md            # Detailed guide
-│
-├── k8s-ha-cluster/          # High-Availability Setup (Alternative)
-│   ├── main.tf
-│   └── README.md
-│
-└── README.md                # This file
+terraform/simple-k8s/
+├── main.tf             # মেইন ইনফ্রাস্ট্রাকচার কোড
+├── variables.tf        # কনফিগারেশন ভেরিয়েবল (Region, AMI)
+├── outputs.tf          # IP এবং DNS আউটপুট
+└── alb-backend-config.tf # লোড ব্যালেন্সার কনফিগারেশন
 ```
 
 ---
 
-## 🚀 Option 1: Simple Kubernetes (Recommended)
-
-This is the standard infrastructure used by the **4-Hour Deployment** automation.
-
-### Architecture
-```
-Internet
-    │
-    ├─────► Bastion (Public IP) ──┐
-    │                              │
-    └─────► NAT Gateway            │
-                │                  │ SSH
-    ┌───────────▼──────────────────▼───────┐
-    │        Private Subnet                │
-    │  ┌──────────┐      ┌──────────┐      │
-    │  │ Master-1 │      │ Worker-1 │      │
-    │  │ Master-2 │      │ Worker-2 │      │
-    │  └──────────┘      │ Worker-3 │      │
-    │                                      │
-    └──────────────────────────────────────┘
-```
-
-### Components
--   **1 Bastion Server**: Public access point (t3.small)
--   **2 Master Nodes**: Control plane (t3.medium)
--   **3 Worker Nodes**: Workloads (t3.medium)
--   **ALB**: Application Load Balancer for public access
-
-### Quick Start
-This is automated by the project root scripts, but to run infrastructure manually:
+## 🚀 কিভাবে রান করবেন? (How to Run)
 
 ```bash
-cd simple-k8s
+cd terraform/simple-k8s
 terraform init
-terraform apply
+terraform apply --auto-approve
 ```
 
-**Cost Estimate:** ~$7.20/day (approx $0.30/hour)
-
 ---
 
-## 🚀 Option 2: HA Cluster (Advanced)
+## 🌟 Advanced Options
 
-For high-availability requirements with 3 masters and multi-AZ support.
-
- **Guide:** `k8s-ha-cluster/README.md`
-
-### Features
--   3 Master Nodes (Etcd HA)
--   Internal Load Balancer for API Server
--   Multi-AZ deployment
-
----
-
-## 📚 Documentation Links
--   **Full Deployment Guide:** `../DEPLOYMENT-GUIDE.md`
--   **Automation Script:** `../scripts/deploy-4-hour-window.sh`
+### HA Cluster (High Availability)
+For requirements with 3 masters and multi-AZ support, see `k8s-ha-cluster/README.md`.
+- 3 Master Nodes (Etcd HA)
+- Internal Load Balancer for API Server
+- Multi-AZ deployment

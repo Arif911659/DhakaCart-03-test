@@ -4,7 +4,7 @@ Important Note : "PLAN.txt এখানে আমার প্লান থা�
  আর CHANGELOG.md তার লগ রাখবা - এই ভাবেই আমরা সবকিছুর সমাধান করবো , এবং যে কাজগুলার সমাধান 
  করা হবে তা ওই কাজের related file থাকবে তা আর  পাশাপাশি প্রয়োজনীয় ফাইলের মধ্য 
  4-HOUR-DEPLOYMENT.md DEPLOYMENT-GUIDE.md PROJECT-STRUCTURE.md QUICK-REFERENCE.md 
- SECURITY-AND-TESTING-GUIDE.md - Update করবা"
+ docs/SECURITY-AND-TESTING-GUIDE.md - Update করবা"
 
 [x] 1 - /home/arif/DhakaCart-03-test/terraform/ চেক করো এখানে অপ্রয়োজনীয় কোন .sh , .md file আছে কিনা যা আমার আখন Project structure অনুযায়ী না থাকে , 
 কারন আমি Project টাকে organized করতে চাই।
@@ -17,7 +17,7 @@ Status: [DONE] - Moved to scripts/nodes-config/ and updated all references.
 [x] 3 - Terraform Apply -> Nodes Host-naming (Bastion,Master-1,Master-2,Worker-1,2,3)- /home/arif/DhakaCart-03-test/scripts/internal/hostname/ এখানে  manually দিতে হয়েছে (0-6)
 0-All এ কাজ করে না এটা ঠিক করবে -> /home/arif/DhakaCart-03-test/scripts/k8s-deployment/ এটাও deploy-4-hour-window.sh এ আছে কিনা চেক করবা -> /home/arif/DhakaCart-03-test/k8s টা terraform apply করার 
 পরে  Master-1 node এ  upload হয় না কারনটা খুজে বের করে আমাকে জানাবা আর deploy-4-hour-window.sh কিছু missing আছে কিনা দেখবা । -> 
-এবং related .md file গুলাও update করো যেমন ঃ SECURITY-AND-TESTING-GUIDE.md QUICK-REFERENCE.md PROJECT-STRUCTURE.md DEPLOYMENT-GUIDE.md 4-HOUR-DEPLOYMENT.md
+এবং related .md file গুলাও update করো যেমন ঃ docs/SECURITY-AND-TESTING-GUIDE.md QUICK-REFERENCE.md PROJECT-STRUCTURE.md DEPLOYMENT-GUIDE.md 4-HOUR-DEPLOYMENT.md
 আমি চাই deploy-4-hour-window.sh এটা execute করলে যেন সব রেয়াদ্য হয়ে যায় আমি হইতো ২/১টা কাজ manually করবো এবং কি কি 
 কাজ manually করবো তাও যেন deploy-4-hour-window.sh এর শেষে terminal output message এ নির্দেশনা থাকে বা পরবর্তি কোন documents follow 
 করবো তা নির্দেশনা থাকে, - এসবের মূল কারন আমার সময় বাচানো।
@@ -131,6 +131,65 @@ Must Update যে কাজগুলা করা হয়েছেঃ
 - MANUAL_RELEASE_GUIDE.md   
 - PROJECT-STRUCTURE.md
 - QUICK-REFERENCE.md
-- SECURITY-AND-TESTING-GUIDE.md
+- docs/SECURITY-AND-TESTING-GUIDE.md
 - DEPLOYMENT-GUIDE.md
 - 
+
+19 - CHANGELOG.md
+    PROJECT_DEFENSE.md => INTERNAL_DEFENSE_SCRIPT.md
+    PLAN.txt
+    PROJECT-STRUCTURE.md
+    README.md 
+    docs/DYNAMIC-ALB-DNS-UPDATE.md
+    docs/FIX-ALB-SITE-ERROR.md 
+    docs/FIX-DATABASE-PRODUCTS-ISSUE.md
+    docs/FIX-GRAFANA-ISSUES.md 
+    docs/Final Project \342\200\224 DhakaCart E-Commerce Reliability Challenge.md"
+    docs/LOCAL_K8S_SETUP.md
+    docs/LOKI-TROUBLESHOOTING.md
+    docs/PROJECT_COMPLETION_SUMMARY.md
+    docs/PROMETHEUS-NO-DATA-FIX.md
+    docs/architecture/DEPLOYMENT_ARCHITECTURE(29-11-25).md
+    docs/architecture/system-architecture.md
+    k8s/deploy-prod.sh
+    scripts/database/seed-database.sh
+    scripts/deploy-4-hour-window.sh
+    scripts/enterprise-features/install-cert-manager.sh
+    scripts/enterprise-features/install-vault.sh
+    scripts/enterprise-features/install-velero.sh
+    scripts/internal/database/diagnose-db-products-issue.sh
+    scripts/internal/generate-ansible-inventory.sh
+    scripts/internal/hostname/change-hostname-via-bastion.sh
+    scripts/internal/hostname/change-hostname.sh
+    scripts/internal/k8s-deployment/update-configmap-with-lb.sh 
+    scripts/internal/monitoring/apply-prometheus-fix.sh
+    scripts/internal/monitoring/check-prometheus-metrics.sh
+    scripts/internal/monitoring/diagnose-grafana-issues.sh
+    scripts/internal/monitoring/fix-grafana-config.sh
+    scripts/internal/monitoring/fix-promtail-logs.sh
+    scripts/internal/monitoring/update-grafana-alb-dns.sh
+    scripts/internal/update-alb-dns-dynamic.sh
+    scripts/k8s-deployment/sync-k8s-to-master1.sh
+    scripts/k8s-deployment/update-and-deploy.sh
+    scripts/load-infrastructure-config.sh 
+    scripts/monitoring/deploy-alerting-stack.sh
+    scripts/monitoring/setup-grafana-alb.sh 
+    scripts/nodes-config/automate-node-config.sh
+    scripts/nodes-config/extract-terraform-outputs.sh 
+    scripts/nodes-config/generate-scripts.sh 
+    scripts/nodes-config/templates/master-1.sh.template
+    scripts/nodes-config/templates/master-2-prereq.sh
+    scripts/nodes-config/templates/master-2.sh.template 
+    scripts/nodes-config/templates/workers-prereq.sh
+    scripts/nodes-config/templates/workers.sh.template 
+    scripts/nodes-config/upload-to-bastion.sh
+    scripts/post-terraform-setup.sh
+    scripts/security/apply-security-hardening.sh
+    task.md 
+    INTERNAL_DEFENSE_SCRIPT.md
+
+
+20 - /home/arif/DhakaCart-03-test/archive-2025-dec-cleanup ও /home/arif/DhakaCart-03-test/docs ও /home/arif/DhakaCart-03-test/README.md এটা বাদে।
+    - /home/arif/DhakaCart-03-test/ansible/README.md এটা পড়ে দেখ এখানে যে ফরমাটে ansible সম্পর্কে বোঝানো হয়েছে ঠিক একিভাবে তুমি সব project/প্রতিটা directory কে একিভাবে README.md-(না থাকলে create করবা) তে explain(কি,কেনো,কিভাবে) করবা (engliah+bangla) mix language system এ , 
+      বিশেষ করে frontend , backend, database,redece কি port use করা হচ্ছে সেগুলাও উল্লেখ থাকবে ইত্যাদি । 
+      

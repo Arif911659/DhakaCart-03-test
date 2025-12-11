@@ -892,7 +892,7 @@ cd DhakaCart-03-test
 #### 10.3 Troubleshooting Runbooks
 **Files:**
 - `docs/runbooks/troubleshooting.md`
-- `SECURITY-AND-TESTING-GUIDE.md`
+- `docs/SECURITY-AND-TESTING-GUIDE.md`
 - `QUICK-REFERENCE.md`
 
 **Content:**
