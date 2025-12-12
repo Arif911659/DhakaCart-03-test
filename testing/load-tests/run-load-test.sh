@@ -37,8 +37,8 @@ if ! command -v k6 &> /dev/null; then
 fi
 
 # Get target URL
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+TEST_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$TEST_DIR/../.." && pwd)"
 
 # Try to load infrastructure config if not set manually
 if [ -z "$BASE_URL" ] && [ -f "$PROJECT_ROOT/scripts/load-infrastructure-config.sh" ]; then
@@ -115,7 +115,7 @@ k6 run \
     --summary-export="$REPORT_DIR/summary.json" \
     -e BASE_URL="$BASE_URL" \
     $K6_OPTIONS \
-    k6-load-test.js
+    "$TEST_DIR/k6-load-test.js"
 
 # Generate HTML report (if K6 reporter is installed)
 if command -v k6-reporter &> /dev/null; then
