@@ -1,4 +1,4 @@
-# 🚀 4-Hour Deployment Guide: Error-Free Workflow
+# 🚀 Full Stack Deployment Guide: Error-Free Workflow
 
 This guide details the exact structure, files, and steps to follow for a flawless deployment within your 4-hour AWS access window.
 

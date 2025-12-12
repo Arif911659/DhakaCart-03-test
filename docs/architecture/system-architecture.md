@@ -362,10 +362,10 @@ Authenticated Request
 **Technology:** Velero + MinIO
 
 **Strategy:**
-- **Schedule:** Daily at 2:00 AM
+- **Trigger:** On-Demand (Scripted Automation)
 - **Storage:** Self-hosted MinIO (S3-compatible)
 - **Scope:** All `dhakacart` namespace resources + PV snapshots
-- **Retention:** 30 days
+- **Retention:** 30 days (Configurable)
 
 ### 3. Traffic Encryption (HTTPS)
 **Technology:** Cert-Manager + Let's Encrypt
@@ -558,7 +558,6 @@ Backend-1 Backend-2 Backend-3 Backend-N
 | Monitoring | Prometheus | 2.x | Metrics Collection |
 | Visualization | Grafana | 10.x | Dashboards |
 | Logging | Loki | 2.x | Log Aggregation |
-| Config Mgmt | Ansible | 2.x | Automation |
 | Secrets | Vault | 1.14 | Secrets Management |
 | Backup | Velero | 1.11 | Cluster Backup |
 | Storage | MinIO | RELEASE | S3-Compatible Storage |
