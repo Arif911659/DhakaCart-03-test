@@ -4,8 +4,8 @@
 # This script loads infrastructure variables from Terraform outputs
 # Source this script in other scripts to get auto-resolved variables
 #
-# 🇧🇩 এই স্ক্রিপ্ট Terraform থেকে অটোমেটিক IP, DNS এবং অন্যান্য তথ্য ইমপোর্ট করে।
-# 🇺🇸 This script automatically imports IPs, DNS, and config from Terraform outputs.
+# এই স্ক্রিপ্ট Terraform থেকে অটোমেটিক IP, DNS এবং অন্যান্য তথ্য ইমপোর্ট করে।
+# This script automatically imports IPs, DNS, and config from Terraform outputs.
 
 set -e
 
@@ -46,8 +46,8 @@ if [ ! -f "$TERRAFORM_DIR/terraform.tfstate" ]; then
 fi
 
 # Function to get terraform output
-# 🇧🇩 Terraform JSON আউটপুট থেকে নির্দিষ্ট ভ্যালু বের করে আনার ফাংশন
-# 🇺🇸 Function to parse specific value from Terraform JSON output
+# Terraform JSON আউটপুট থেকে নির্দিষ্ট ভ্যালু বের করে আনার ফাংশন
+# Function to parse specific value from Terraform JSON output
 get_terraform_output() {
     local output_name=$1
     local default_value=$2
@@ -71,8 +71,8 @@ get_terraform_output() {
 print_config_message "$BLUE" "Loading infrastructure configuration from Terraform..."
 
 # Export Bastion IP
-# 🇧🇩 Bastion IP বের করা (SSH করার জন্য লাগবে)
-# 🇺🇸 Export Bastion IP (Needed for SSH)
+# Bastion IP বের করা (SSH করার জন্য লাগবে)
+# Export Bastion IP (Needed for SSH)
 export BASTION_IP=$(get_terraform_output "bastion_public_ip")
 if [ -z "$BASTION_IP" ]; then
     print_config_message "$RED" "Failed to get Bastion IP from Terraform outputs"

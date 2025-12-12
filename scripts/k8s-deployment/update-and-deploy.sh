@@ -3,8 +3,8 @@
 # ==========================================
 # Update and Deploy
 # ==========================================
-# 🇧🇩 এই স্ক্রিপ্ট কোড আপডেট করে এবং নতুন করে অ্যাপ ডিপ্লয় করে।
-# 🇺🇸 This script updates code and redeploys the application.
+# এই স্ক্রিপ্ট কোড আপডেট করে এবং নতুন করে অ্যাপ ডিপ্লয় করে।
+# This script updates code and redeploys the application.
 #
 # Usage: ./update-and-deploy.sh Copies updated k8s files to Master-1
 # 2. Automatically gets Load Balancer URL

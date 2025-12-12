@@ -26,7 +26,7 @@ scripts/nodes-config/
 
 **Recommended:** This is automatically run by the main deployment script:
 ```bash
-./scripts/deploy-4-hour-window.sh
+./scripts/deploy-full-stack.sh
 ```
 
 **Manual Run (Debugging):**

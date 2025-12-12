@@ -139,7 +139,7 @@ terraform output > infrastructure-outputs.txt
  
  ```bash
  cd /home/arif/DhakaCart-03-test
- ./scripts/deploy-4-hour-window.sh
+ ./scripts/deploy-full-stack.sh
  ```
  
  **Features:**
@@ -209,7 +209,7 @@ kubectl get pods -n dhakacart
 ## Phase 4: Application Deployment
 
 ### Step 4.1: Register Workers to ALB
- (Automated by `deploy-4-hour-window.sh`. If manual:)
+ (Automated by `deploy-full-stack.sh`. If manual:)
  ```bash
  cd /home/arif/DhakaCart-03-test/terraform/simple-k8s
  ./register-workers-to-alb.sh
@@ -432,7 +432,7 @@ curl http://<ALB_DNS>/api/health
 
 ## Phase 8: Exam Compliance (Enterprise Features)
 
-> **✨ Automated:** This phase is now handled automatically by `deploy-4-hour-window.sh` (Step 8).
+> **✨ Automated:** This phase is now handled automatically by `deploy-full-stack.sh` (Step 8).
 > Use the steps below **only** if you need to run them manually or for troubleshooting.
 
 To meet the 10 Exam Constraints, these scripts must be run **on the Master Node**.

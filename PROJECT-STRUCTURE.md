@@ -76,7 +76,7 @@ DhakaCart-03-test/
 │   │   └── upload-to-bastion.sh
 │   ├── 📂 security/                    # Security Automation
 │   │   └── apply-security-hardening.sh
-│   ├── deploy-4-hour-window.sh         # 🚀 MASTER SCRIPT: 0 to Production
+│   ├── deploy-full-stack.sh         # 🚀 MASTER SCRIPT: 0 to Production
 │   ├── .deploy_state                   # 🔄 State tracking for Resume Capability
 │   ├── fetch-kubeconfig.sh             # CI/CD Helper
 │   └── load-infrastructure-config.sh   # State Loader
@@ -96,7 +96,7 @@ DhakaCart-03-test/
 ├── 📂 backend/                         # Application Source (Node.js)
 ├── 📂 frontend/                        # Application Source (React)
 │
-├── 📄 4-HOUR-DEPLOYMENT.md             # ⏱️ Quick Deployment Runbook
+├── 📄 FULL-STACK-DEPLOYMENT.md             # ⏱️ Quick Deployment Runbook
 ├── 📄 DEPLOYMENT-GUIDE.md              # 📚 Full Detailed Guide
 
 ├── 📄 PHASE-2-TECH-SPEC.md             # � Enterprise Features Guide
@@ -108,7 +108,7 @@ DhakaCart-03-test/
 ## 🧩 Component Descriptions
 
 ### 1. Automation Core (`scripts/`)
-*   **`deploy-4-hour-window.sh`**: The orchestrator. It calls Terraform, configures nodes, deploys K8s, and **auto-seeds** the DB. Features **Smart Resume** to recover from interruptions.
+*   **`deploy-full-stack.sh`**: The orchestrator. It calls Terraform, configures nodes, deploys K8s, and **auto-seeds** the DB. Features **Smart Resume** to recover from interruptions.
 *   **`enterprise-features/`**: Scripts to install Phase 2 tools (Backup, Security) *after* the main deployment.
 *   **`nodes-config/`**: Handles the complex logic of `kubeadm init` and `kubeadm join` ensuring nodes connect correctly.
 

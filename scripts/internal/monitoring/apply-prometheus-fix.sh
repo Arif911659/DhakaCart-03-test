@@ -3,8 +3,8 @@
 # ==========================================
 # Apply Prometheus Fix
 # ==========================================
-# 🇧🇩 এই স্ক্রিপ্ট Prometheus পারমিশন সমস্যা এবং কনফিগারেশন ত্রুটি ঠিক করে।
-# 🇺🇸 This script fixes Prometheus permission issues and configuration errors.
+# এই স্ক্রিপ্ট Prometheus পারমিশন সমস্যা এবং কনফিগারেশন ত্রুটি ঠিক করে।
+# This script fixes Prometheus permission issues and configuration errors.
 #
 # Usage: ./apply-prometheus-fix.sh
 

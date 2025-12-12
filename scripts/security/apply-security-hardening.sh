@@ -19,8 +19,8 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 echo -e "${YELLOW}# ==========================================
 # Apply Security Hardening
 # ==========================================
-# 🇧🇩 এই স্ক্রিপ্ট ক্লাস্টারের সিকিউরিটি পলিসি (Network Policy, User Permission) অ্যাপ্লাই করে।
-# 🇺🇸 This script applies security policies (Network Policy, User Permissions).
+# এই স্ক্রিপ্ট ক্লাস্টারের সিকিউরিটি পলিসি (Network Policy, User Permission) অ্যাপ্লাই করে।
+# This script applies security policies (Network Policy, User Permissions).
 #
 # Usage: ./apply-security-hardening.sh${NC}"
 echo -e "${YELLOW}========================================${NC}"

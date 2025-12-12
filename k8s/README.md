@@ -28,7 +28,7 @@ k8s/
 
 ### ১. সব একসাথে ডেপ্লয় করতে:
 ```bash
-./scripts/deploy-4-hour-window.sh
+./scripts/deploy-full-stack.sh
 # অথবা
 ./k8s/deploy-prod.sh
 ```

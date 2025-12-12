@@ -3,7 +3,7 @@ PLAN: আমার প্রজেক্ট স্ট্রাকচার ক�
 Important Note : "PLAN.txt এখানে আমার প্লান থাকবে তুমি সেটা দেখে Suggesion & Solution provide করবা
  আর CHANGELOG.md তার লগ রাখবা - এই ভাবেই আমরা সবকিছুর সমাধান করবো , এবং যে কাজগুলার সমাধান 
  করা হবে তা ওই কাজের related file থাকবে তা আর  পাশাপাশি প্রয়োজনীয় ফাইলের মধ্য 
- 4-HOUR-DEPLOYMENT.md DEPLOYMENT-GUIDE.md PROJECT-STRUCTURE.md QUICK-REFERENCE.md 
+ FULL-STACK-DEPLOYMENT.md DEPLOYMENT-GUIDE.md PROJECT-STRUCTURE.md QUICK-REFERENCE.md 
  docs/SECURITY-AND-TESTING-GUIDE.md - Update করবা"
 
 [x] 1 - /home/arif/DhakaCart-03-test/terraform/ চেক করো এখানে অপ্রয়োজনীয় কোন .sh , .md file আছে কিনা যা আমার আখন Project structure অনুযায়ী না থাকে , 
@@ -15,11 +15,11 @@ Status: [DONE] - Moved redundant docs to archive-2025-dec-cleanup/.
 Status: [DONE] - Moved to scripts/nodes-config/ and updated all references.
 
 [x] 3 - Terraform Apply -> Nodes Host-naming (Bastion,Master-1,Master-2,Worker-1,2,3)- /home/arif/DhakaCart-03-test/scripts/internal/hostname/ এখানে  manually দিতে হয়েছে (0-6)
-0-All এ কাজ করে না এটা ঠিক করবে -> /home/arif/DhakaCart-03-test/scripts/k8s-deployment/ এটাও deploy-4-hour-window.sh এ আছে কিনা চেক করবা -> /home/arif/DhakaCart-03-test/k8s টা terraform apply করার 
-পরে  Master-1 node এ  upload হয় না কারনটা খুজে বের করে আমাকে জানাবা আর deploy-4-hour-window.sh কিছু missing আছে কিনা দেখবা । -> 
-এবং related .md file গুলাও update করো যেমন ঃ docs/SECURITY-AND-TESTING-GUIDE.md QUICK-REFERENCE.md PROJECT-STRUCTURE.md DEPLOYMENT-GUIDE.md 4-HOUR-DEPLOYMENT.md
-আমি চাই deploy-4-hour-window.sh এটা execute করলে যেন সব রেয়াদ্য হয়ে যায় আমি হইতো ২/১টা কাজ manually করবো এবং কি কি 
-কাজ manually করবো তাও যেন deploy-4-hour-window.sh এর শেষে terminal output message এ নির্দেশনা থাকে বা পরবর্তি কোন documents follow 
+0-All এ কাজ করে না এটা ঠিক করবে -> /home/arif/DhakaCart-03-test/scripts/k8s-deployment/ এটাও deploy-full-stack.sh এ আছে কিনা চেক করবা -> /home/arif/DhakaCart-03-test/k8s টা terraform apply করার 
+পরে  Master-1 node এ  upload হয় না কারনটা খুজে বের করে আমাকে জানাবা আর deploy-full-stack.sh কিছু missing আছে কিনা দেখবা । -> 
+এবং related .md file গুলাও update করো যেমন ঃ docs/SECURITY-AND-TESTING-GUIDE.md QUICK-REFERENCE.md PROJECT-STRUCTURE.md DEPLOYMENT-GUIDE.md FULL-STACK-DEPLOYMENT.md
+আমি চাই deploy-full-stack.sh এটা execute করলে যেন সব রেয়াদ্য হয়ে যায় আমি হইতো ২/১টা কাজ manually করবো এবং কি কি 
+কাজ manually করবো তাও যেন deploy-full-stack.sh এর শেষে terminal output message এ নির্দেশনা থাকে বা পরবর্তি কোন documents follow 
 করবো তা নির্দেশনা থাকে, - এসবের মূল কারন আমার সময় বাচানো।
 Status: [DONE] - 
 - Sync script fixed (dynamic IPs).
@@ -123,11 +123,11 @@ See CHANGELOG.md for details.
 14 - [DONE] `PROJECT_DEFENSE.md` renamed to `INTERNAL_DEFENSE_SCRIPT.md` and removed from public documentation (README, etc.) so it remains private for your use. 
 15 - [DONE] Cleaned up `docs/` directory by removing old debugging logs and redundant setup guides. Kept only architecture, guides, and runbooks subfolders. 
 16 - [DONE] Verified and updated `docs/architecture/system-architecture.md`. Added missing Enterprise Features (Vault, Velero, Cert-Manager) to match current project state. Deleted outdated `DEPLOYMENT_ARCHITECTURE(29-11-25).md`. 
-17 - [DONE] Added detailed bilingual (English + Bangla) comments to all critical shell scripts (`deploy-4-hour-window.sh`, Enterprise Features, Core Utilities). This covers the most important scripts for the defense. 
+17 - [DONE] Added detailed bilingual (English + Bangla) comments to all critical shell scripts (`deploy-full-stack.sh`, Enterprise Features, Core Utilities). This covers the most important scripts for the defense. 
 18 - [FUTURE] Create a "Clean Export" repository for the examiner (excluding private notes/scripts) before final submission. Strategy: Create fresh repo from `DhakaCart-Submission` folder. 
 
 Must Update যে কাজগুলা করা হয়েছেঃ
-- 4-HOUR-DEPLOYMENT.md
+- FULL-STACK-DEPLOYMENT.md
 - MANUAL_RELEASE_GUIDE.md   
 - PROJECT-STRUCTURE.md
 - QUICK-REFERENCE.md
@@ -153,7 +153,7 @@ Must Update যে কাজগুলা করা হয়েছেঃ
     docs/architecture/system-architecture.md
     k8s/deploy-prod.sh
     scripts/database/seed-database.sh
-    scripts/deploy-4-hour-window.sh
+    scripts/deploy-full-stack.sh
     scripts/enterprise-features/install-cert-manager.sh
     scripts/enterprise-features/install-vault.sh
     scripts/enterprise-features/install-velero.sh
@@ -193,3 +193,4 @@ Must Update যে কাজগুলা করা হয়েছেঃ
     - /home/arif/DhakaCart-03-test/ansible/README.md এটা পড়ে দেখ এখানে যে ফরমাটে ansible সম্পর্কে বোঝানো হয়েছে ঠিক একিভাবে তুমি সব project/প্রতিটা directory কে একিভাবে README.md-(না থাকলে create করবা) তে explain(কি,কেনো,কিভাবে) করবা (engliah+bangla) mix language system এ , 
       বিশেষ করে frontend , backend, database,redece কি port use করা হচ্ছে সেগুলাও উল্লেখ থাকবে ইত্যাদি । 
       
+21 - deploy-full-stack.sh ও  FULL-STACK-DEPLOYMENT.md এই দুইটার নাম পরিবর্তন করে deploy-full-stack রাখতে চাচ্ছি এর জন্য কোন কোন ফাইল/ফোল্ডার এর (linking,reference) হিসাবে বা অন্য কোনভাবে ব্যাবহার হচ্ছে কিনা চেক করে আমাকে জানাও এখানে ।

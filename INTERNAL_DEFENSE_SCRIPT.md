@@ -68,7 +68,7 @@
 |-----------------|-----------------|--------------|----------------|
 | **Hardware** | Single machine, 8GB RAM, CPU overheating<br/>**একটি মাত্র machine, CPU overheating** | Multi-instance cloud architecture (2 Masters, 3 Workers)<br/>**Multi-instance cloud architecture** | `terraform/simple-k8s/main.tf` - EC2 instances with auto-scaling |
 | **Scalability** | Struggles beyond 5,000 visitors<br/>**5,000 visitor-এর বেশি হলে সমস্যা** | Load balancer + Auto-scaling (HPA)<br/>**Load balancer + Auto-scaling** | `k8s/hpa.yaml` - Horizontal Pod Autoscaler (3-10 backend, 2-8 frontend) |
-| **Deployment** | 1-3 hours downtime, manual FileZilla<br/>**1-3 ঘণ্টা downtime, manual FileZilla** | Automated CI/CD pipeline<br/>**Automated CI/CD pipeline** | `scripts/deploy-4-hour-window.sh` - One-command deployment |
+| **Deployment** | 1-3 hours downtime, manual FileZilla<br/>**1-3 ঘণ্টা downtime, manual FileZilla** | Automated CI/CD pipeline<br/>**Automated CI/CD pipeline** | `scripts/deploy-full-stack.sh` - One-command deployment |
 | **Monitoring** | No monitoring, discover downtime from customers<br/>**কোনো monitoring নেই, customer complain করলে জানা যায়** | Prometheus + Grafana dashboards<br/>**Prometheus + Grafana dashboards** | `k8s/monitoring/` - Complete observability stack |
 | **Logging** | Manual 500MB log file inspection<br/>**500MB log file manually check** | Centralized logging with Loki<br/>**Loki দিয়ে centralized logging** | `k8s/monitoring/loki/` + `promtail/` - Log aggregation |
 | **Security** | Hard-coded passwords, no HTTPS, public DB<br/>**Hard-coded passwords, HTTPS নেই, public DB** | Secrets management + HTTPS + Network policies<br/>**Secrets management + HTTPS + Network policies** | `k8s/enterprise-features/vault/` + `cert-manager/` + `security/network-policies/` |
@@ -312,7 +312,7 @@ kubectl rollout status deployment/dhakacart-backend -n dhakacart
 
 **📹 Video Brief (ভিডিও সংক্ষিপ্তসার):**
 GitHub Actions দিয়ে fully automated CI/CD pipeline তৈরি করেছি। প্রতিটি commit-এ automatically tests run হয়, containers build হয়, এবং deploy হয়। Zero downtime rolling deployments ও automatic rollback support করি। 3 ঘণ্টার manual deployment এখন 10 মিনিটে automated হয়ে যায়।
-**Key Files:** `.github/workflows/ci.yml`, `.github/workflows/cd.yml`, `scripts/deploy-4-hour-window.sh`
+**Key Files:** `.github/workflows/ci.yml`, `.github/workflows/cd.yml`, `scripts/deploy-full-stack.sh`
 
 **Exam Requirement (পরীক্ষার Requirement):**
 - Fully automated CI/CD pipeline - **Fully automated CI/CD pipeline**
@@ -329,7 +329,7 @@ GitHub Actions দিয়ে fully automated CI/CD pipeline তৈরি ক�
 - `.github/workflows/ci.yml` - Continuous Integration (tests, builds)
 - `.github/workflows/cd.yml` - Continuous Deployment
 - `.github/workflows/docker-build.yml` - Docker image building
-- `scripts/deploy-4-hour-window.sh` - Automated deployment script
+- `scripts/deploy-full-stack.sh` - Automated deployment script
 
 #### 3.2 Automated Testing
 **File:** `.github/workflows/ci.yml`
@@ -364,7 +364,7 @@ cd frontend && npm test
 - **After (পরে):** Automatic build and push on code commit - **Code commit-এ automatic build ও push**
 
 #### 3.4 Automated Deployment
-**File:** `scripts/deploy-4-hour-window.sh`
+**File:** `scripts/deploy-full-stack.sh`
 
 **Features:**
 - **Smart Resume:** Tracks progress, resumes from last step if interrupted
@@ -378,7 +378,7 @@ cd frontend && npm test
 
 **Verification:**
 ```bash
-./scripts/deploy-4-hour-window.sh
+./scripts/deploy-full-stack.sh
 # Complete deployment in <10 minutes
 ```
 
@@ -796,7 +796,7 @@ terraform apply
 #### 8.3 Reproducibility
 **One-Command Deployment:**
 ```bash
-./scripts/deploy-4-hour-window.sh
+./scripts/deploy-full-stack.sh
 ```
 
 **What it does:**
@@ -816,7 +816,7 @@ terraform apply
 
 **📹 Video Brief (ভিডিও সংক্ষিপ্তসার):**
 Scripts দিয়ে server provisioning, software setup, ও configuration automate করেছি। Routine maintenance (log rotation, patching, security updates) automate করেছি। New developer onboarding সহজ করেছি - কয়েকটি command দিয়ে setup করা যায়।
-**Key Files:** `scripts/deploy-4-hour-window.sh`, `scripts/nodes-config/`
+**Key Files:** `scripts/deploy-full-stack.sh`, `scripts/nodes-config/`
 
 **Exam Requirement (পরীক্ষার Requirement):**
 - Script server provisioning, software setup, and configuration - **Server provisioning, software setup, ও configuration script করুন**
@@ -826,7 +826,7 @@ Scripts দিয়ে server provisioning, software setup, ও configuration a
 **Our Implementation:**
 
 #### 9.1 Automated Deployment Script
-**File:** `scripts/deploy-4-hour-window.sh`
+**File:** `scripts/deploy-full-stack.sh`
 
 **Features:**
 - **Smart Resume:** Tracks progress, resumes from last step
@@ -875,7 +875,7 @@ Scripts দিয়ে server provisioning, software setup, ও configuration a
 ```bash
 git clone <repository>
 cd DhakaCart-03-test
-./scripts/deploy-4-hour-window.sh
+./scripts/deploy-full-stack.sh
 ```
 
 **How it solves the problem (কিভাবে সমস্যা সমাধান করে):**
@@ -1044,7 +1044,7 @@ Comprehensive documentation তৈরি করেছি - architecture diagrams
 
 ### The "Magic Button" Script (The "Magic Button" Script)
 
-**File:** `scripts/deploy-4-hour-window.sh`
+**File:** `scripts/deploy-full-stack.sh`
 
 এই script-টি আমাদের "Magic Button" - একটি command দিয়ে complete deployment:
 
@@ -1088,10 +1088,10 @@ Comprehensive documentation তৈরি করেছি - architecture diagrams
 **Demo Script:**
 ```bash
 # Show the script
-cat scripts/deploy-4-hour-window.sh | head -50
+cat scripts/deploy-full-stack.sh | head -50
 
 # Run the deployment
-./scripts/deploy-4-hour-window.sh
+./scripts/deploy-full-stack.sh
 
 # Show results
 kubectl get all -n dhakacart
@@ -1148,7 +1148,7 @@ kubectl get all -n monitoring
 
 **Actions (কর্ম):**
 1. Open terminal - **Terminal খুলুন**
-2. Run: `./scripts/deploy-4-hour-window.sh` - **Run করুন: `./scripts/deploy-4-hour-window.sh`**
+2. Run: `./scripts/deploy-full-stack.sh` - **Run করুন: `./scripts/deploy-full-stack.sh`**
 3. Explain each step as it runs - **প্রতিটি step explain করুন যতক্ষণ এটি run করছে**
 4. Show final verification report - **Final verification report দেখান**
 
@@ -1211,7 +1211,7 @@ kubectl port-forward -n monitoring svc/prometheus-service 9090:9090
 | Exam Criteria | Weight | Our Implementation | Evidence |
 |--------------|--------|-------------------|----------|
 | **1. Infra Design** | 20% | AWS Cloud + Terraform IaC | `terraform/simple-k8s/main.tf`, `terraform output` |
-| **2. CI/CD** | 15% | GitHub Actions + Automated Scripts | `.github/workflows/`, `scripts/deploy-4-hour-window.sh` |
+| **2. CI/CD** | 15% | GitHub Actions + Automated Scripts | `.github/workflows/`, `scripts/deploy-full-stack.sh` |
 | **3. Monitoring** | 15% | Prometheus + Grafana + Loki | `k8s/monitoring/`, Grafana dashboards |
 | **4. Security** | 15% | Vault + Cert-Manager + Network Policies | `k8s/enterprise-features/`, `k8s/security/` |
 | **5. Documentation** | 20% | Comprehensive docs | `README.md`, `4-HOUR-DEPLOYMENT.md`, `PROJECT-STRUCTURE.md` |
@@ -1254,7 +1254,7 @@ kubectl port-forward -n monitoring svc/prometheus-service 9090:9090
 | **6. Security** | ✅ | Vault + Cert-Manager + Network Policies | `kubectl get pods -n vault` |
 | **7. Backup** | ✅ | Velero + MinIO | `velero backup get` |
 | **8. IaC** | ✅ | Terraform | `terraform plan` |
-| **9. Automation** | ✅ | deploy-4-hour-window.sh | `./scripts/deploy-4-hour-window.sh` |
+| **9. Automation** | ✅ | deploy-full-stack.sh | `./scripts/deploy-full-stack.sh` |
 | **10. Documentation** | ✅ | Comprehensive docs | Check `README.md`, `4-HOUR-DEPLOYMENT.md` |
 
 ---
@@ -1279,7 +1279,7 @@ This project successfully transforms DhakaCart from a fragile single-machine set
 ### Key Achievements (মূল অর্জনসমূহ)
 
 - **Zero Downtime (জিরো ডাউনটাইম):** Rolling updates, health checks, self-healing - **Rolling updates, health checks, self-healing**
-- **Automation (অটোমেশন):** One-command deployment (`deploy-4-hour-window.sh`) - **One-command deployment (`deploy-4-hour-window.sh`)**
+- **Automation (অটোমেশন):** One-command deployment (`deploy-full-stack.sh`) - **One-command deployment (`deploy-full-stack.sh`)**
 - **Security (সিকিউরিটি):** Zero-trust network, encrypted secrets, HTTPS - **Zero-trust network, encrypted secrets, HTTPS**
 - **Observability (অবজারভেবিলিটি):** Real-time dashboards, centralized logging - **Real-time dashboards, centralized logging**
 - **Disaster Recovery (ডিজাস্টার রিকভারি):** Automated backups, tested restoration - **Automated backups, tested restoration**
@@ -1295,7 +1295,7 @@ This project successfully transforms DhakaCart from a fragile single-machine set
 - `kubectl get all -n dhakacart` - Running application
 
 **Automation:**
-- `scripts/deploy-4-hour-window.sh` - Master deployment script
+- `scripts/deploy-full-stack.sh` - Master deployment script
 - `.github/workflows/` - CI/CD pipelines
 
 **Monitoring:**
@@ -1343,7 +1343,7 @@ This project successfully transforms DhakaCart from a fragile single-machine set
    - Explain each layer
 
 4. **Live Demo (5 min)**
-   - Run `./scripts/deploy-4-hour-window.sh`
+   - Run `./scripts/deploy-full-stack.sh`
    - Explain each step
    - Show verification
 

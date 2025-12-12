@@ -9,7 +9,7 @@ This guide details the exact structure, files, and steps to follow for a flawles
 | Phase | Directory / File | Purpose |
 |-------|------------------|---------|
 | **1. Infra** | `terraform/simple-k8s/` | Infrastructure Code (VPC, EC2, ALB) |
-| **2. Auto** | `scripts/deploy-4-hour-window.sh` | **MASTER SCRIPT** - Runs *everything* (Infra+K8s+App+Seed) |
+| **2. Auto** | `scripts/deploy-full-stack.sh` | **MASTER SCRIPT** - Runs *everything* (Infra+K8s+App+Seed) |
 | **3. Config** | `scripts/load-infrastructure-config.sh` | Loads IPs from Terraform to scripts |
 | **4. K8s** | `scripts/k8s-deployment/` | K8s manifest syncing & deploying |
 | **5. Verify** | `scripts/monitoring/` | Check Grafana/Prometheus health |
@@ -46,13 +46,13 @@ We use a smart, resumable master script to handle 95% of the work.
 
 **Command:**
 ```bash
-./scripts/deploy-4-hour-window.sh
+./scripts/deploy-full-stack.sh
 ```
 
 **Options:**
 - `force`: Restart from the beginning (Warning: Clears state).
   ```bash
-  ./scripts/deploy-4-hour-window.sh --force
+  ./scripts/deploy-full-stack.sh --force
   ```
 
 **What the script does (Steps 1-7):**
@@ -134,7 +134,7 @@ cd scripts/enterprise-features
 
 If the automated script stops, check the error message.
 - **Fix the specific error**.
-- **Re-run `./scripts/deploy-4-hour-window.sh`** to resume.
+- **Re-run `./scripts/deploy-full-stack.sh`** to resume.
 
 | Error | Fix |
 |-------|-----|
@@ -157,5 +157,5 @@ terraform destroy -auto-approve
 
 ---
 
-**Last Updated**: 10 December 2025
+**Last Updated**: 12 December 2025
 **Guide Version**: 3.0 (Smart Resumable Automation)

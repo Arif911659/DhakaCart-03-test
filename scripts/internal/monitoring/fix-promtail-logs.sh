@@ -3,8 +3,8 @@
 # ==========================================
 # Fix Promtail Log Collection
 # ==========================================
-# 🇧🇩 এই স্ক্রিপ্ট Promtail কনফিগারেশন ঠিক করে যাতে লগগুলো Loki তে যায়।
-# 🇺🇸 This script fixes Promtail configuration to ensure logs are sent to Loki.
+# এই স্ক্রিপ্ট Promtail কনফিগারেশন ঠিক করে যাতে লগগুলো Loki তে যায়।
+# This script fixes Promtail configuration to ensure logs are sent to Loki.
 #
 # Usage: ./fix-promtail-logs.sh
 # This script updates Promtail configuration to correctly collect logs

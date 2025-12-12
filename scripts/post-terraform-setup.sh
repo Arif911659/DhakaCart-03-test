@@ -2,8 +2,8 @@
 
 # Post-Terraform Setup Script
 #
-# 🇧🇩 এই স্ক্রিপ্ট Terraform শেষের পর ইনভেন্টরি তৈরি ও কনফিগ লোড করে।
-# 🇺🇸 This script runs after Terraform to generate inventory and load config.
+# এই স্ক্রিপ্ট Terraform শেষের পর ইনভেন্টরি তৈরি ও কনফিগ লোড করে।
+# This script runs after Terraform to generate inventory and load config.
 #
 # Usage: ./post-terraform-setup.shion script to configure infrastructure after terraform apply
 

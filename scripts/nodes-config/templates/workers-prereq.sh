@@ -4,8 +4,8 @@
 # ==========================================
 # Worker Prerequisites
 # ==========================================
-# 🇧🇩 এই স্ক্রিপ্ট ওয়ার্কার নোড রেডি করে (Swap off, IP Forwarding)।
-# 🇺🇸 This script prepares Worker nodes (Swap off, IP Forwarding).
+# এই স্ক্রিপ্ট ওয়ার্কার নোড রেডি করে (Swap off, IP Forwarding)।
+# This script prepares Worker nodes (Swap off, IP Forwarding).
 #
 # Usage: Run before joining clusterjoin
 ##############################################

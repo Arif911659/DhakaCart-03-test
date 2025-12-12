@@ -3,8 +3,8 @@
 # ==========================================
 # Extract Terraform Outputs
 # ==========================================
-# 🇧🇩 এই স্ক্রিপ্ট Terraform থেকে আউটপুট নিয়ে .env ফাইলে সেভ করে।
-# 🇺🇸 This script extracts Terraform outputs and saves them to a .env file.
+# এই স্ক্রিপ্ট Terraform থেকে আউটপুট নিয়ে .env ফাইলে সেভ করে।
+# This script extracts Terraform outputs and saves them to a .env file.
 #
 # Usage: ./extract-terraform-outputs.sh
 

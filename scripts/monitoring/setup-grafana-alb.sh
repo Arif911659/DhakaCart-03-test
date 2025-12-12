@@ -3,8 +3,8 @@
 # ==========================================
 # Fix Grafana ALB Access
 # ==========================================
-# 🇧🇩 এই স্ক্রিপ্ট Grafana কে লোড ব্যালেন্সারের মাধ্যমে এক্সেস করার ব্যবস্থা করে।
-# 🇺🇸 This script configures Grafana to be accessible via the Load Balancer.
+# এই স্ক্রিপ্ট Grafana কে লোড ব্যালেন্সারের মাধ্যমে এক্সেস করার ব্যবস্থা করে।
+# This script configures Grafana to be accessible via the Load Balancer.
 #
 # Usage: ./setup-grafana-alb.sh
 # This script creates a target group and listener rule for Grafana

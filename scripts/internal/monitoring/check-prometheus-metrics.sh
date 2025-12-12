@@ -3,8 +3,8 @@
 # ==========================================
 # Check Prometheus Metrics
 # ==========================================
-# 🇧🇩 এই স্ক্রিপ্ট চেক করে Prometheus ঠিকমতো মেট্রিক্স পাচ্ছে কিনা।
-# 🇺🇸 This script checks if Prometheus is scraping metrics correctly.
+# এই স্ক্রিপ্ট চেক করে Prometheus ঠিকমতো মেট্রিক্স পাচ্ছে কিনা।
+# This script checks if Prometheus is scraping metrics correctly.
 #
 # Usage: ./check-prometheus-metrics.sh
 

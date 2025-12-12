@@ -4,8 +4,8 @@
 # ==========================================
 # Master-2 Prerequisites
 # ==========================================
-# 🇧🇩 এই স্ক্রিপ্ট মাস্টার-২ রেডি করে (Swap off, IP Forwarding)।
-# 🇺🇸 This script prepares Master-2 (Swap off, IP Forwarding).
+# এই স্ক্রিপ্ট মাস্টার-২ রেডি করে (Swap off, IP Forwarding)।
+# This script prepares Master-2 (Swap off, IP Forwarding).
 #
 # Usage: Run before joining cluster plane
 ##############################################

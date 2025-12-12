@@ -199,7 +199,7 @@ This project meets **all 10 exam requirements** from the DhakaCart E-Commerce Re
 | **6** | **Security & Compliance** | ✅ | Vault (secrets), Cert-Manager (HTTPS), Network Policies, RBAC |
 | **7** | **Database Backup & Recovery** | ✅ | Velero + MinIO, Daily automated backups, Disaster recovery |
 | **8** | **Infrastructure as Code** | ✅ | Terraform, Version-controlled, Reproducible setup |
-| **9** | **Automation & Operations** | ✅ | deploy-4-hour-window.sh, Automated node config, One-command deploy |
+| **9** | **Automation & Operations** | ✅ | deploy-full-stack.sh, Automated node config, One-command deploy |
 | **10** | **Documentation & Runbooks** | ✅ | Architecture diagrams, Setup guides, Troubleshooting, Runbooks |
 
 
@@ -212,7 +212,7 @@ Choose your deployment method. **Option 1 is recommended** for the full experien
 
 ### ✅ Option 1: Automated AWS Deployment (Recommended)
 
-This uses our **Smart Resumable Deployment Script** (`deploy-4-hour-window.sh`) to provision infrastructure, configure K8s, deploy the app, and seed the database in one go.
+This uses our **Smart Resumable Deployment Script** (`deploy-full-stack.sh`) to provision infrastructure, configure K8s, deploy the app, and seed the database in one go.
 
 **Features:**
 - 🔄 **Auto-Resume**: Picks up where it left off if interrupted
@@ -220,7 +220,7 @@ This uses our **Smart Resumable Deployment Script** (`deploy-4-hour-window.sh`) 
 - ✅ **Verification**: Checks system health after deployment
 - ⚡ **Fast**: Complete deployment in <10 minutes
 
-> **📄 Detailed Guide:** [4-HOUR-DEPLOYMENT.md](./4-HOUR-DEPLOYMENT.md)
+> **📄 Detailed Guide:** [FULL-STACK-DEPLOYMENT.md](./FULL-STACK-DEPLOYMENT.md)
 
 ```bash
 # 1. Clone & Setup
@@ -231,7 +231,7 @@ cd DhakaCart-03-test
 aws configure
 
 # 3. Run Automation Script
-./scripts/deploy-4-hour-window.sh
+./scripts/deploy-full-stack.sh
 
 # 4. Access Application
 # Get ALB DNS from Terraform output
@@ -297,7 +297,7 @@ kubectl get all -n monitoring
   - Security groups and firewall rules
 
 - **Deployment Automation**: One-command deployment
-  - `scripts/deploy-4-hour-window.sh` - Master deployment script
+  - `scripts/deploy-full-stack.sh` - Master deployment script
   - Smart resume capability
   - Automatic database seeding
   - Health verification
@@ -400,7 +400,7 @@ We have organized implementation guides for every component:
 | Documentation | Description |
 |---------------|-------------|
 
-| [**📄 4-HOUR-DEPLOYMENT.md**](./4-HOUR-DEPLOYMENT.md) | **Start Here** - Master automation guide for AWS deployment |
+| [**📄 FULL-STACK-DEPLOYMENT.md**](./FULL-STACK-DEPLOYMENT.md) | **Start Here** - Master automation guide for AWS deployment |
 | [**📄 DEPLOYMENT-GUIDE.md**](./DEPLOYMENT-GUIDE.md) | Detailed manual step-by-step generic deployment guide |
 | [**📄 QUICK-REFERENCE.md**](./QUICK-REFERENCE.md) | Cheat sheet for common commands |
 | [**📄 PROJECT-STRUCTURE.md**](./PROJECT-STRUCTURE.md) | Complete project structure and file organization |
@@ -416,7 +416,7 @@ We have organized implementation guides for every component:
 ```
 DhakaCart-03-test/
 ├── scripts/                      # 🤖 Automation central
-│   ├── deploy-4-hour-window.sh   # Main deployment script (One-command deploy)
+│   ├── deploy-full-stack.sh   # Main deployment script (One-command deploy)
 │   ├── load-infrastructure-config.sh
 │   ├── k8s-deployment/           # K8s sync scripts
 │   ├── enterprise-features/     # Velero, Vault installation

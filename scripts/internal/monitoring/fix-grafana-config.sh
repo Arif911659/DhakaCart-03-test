@@ -3,8 +3,8 @@
 # ============================================
 # Fix Grafana Configuration Issues
 # ============================================
-# 🇧🇩 এই স্ক্রিপ্ট Grafana Datasource কনফিগ সঠিক করে (Prometheus URL আপডেট করে)।
-# 🇺🇸 This script fixes Grafana Datasource configuration (Updates Prometheus URL).
+# এই স্ক্রিপ্ট Grafana Datasource কনফিগ সঠিক করে (Prometheus URL আপডেট করে)।
+# This script fixes Grafana Datasource configuration (Updates Prometheus URL).
 #
 # Usage: ./fix-grafana-config.sh
 

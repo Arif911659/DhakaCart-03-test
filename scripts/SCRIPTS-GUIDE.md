@@ -6,7 +6,7 @@ This directory contains all the automation scripts for deploying, managing, and 
 
 ```
 scripts/
-├── deploy-4-hour-window.sh        # 🚀 MASTER SCRIPT: Deploys everything (Resume + Seed)
+├── deploy-full-stack.sh        # 🚀 MASTER SCRIPT: Deploys everything (Resume + Seed)
 ├── post-terraform-setup.sh        # 🛠️ SETUP: Interactive config after Terraform
 ├── fetch-kubeconfig.sh            # 🔑 ACCESS: Get Kubeconfig for local access
 ├── load-infrastructure-config.sh  # ⚙️ CONFIG: Helper to load Terraform outputs
@@ -30,7 +30,7 @@ scripts/
 ## 🚦 Application Workflow: Which Script? When?
 
 ### 1. **I want to deploy everything from scratch** (Start Here)
-*   **Script**: `./deploy-4-hour-window.sh`
+*   **Script**: `./deploy-full-stack.sh`
 *   **What it does (Enhanced)**:
     1.  Provisions AWS Infra (Terrform).
     2.  Configures K8s Cluster (Kubeadm).
@@ -95,5 +95,5 @@ These scripts must be run on the **Master Node** via SSH.
 | `Permission denied` | Run `chmod +x <script_name>` |
 | `terraform/terraform.tfstate not found` | Run `terraform apply` first to generate state file |
 | `SSH connection failed` | Check `dhakacart-k8s-key.pem` permissions (must be 400/600) |
-| **Script hangs/fails** | Fix issue and re-run `./deploy-4-hour-window.sh` (It will resume) |
+| **Script hangs/fails** | Fix issue and re-run `./deploy-full-stack.sh` (It will resume) |
 

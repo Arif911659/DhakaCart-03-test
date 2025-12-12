@@ -35,7 +35,7 @@
     - [ ] Record Video Presentation <!-- id: 15 -->
     - [ ] Submit to Exam Portal <!-- id: 16 -->
 Must Update যে কাজগুলা করা হয়েছেঃ
-- 4-HOUR-DEPLOYMENT.md
+- FULL-STACK-DEPLOYMENT.md
 - MANUAL_RELEASE_GUIDE.md   
 - PROJECT-STRUCTURE.md
 - QUICK-REFERENCE.md

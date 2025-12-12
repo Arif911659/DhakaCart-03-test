@@ -4,8 +4,8 @@
 # Dynamic ALB DNS Update Script
 # ============================================
 # This script automatically# Update ALB DNS Dynamic
-# 🇧🇩 এই স্ক্রিপ্ট অটোমেটিক ALB DNS খুঁজে বের করে এবং কনফিগারেশনে আপডেট করে।
-# 🇺🇸 This script automatically finds the ALB DNS and updates the configuration.
+# এই স্ক্রিপ্ট অটোমেটিক ALB DNS খুঁজে বের করে এবং কনফিগারেশনে আপডেট করে।
+# This script automatically finds the ALB DNS and updates the configuration.
 #
 # Usage: source ./update-alb-dns-dynamic.she ConfigMap in Kubernetes
 # Perfect for LAB environments where ALB DNS changes
