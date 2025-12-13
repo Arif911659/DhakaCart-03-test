@@ -59,7 +59,7 @@ Transforms a fragile single-machine setup into a resilient, scalable, cloud-nati
 |--------|--------|-------|-------------|
 | **Uptime** | ~95% | **99.9%** | Self-healing Kubernetes |
 | **Scalability** | 5,000 users | **100,000+ users** | 20x via HPA |
-| **Deploy Time** | 3-4 hours | **< 10 minutes** | Automated CI/CD |
+| **Deploy Time** | 3-4 hours | **< 20 minutes** | Automated CI/CD |
 | **Security** | Insecure | **Zero-Trust** | Network policies, Vault, HTTPS |
 | **Monitoring** | None | **Full Stack** | Prometheus + Grafana + Loki |
 | **Backup** | Manual (failed) | **Automated Daily** | Velero + MinIO |
@@ -217,8 +217,9 @@ This uses our **Smart Resumable Deployment Script** (`deploy-full-stack.sh`) to 
 **Features:**
 - 🔄 **Auto-Resume**: Picks up where it left off if interrupted
 - 🌱 **Auto-Seed**: Populates database automatically
+- 🛡️ **Automated Enterprise Features**: Installs Velero, Vault, and Cert-Manager automatically
 - ✅ **Verification**: Checks system health after deployment
-- ⚡ **Fast**: Complete deployment in <10 minutes
+- ⚡ **Fast**: Complete deployment in <20 minutes
 
 > **📄 Detailed Guide:** [FULL-STACK-DEPLOYMENT.md](./FULL-STACK-DEPLOYMENT.md)
 
@@ -245,7 +246,9 @@ terraform -chdir=terraform/simple-k8s output load_balancer_dns
 3. ✅ Deploys application (Frontend, Backend, DB, Redis)
 4. ✅ Sets up monitoring (Prometheus, Grafana, Loki)
 5. ✅ Seeds database with initial product data
-6. ✅ Verifies deployment and generates health report
+6. ✅ Registers ALB targets for external access
+7. ✅ **Installs Enterprise Features** (Velero, Vault, Cert-Manager)
+8. ✅ Verifies deployment and generates health report
 
 ### 💻 Option 2: Local Development (Docker Compose)
 
@@ -301,6 +304,7 @@ kubectl get all -n monitoring
   - Smart resume capability
   - Automatic database seeding
   - Health verification
+  - **Automated Enterprise Setup** (Backup, Secrets, SSL)
 
 ### 🛡️ Security & Reliability (Enterprise Features)
 
@@ -399,7 +403,6 @@ We have organized implementation guides for every component:
 
 | Documentation | Description |
 |---------------|-------------|
-
 | [**📄 FULL-STACK-DEPLOYMENT.md**](./FULL-STACK-DEPLOYMENT.md) | **Start Here** - Master automation guide for AWS deployment |
 | [**📄 DEPLOYMENT-GUIDE.md**](./DEPLOYMENT-GUIDE.md) | Detailed manual step-by-step generic deployment guide |
 | [**📄 QUICK-REFERENCE.md**](./QUICK-REFERENCE.md) | Cheat sheet for common commands |
@@ -416,21 +419,21 @@ We have organized implementation guides for every component:
 ```
 DhakaCart-03-test/
 ├── scripts/                      # 🤖 Automation central
-│   ├── deploy-full-stack.sh   # Main deployment script (One-command deploy)
+│   ├── deploy-full-stack.sh      # Main deployment script (Incls Enterprise Features)
 │   ├── load-infrastructure-config.sh
 │   ├── k8s-deployment/           # K8s sync scripts
-│   ├── enterprise-features/     # Velero, Vault installation
+│   ├── enterprise-features/      # Velero, Vault installation
 │   ├── security/                 # Hardening scripts
-│   └── monitoring/              # Observability setup
+│   └── monitoring/               # Observability setup
 │
 ├── terraform/                    # 🏗️ Infrastructure as Code
-│   └── simple-k8s/              # AWS infrastructure (VPC, EC2, ALB)
-│       ├── main.tf              # Main infrastructure
+│   └── simple-k8s/               # AWS infrastructure (VPC, EC2, ALB)
+│       ├── main.tf               # Main infrastructure
 │       ├── alb-backend-config.tf # ALB configuration
-│       └── variables.tf         # Configuration variables
+│       └── variables.tf          # Configuration variables
 │
 ├── k8s/                          # ☸️ Kubernetes Manifests
-│   ├── deployments/             # Application workloads
+│   ├── deployments/              # Application workloads
 │   │   ├── backend-deployment.yaml
 │   │   ├── frontend-deployment.yaml
 │   │   ├── postgres-deployment.yaml
@@ -441,35 +444,35 @@ DhakaCart-03-test/
 │   ├── hpa.yaml                  # Auto-scaling configuration
 │   ├── monitoring/               # Prometheus, Grafana, Loki
 │   ├── enterprise-features/      # Vault, Velero, Cert-Manager
-│   └── security/                # Network policies
+│   └── security/                 # Network policies
 │
-├── .github/                       # 🔄 CI/CD Pipeline
+├── .github/                      # 🔄 CI/CD Pipeline
 │   └── workflows/
-│       ├── ci.yml               # Continuous Integration
-│       ├── cd.yml               # Continuous Deployment
-│       ├── docker-build.yml     # Docker image building
-│       └── security-scan.yml   # Vulnerability scanning
+│       ├── ci.yml                # Continuous Integration
+│       ├── cd.yml                # Continuous Deployment
+│       ├── docker-build.yml      # Docker image building
+│       └── security-scan.yml     # Vulnerability scanning
 │
-├── frontend/                      # 📱 React Application
-│   ├── src/                     # Source code
-│   ├── public/                  # Static assets
-│   └── Dockerfile               # Container definition
+├── frontend/                     # 📱 React Application
+│   ├── src/                      # Source code
+│   ├── public/                   # Static assets
+│   └── Dockerfile                # Container definition
 │
-├── backend/                       # 🔌 Node.js API
-│   ├── src/                     # Source code
-│   ├── routes/                  # API routes
-│   └── Dockerfile               # Container definition
+├── backend/                      # 🔌 Node.js API
+│   ├── src/                      # Source code
+│   ├── routes/                   # API routes
+│   └── Dockerfile                # Container definition
 │
-├── database/                      # 💾 Database
-│   └── init.sql                 # Initial schema and seed data
+├── database/                     # 💾 Database
+│   └── init.sql                  # Initial schema and seed data
 │
-├── testing/                       # 🧪 Load Tests
-│   └── k6/                      # K6 load testing scripts
+├── testing/                      # 🧪 Load Tests
+│   └── k6/                       # K6 load testing scripts
 │
 └── docs/                         # 📚 Documentation
-    ├── architecture/            # System architecture
-    ├── guides/                 # How-to guides
-    └── runbooks/               # Troubleshooting runbooks
+    ├── architecture/             # System architecture
+    ├── guides/                   # How-to guides
+    └── runbooks/                 # Troubleshooting runbooks
 ```
 
 > **📄 Detailed Structure:** See [PROJECT-STRUCTURE.md](./PROJECT-STRUCTURE.md)
@@ -486,9 +489,9 @@ DhakaCart-03-test/
 - **Application**: Fully Deployed & Load Tested (100% Pass)
 - **Infrastructure**: AWS (2 Masters, 3 Workers, ALB)
 - **Enterprise Features**:
-  - 🛡️ **Vault**: Active (Secrets Management)
-  - 🔒 **HTTPS**: Enabled (Cert-Manager)
-  - 💾 **Backup**: Automated (Velero + MinIO, Daily at 2 AM)
+  - 🛡️ **Vault**: Active (Secrets Management) - **Automated**
+  - 🔒 **HTTPS**: Enabled (Cert-Manager) - **Automated**
+  - 💾 **Backup**: Automated (Velero + MinIO, Daily at 2 AM) - **Automated**
   - 🔐 **Network Policies**: Active (Zero-Trust Model)
 - **Monitoring**: Prometheus + Grafana + Loki (Full Stack)
 - **CI/CD**: GitHub Actions (Automated)
@@ -546,6 +549,6 @@ kubectl port-forward -n monitoring svc/prometheus-service 9090:9090
 
 ---
 
-**Last Updated:** December 2025  
-**Version:** 1.0.3  
+**Last Updated:** December 13, 2025  
+**Version:** 1.1.0  
 **Status:** ✅ Production Ready

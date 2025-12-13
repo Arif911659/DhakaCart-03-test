@@ -9,7 +9,7 @@ This guide details the exact structure, files, and steps to follow for a flawles
 | Phase | Directory / File | Purpose |
 |-------|------------------|---------|
 | **1. Infra** | `terraform/simple-k8s/` | Infrastructure Code (VPC, EC2, ALB) |
-| **2. Auto** | `scripts/deploy-full-stack.sh` | **MASTER SCRIPT** - Runs *everything* (Infra+K8s+App+Seed) |
+| **2. Auto** | `scripts/deploy-full-stack.sh` | **MASTER SCRIPT** - Runs *everything* (Infra+K8s+App+Seed+Enterprise) |
 | **3. Config** | `scripts/load-infrastructure-config.sh` | Loads IPs from Terraform to scripts |
 | **4. K8s** | `scripts/k8s-deployment/` | K8s manifest syncing & deploying |
 | **5. Verify** | `scripts/monitoring/` | Check Grafana/Prometheus health |
@@ -37,11 +37,12 @@ Before running any script, ensure your environment is clean and ready.
 
 ## 🚀 Phase 2: Automated Deployment (The "One-Click" Step)
 
-We use a smart, resumable master script to handle 95% of the work.
+We use a smart, resumable master script to handle 98% of the work.
 
 ### **Features:**
 - **Checkpoint System**: Tracks progress in `.deploy_state`. If it fails, fix the issue and re-run; it resumes automatically.
 - **Automated Seeding**: Automatically seeds the database with initial product data.
+- **Automated Enterprise Setup**: Installs Velero, Vault, and Cert-Manager automatically.
 - **Idempotent**: Can be run multiple times without breaking things.
 
 **Command:**
@@ -50,12 +51,12 @@ We use a smart, resumable master script to handle 95% of the work.
 ```
 
 **Options:**
-- `force`: Restart from the beginning (Warning: Clears state).
+- `--force`: Restart from the beginning (Warning: Clears state).
   ```bash
   ./scripts/deploy-full-stack.sh --force
   ```
 
-**What the script does (Steps 1-7):**
+**What the script does (Steps 1-8):**
 1.  **Infrastructure**: Terraforms VPC, Bastion, Masters, Workers.
 2.  **Config**: Loads IPs dynamically.
 3.  **Scripts**: Generates node config scripts.
@@ -64,6 +65,7 @@ We use a smart, resumable master script to handle 95% of the work.
 6.  **App**: Deploys frontend, backend, DB, Redis, Monitoring.
     - **6.1 DB Seed**: Populates `products` table automatically.
 7.  **ALB**: Registers workers with Target Groups for external access.
+8.  **Enterprise Features**: Installs Velero, Certificates, and Secrets management.
 
 ---
 
@@ -104,28 +106,26 @@ cd ../../testing/load-tests
 
 ---
 
-## 🏢 Phase 4: Exam Compliance: Enterprise Features
+## 🏢 Phase 4: Enterprise Features (Automated)
 
-To meet the **10 Constraints** of the exam, you MUST run these scripts after the main deployment.
+**Good News!** As of v1.1.0, the enterprise features (Rule #7, #6) are installed **automatically** during Step 8 of the main script.
 
-### 1. Enable Automated Backups (Velero)
-> **⚠️ Run on Master Node:**
-> `ssh -i terraform/simple-k8s/dhakacart-k8s-key.pem ubuntu@<MASTER_IP>`
+You can verify them:
 
+### 1. Verify Backups (Velero)
 ```bash
-cd scripts/enterprise-features
-./install-velero.sh
-```
-*   **Result**: Velero installed, MinIO bucket configured.
-
-### 2. Enable HTTPS (Cert-Manager)
-```bash
-./install-cert-manager.sh
+# On Master-1
+velero backup get
 ```
 
-### 3. Enable Vault Secrets
+### 2. Verify HTTPS (Cert-Manager)
 ```bash
-./install-vault.sh
+kubectl get certificates -A
+```
+
+### 3. Verify Vault
+```bash
+kubectl get pods -n vault
 ```
 
 ---
@@ -157,5 +157,5 @@ terraform destroy -auto-approve
 
 ---
 
-**Last Updated**: 12 December 2025
-**Guide Version**: 3.0 (Smart Resumable Automation)
+**Last Updated**: 13 December 2025
+**Guide Version**: 3.1 (Automated Enterprise Features)

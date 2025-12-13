@@ -19,7 +19,7 @@ velero backup create pre-release-backup --include-namespaces dhakacart
 ```
 
 ### 1. Build Images
-Builds the Docker images locally with the version defined in the Makefile (currently `v1.0.4`).
+Builds the Docker images locally with the version defined in the Makefile (currently `latest`).
 ```bash
 make build
 ```
@@ -31,7 +31,7 @@ make push
 ```
 
 ### 3. Deploy to Kubernetes
-Updates the running Kubernetes deployments to use the new version `v1.0.4`.
+Updates the running Kubernetes deployments to use the new version specified in the Makefile.
 ```bash
 make deploy
 ```
@@ -44,12 +44,12 @@ make release
 
 ## How to Change the Version
 
-To release a new version (e.g., `v1.0.5`):
+To release a specific version (e.g., `v1.2.0`):
 
 1. **Edit the `Makefile`**:
-   Change line 6:
+   Change line 7:
    ```makefile
-   VERSION := v1.0.5
+   VERSION := v1.2.0
    ```
 
 2. **Run the release command**:
@@ -60,3 +60,4 @@ To release a new version (e.g., `v1.0.5`):
 ## Troubleshooting
 - **Permission Denied**: Run with `sudo` if your user is not in the docker group: `sudo make build`.
 - **Login Failed**: Run `docker login` and enter your credentials.
+- **ImagePullBackOff**: Ensure `make push` completed successfully and the cluster has internet access.

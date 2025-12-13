@@ -22,7 +22,7 @@ DhakaCart-03-test/
 │   │   ├── frontend.yaml               # React Frontend
 │   │   ├── postgres.yaml               # Database
 │   │   └── redis.yaml                  # Caching
-│   ├── 📂 enterprise-features/         # [Phase 2] Enterprise Capabilities
+│   ├── 📂 enterprise-features/         # Enterprise Capabilities
 │   │   ├── 📂 cert-manager/            # HTTPS/SSL
 │   │   ├── 📂 vault/                   # Secrets Management
 │   │   └── 📂 velero/                  # Backup Schedules
@@ -36,11 +36,8 @@ DhakaCart-03-test/
 │   │   ├── 📂 promtail/                # Log Shipping Agent
 │   │   ├── 📂 node-exporter/           # Node Metrics
 │   │   └── namespace.yaml              # Monitoring Namespace
-│   ├── 📂 network-policies/            # Zero-Trust Security
-│   │   ├── backend-policy.yaml
-│   │   ├── db-policy.yaml
-│   │   └── frontend-policy.yaml
-│   ├── 📂 secrets/                     # Sensitive Data (Git-Encrypted/Base64)
+│   ├── 📂 network-policies/            # Zero-Trust Security (in security/)
+│   ├── 📂 secrets/                     # Sensitive Data
 │   │   └── db-secrets.yaml
 │   ├── 📂 services/                    # Internal Networking
 │   │   ├── backend-service.yaml
@@ -54,7 +51,7 @@ DhakaCart-03-test/
 │   ├── 📂 database/                    # DB Maintenance
 │   │   ├── diagnose-db-products-issue.sh
 │   │   └── seed-database.sh
-│   ├── 📂 enterprise-features/         # [Phase 2] Installers
+│   ├── 📂 enterprise-features/         # Enterprise Installers
 │   │   ├── install-cert-manager.sh
 │   │   ├── install-vault.sh
 │   │   ├── install-velero.sh
@@ -76,10 +73,11 @@ DhakaCart-03-test/
 │   │   └── upload-to-bastion.sh
 │   ├── 📂 security/                    # Security Automation
 │   │   └── apply-security-hardening.sh
-│   ├── deploy-full-stack.sh         # 🚀 MASTER SCRIPT: 0 to Production
-│   ├── .deploy_state                   # 🔄 State tracking for Resume Capability
+│   ├── deploy-full-stack.sh            # 🚀 MASTER SCRIPT: 0 to Production
+│   ├── load-infrastructure-config.sh   # State Loader
+│   ├── post-terraform-setup.sh         # Post-Infra Configuration
 │   ├── fetch-kubeconfig.sh             # CI/CD Helper
-│   └── load-infrastructure-config.sh   # State Loader
+│   └── .deploy_state                   # 🔄 State tracking for Resume Capability
 │
 ├── 📂 terraform/                       # Infrastructure as Code (AWS)
 │   └── 📂 simple-k8s/
@@ -98,7 +96,8 @@ DhakaCart-03-test/
 │
 ├── 📄 FULL-STACK-DEPLOYMENT.md             # ⏱️ Quick Deployment Runbook
 ├── 📄 DEPLOYMENT-GUIDE.md              # 📚 Full Detailed Guide
-
+├── 📄 MANUAL_RELEASE_GUIDE.md          # 📦 Release Management
+├── 📄 POST-DEPLOYMENT-CHECKS.md        # ✅ Verification Checklist
 ├── 📄 PROJECT-STRUCTURE.md             # 🗺️ This File
 ├── 📄 QUICK-REFERENCE.md               # ⚡ Cheat Sheet
 └── 📄 README.md                        # 🏠 Project Homepage
@@ -107,12 +106,13 @@ DhakaCart-03-test/
 ## 🧩 Component Descriptions
 
 ### 1. Automation Core (`scripts/`)
-*   **`deploy-full-stack.sh`**: The orchestrator. It calls Terraform, configures nodes, deploys K8s, and **auto-seeds** the DB. Features **Smart Resume** to recover from interruptions.
-*   **`enterprise-features/`**: Scripts to install Phase 2 tools (Backup, Security) *after* the main deployment.
+*   **`deploy-full-stack.sh`**: The orchestrator. It calls Terraform, configures nodes, deploys K8s, **auto-seeds** the DB, and installs **Enterprise Features** (Velero, Vault, Cert-Manager). Features **Smart Resume**.
+*   **`enterprise-features/`**: Scripts to install Backup, Security, and SSL tools.
 *   **`nodes-config/`**: Handles the complex logic of `kubeadm init` and `kubeadm join` ensuring nodes connect correctly.
+*   **`post-terraform-setup.sh`**: Handles intermediate configurations after Terraform completes.
 
 ### 2. Infrastructure (`terraform/`)
-*   **`simple-k8s/`**: A simplified, flat Terraform structure designed for speed and reliability in the exam.
+*   **`simple-k8s/`**: A simplified, flat Terraform structure designed for speed and reliability.
 *   **Static IPs**: Hardcoded in `main.tf` to ensure predictable internal networking (a key "Lean" feature).
 
 ### 3. Orchestration (`k8s/`)
