@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Post-Terraform Setup Script
+# এটি আমাদের মূল অটোমেশন স্ক্রিপ্ট (deploy-full-stack.sh এর অংশ)। এটি অনেক বেশি শক্তিশালী এবং পুরো সিস্টেম (মনিটরিং, ডেটাবেস, এনটারপ্রাইজ ফিচার) সেটআপ করে।
 #
 # এই স্ক্রিপ্ট Terraform শেষের পর ইনভেন্টরি তৈরি ও কনফিগ লোড করে।
 # This script runs after Terraform to generate inventory and load config.

@@ -535,9 +535,9 @@ kubectl port-forward -n monitoring svc/prometheus-service 9090:9090
 ## 👥 Contributors & License
 
 **Maintained by:** DhakaCart DevOps Team  
-**License:** Free for educational use.
 
-**Made with ❤️ in Bangladesh 🇧🇩**
+
+**Made in Bangladesh**
 
 ---
 
