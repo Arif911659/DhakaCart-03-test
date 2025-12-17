@@ -407,6 +407,7 @@ We have organized implementation guides for every component:
 | [**📄 DEPLOYMENT-GUIDE.md**](./DEPLOYMENT-GUIDE.md) | Detailed manual step-by-step generic deployment guide |
 | [**📄 QUICK-REFERENCE.md**](./QUICK-REFERENCE.md) | Cheat sheet for common commands |
 | [**📄 PROJECT-STRUCTURE.md**](./PROJECT-STRUCTURE.md) | Complete project structure and file organization |
+| [**📄 docs/PUBLIC-API-AND-COMPONENTS.md**](./docs/PUBLIC-API-AND-COMPONENTS.md) | Public REST API reference + Frontend React components (publish-ready) |
 | [**📄 docs/SECURITY-AND-TESTING-GUIDE.md**](./docs/SECURITY-AND-TESTING-GUIDE.md) | Security hardening and testing instructions |
 | [**📂 terraform/README.md**](./terraform/README.md) | Infrastructure as Code details |
 | [**📂 docs/architecture/**](./docs/architecture/) | System architecture documentation |
